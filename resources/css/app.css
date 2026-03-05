@@ -1,0 +1,19 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+    .filter-tab {
+        @apply px-6 py-3 rounded-xl text-sm font-medium cursor-pointer transition-all;
+        background: #2d3748;
+        border: 1px solid #2d3748;
+        color: #ffffff;
+    }
+
+    .filter-tab:hover,
+    .filter-tab.active {
+        background: #3d4a5c;
+        border-color: #3d4a5c;
+        color: #ffffff;
+    }
+}
