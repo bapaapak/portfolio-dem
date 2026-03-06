@@ -1,6 +1,6 @@
 *.log
 .DS_Store
-.env
+.env # (sementara dihapus agar bisa di-push ke repo untuk deploy hosting)
 .env.backup
 .env.production
 .phpactor.json
