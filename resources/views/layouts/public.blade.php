@@ -143,19 +143,31 @@
                 right: auto;
                 top: auto;
                 transform: translateX(-50%);
-                width: auto;
+                width: calc(5 * 42px + 4 * 8px + 32px); /* 5 icons + gaps + padding */
                 max-width: 90%;
                 height: 56px;
                 max-height: none;
                 flex-direction: row;
-                justify-content: center;
+                justify-content: flex-start;
                 padding: 0 16px;
                 margin: 0;
                 border-radius: 28px;
+                overflow: hidden;
             }
             .sidebar-nav {
                 flex-direction: row;
+                flex-wrap: nowrap;
                 gap: 8px;
+                overflow-x: auto;
+                overflow-y: hidden;
+                -webkit-overflow-scrolling: touch;
+                scroll-snap-type: x mandatory;
+                padding: 7px 0;
+                justify-content: flex-start;
+            }
+            .sidebar-nav .nav-item {
+                scroll-snap-align: start;
+                flex-shrink: 0;
             }
             .main-content {
                 margin-left: 0;
@@ -195,107 +207,77 @@
                 ];
             @endphp
             <nav class="sidebar-nav">
-                {{-- 1. Hero / Home --}}
+                {{-- 1. Home --}}
                 @if(in_array('hero', $visibleSections))
-                <a href="{{ route('home') }}" class="nav-item {{ request()->routeIs('home') && !request()->hash ? 'active' : '' }}" title="Home" data-translate-title="nav_home">
+                <a href="{{ route('home') }}#home" class="nav-item {{ request()->routeIs('home') && !request()->hash ? 'active' : '' }}" title="Home" data-translate-title="nav_home">
                     <i class="fas fa-home"></i>
                 </a>
                 @endif
                 
-                {{-- 2. Stats --}}
-                @if(in_array('stats', $visibleSections))
-                <a href="{{ route('home') }}#home" class="nav-item" title="Stats" data-translate-title="nav_stats">
-                    <i class="fas fa-chart-bar"></i>
-                </a>
-                @endif
-                
-                {{-- 3. About --}}
-                @if(in_array('about', $visibleSections))
-                <a href="{{ route('home') }}#about" class="nav-item {{ request()->is('/#about') ? 'active' : '' }}" title="About" data-translate-title="nav_about">
-                    <i class="fas fa-user"></i>
-                </a>
-                @endif
-                
-                {{-- 4. Experience --}}
-                @if(in_array('experience', $visibleSections))
-                <a href="{{ route('home') }}#experience" class="nav-item" title="Experience" data-translate-title="nav_experience">
-                    <i class="fas fa-briefcase"></i>
-                </a>
-                @endif
-                
-                {{-- 5. Education --}}
+                {{-- 2. Education --}}
                 @if(in_array('education', $visibleSections))
                 <a href="{{ route('home') }}#education" class="nav-item" title="Education" data-translate-title="nav_education">
                     <i class="fas fa-graduation-cap"></i>
                 </a>
                 @endif
-                
-                {{-- 6. Tech Stack --}}
-                @if(in_array('tech_stack', $visibleSections))
-                <a href="{{ route('home') }}#tech" class="nav-item" title="Tech Stack" data-translate-title="nav_tech">
-                    <i class="fas fa-code"></i>
-                </a>
-                @endif
-                
 
-
-                {{-- 8. Certifications --}}
-                @if(in_array('certifications', $visibleSections))
-                <a href="{{ route('home') }}#certifications" class="nav-item" title="Certifications" data-translate-title="nav_certifications">
-                    <i class="fas fa-certificate"></i>
+                {{-- 3. Professional Experience --}}
+                @if(in_array('experience', $visibleSections))
+                <a href="{{ route('home') }}#experience" class="nav-item" title="Experience" data-translate-title="nav_experience">
+                    <i class="fas fa-briefcase"></i>
                 </a>
                 @endif
 
-                {{-- 9. Committee Activities --}}
-                @if(in_array('committee_activities', $visibleSections))
-                <a href="{{ route('home') }}#committee-activities" class="nav-item {{ request()->is('/#committee-activities') ? 'active' : '' }}" title="Committee Activities" data-translate-title="nav_committee_activities">
-                    <i class="fas fa-calendar-check"></i>
-                </a>
-                @endif
-
-                {{-- 10. Career Aspiration --}}
-                @if(in_array('career_aspiration', $visibleSections))
-                <a href="{{ route('home') }}#career-aspiration" class="nav-item {{ request()->is('/#career-aspiration') ? 'active' : '' }}" title="Career Aspiration" data-translate-title="nav_career_aspiration">
-                    <i class="fas fa-rocket"></i>
-                </a>
-                @endif
-
-                {{-- 11. Automation Strategy --}}
-                @if(in_array('automation_strategy', $visibleSections))
-                <a href="{{ route('home') }}#automation-strategy" class="nav-item" title="Automation Strategy" data-translate-title="nav_automation_strategy">
-                    <i class="fas fa-cogs"></i>
-                </a>
-                @endif
-
-                {{-- 12. Obstacle & Challenge --}}
-                @if(in_array('obstacle_challenge', $visibleSections))
-                <a href="{{ route('home') }}#obstacle-challenge" class="nav-item" title="Obstacle & Challenge" data-translate-title="nav_obstacle_challenge">
-                    <i class="fas fa-exclamation-triangle"></i>
-                </a>
-                @endif
-
-                {{-- 13. Job Description --}}
+                {{-- 4. Job Description --}}
                 @if(in_array('job_description', $visibleSections))
                 <a href="{{ route('home') }}#job-description" class="nav-item" title="Job Description" data-translate-title="nav_job_description">
                     <i class="fas fa-clipboard-list"></i>
                 </a>
                 @endif
 
-                {{-- 14. Company Profile --}}
+                {{-- 5. Committee Activities --}}
+                @if(in_array('committee_activities', $visibleSections))
+                <a href="{{ route('home') }}#committee-activities" class="nav-item {{ request()->is('/#committee-activities') ? 'active' : '' }}" title="Committee Activities" data-translate-title="nav_committee_activities">
+                    <i class="fas fa-calendar-check"></i>
+                </a>
+                @endif
+
+                {{-- 6. Career Aspiration --}}
+                @if(in_array('career_aspiration', $visibleSections))
+                <a href="{{ route('home') }}#career-aspiration" class="nav-item {{ request()->is('/#career-aspiration') ? 'active' : '' }}" title="Career Aspiration" data-translate-title="nav_career_aspiration">
+                    <i class="fas fa-rocket"></i>
+                </a>
+                @endif
+
+                {{-- 7. Automation Strategy --}}
+                @if(in_array('automation_strategy', $visibleSections))
+                <a href="{{ route('home') }}#automation-strategy" class="nav-item" title="Automation Strategy" data-translate-title="nav_automation_strategy">
+                    <i class="fas fa-cogs"></i>
+                </a>
+                @endif
+
+                {{-- 8. Obstacle & Challenge --}}
+                @if(in_array('obstacle_challenge', $visibleSections))
+                <a href="{{ route('home') }}#obstacle-challenge" class="nav-item" title="Obstacle & Challenge" data-translate-title="nav_obstacle_challenge">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </a>
+                @endif
+
+                {{-- 9. Company Profile --}}
                 @if(in_array('company_profile', $visibleSections))
                 <a href="{{ route('home') }}#company-profile" class="nav-item {{ request()->is('/#company-profile') ? 'active' : '' }}" title="Company Profile" data-translate-title="nav_company_profile">
                     <i class="fas fa-building"></i>
                 </a>
                 @endif
                 
-                {{-- 15. Organization Structure --}}
+                {{-- 10. Organization Structure --}}
                 @if(in_array('organization_structure', $visibleSections))
                 <a href="{{ route('home') }}#organization-structure" class="nav-item {{ request()->is('/#organization-structure') ? 'active' : '' }}" title="Organization Structure" data-translate-title="nav_organization_structure">
                     <i class="fas fa-sitemap"></i>
                 </a>
                 @endif
 
-                {{-- 16. Projects --}}
+                {{-- 11. Featured Projects --}}
                 @if(in_array('projects', $visibleSections))
                 <a href="{{ route('home') }}#projects" class="nav-item {{ request()->is('/#projects') ? 'active' : '' }}" title="Projects" data-translate-title="nav_projects">
                     <i class="fas fa-folder-open"></i>

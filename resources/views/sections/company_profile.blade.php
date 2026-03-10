@@ -2,22 +2,94 @@
 @if($companyProfile)
     <section class="company-profile-section" id="company-profile"
         style="padding: 40px 0; background-color: transparent; font-family: 'Segoe UI', sans-serif;">
+        <style>
+            .cp-grid {
+                display: flex;
+                flex-direction: row;
+                gap: 24px;
+                align-items: stretch;
+            }
+            .cp-col-left { width: 25%; flex: 0 0 25%; display: flex; flex-direction: column; gap: 16px; }
+            .cp-col-center { width: 50%; flex: 0 0 50%; display: flex; flex-direction: column; padding: 0 16px; }
+            .cp-col-right { width: 25%; flex: 0 0 25%; display: flex; flex-direction: column; padding: 0 8px; position: relative; }
+
+            @media (max-width: 768px) {
+                .cp-grid {
+                    flex-direction: column;
+                    gap: 24px;
+                }
+                .cp-col-left, .cp-col-center, .cp-col-right {
+                    width: 100% !important;
+                    flex: 0 0 100% !important;
+                    padding: 0 !important;
+                }
+                /* Reorder: Center first (logo+description), then Right (director), then Left (plants+stats) */
+                .cp-col-center { order: 1; }
+                .cp-col-right { order: 2; }
+                .cp-col-left { order: 3; }
+                
+                .cp-col-right .flex.flex-col.items-end {
+                    align-items: center !important;
+                }
+                .cp-col-right .flex.flex-col.gap-2 {
+                    width: 200px !important;
+                    margin: 0 auto;
+                }
+                .cp-plants-row {
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    gap: 12px;
+                }
+                .cp-stats-theme {
+                    display: flex;
+                    flex-direction: row;
+                    gap: 16px;
+                    align-items: flex-start;
+                }
+                .cp-stats-theme > div {
+                    flex: 1;
+                }
+                .cp-bm-grid {
+                    grid-template-columns: repeat(4, 1fr) !important;
+                }
+                .cp-header-mobile {
+                    text-align: center;
+                    flex-direction: column !important;
+                    align-items: center !important;
+                }
+            }
+
+            @media (max-width: 480px) {
+                .cp-bm-grid {
+                    grid-template-columns: repeat(2, 1fr) !important;
+                    gap: 16px !important;
+                }
+                .cp-plants-row {
+                    grid-template-columns: 1fr 1fr;
+                }
+                .company-profile-section .section-title-experience {
+                    font-size: 2rem !important;
+                }
+            }
+        </style>
         <div class="container mx-auto px-4">
 
             {{-- Section Title --}}
             <h2 class="section-title-experience fade-in-title text-left" style="font-size: 3rem; margin-bottom: 40px;">
-                PROFIL PERUSAHAAN
+                <span class="lang-id" data-display="inline">PROFIL PERUSAHAAN</span>
+                <span class="lang-en" style="display: none;" data-display="inline">COMPANY PROFILE</span>
             </h2>
 
             {{-- FLUID CONTAINER --}}
             <div class="relative w-full max-w-7xl mx-auto">
 
                 {{-- 3-Column Layout --}}
-                <div class="flex flex-row gap-6 items-stretch">
+                <div class="cp-grid">
 
-                    {{-- [LEFT COLUMN] Plants & Stats (Width: 25%) --}}
-                    <div style="width: 25%; flex: 0 0 25%;" class="flex flex-col gap-4">
+                    {{-- [LEFT COLUMN] Plants & Stats --}}
+                    <div class="cp-col-left">
 
+                        <div class="cp-plants-row">
                         {{-- Plant 1 --}}
                         @if($companyProfile->plant_1_image || $companyProfile->plant_1_name)
                             <div class="relative w-full">
@@ -63,9 +135,11 @@
                                 </div>
                             </div>
                         @endif
+                        </div>{{-- end cp-plants-row --}}
 
+                        <div class="cp-stats-theme">
                         {{-- Stats --}}
-                        <div class="mt-4 text-center">
+                        <div class="text-center">
                             <h5
                                 style="font-weight: bold; color: black; font-size: 12px; margin-bottom: 8px; line-height: 1.2;">
                                 Karyawan PT. Dharma Electrindo<br>Manufacturing</h5>
@@ -89,21 +163,22 @@
                             </div>
                         </div>
 
-                        {{-- Theme (Bottom Left) --}}
-                        <div class="mt-auto pt-4 pl-2 relative">
+                        {{-- Theme --}}
+                        <div class="pt-4 relative">
                             <div style="font-weight: bold; font-size: 11px; color: black; text-transform: uppercase;">TEMA
                                 KERJA DEM 2026</div>
                             <div style="font-size: 11px; color: #333; line-height: 1.2;">"Knowledge & Technology
                                 Transformation for Employee Engagement"</div>
                         </div>
+                        </div>{{-- end cp-stats-theme --}}
                     </div>
 
 
-                    {{-- [CENTER COLUMN] Content (Width: 50%) --}}
-                    <div style="width: 50%; flex: 0 0 50%;" class="flex flex-col px-4">
+                    {{-- [CENTER COLUMN] Content --}}
+                    <div class="cp-col-center">
 
                         {{-- Header Section --}}
-                        <div class="flex items-center gap-4 mb-4">
+                        <div class="flex items-center gap-4 mb-4 cp-header-mobile">
                             @if($companyProfile->logo_data ?? null)
                                 <img src="{{ $companyProfile->logo_data }}"
                                     style="height: 80px; width: auto; object-fit: contain;">
@@ -163,7 +238,7 @@
                                 </div>
                             </div>
 
-                            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 20px;">
+                            <div class="cp-bm-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 20px;">
                                 @foreach($companyProfile->business_models as $model)
                                     <div class="flex flex-col items-center">
                                         <div
@@ -195,10 +270,8 @@
                     </div>
 
 
-                    {{-- [RIGHT COLUMN] Director Only (Width: 25%) --}}
-                    {{-- Removed Triputra DNA, Moved Director to Top --}}
-                    <div style="width: 25%; flex: 0 0 25%;" class="flex flex-col h-full pl-2 pr-2 relative fade-in-up"
-                        style="animation-delay: 400ms">
+                    {{-- [RIGHT COLUMN] Director --}}
+                    <div class="cp-col-right fade-in-up">
 
                         {{-- Director (Top Right) --}}
                         <div class="flex flex-col items-end w-full mt-4">

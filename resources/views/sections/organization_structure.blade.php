@@ -223,6 +223,28 @@
             background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%) !important;
             border-color: rgba(234, 179, 8, 0.3) !important;
         }
+
+        /* Mobile: buat org chart bisa di-scroll horizontal */
+        @media (max-width: 768px) {
+            .organization-section .container {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                padding-bottom: 16px;
+            }
+            .org-chart-container {
+                min-width: 1100px;
+            }
+        }
+
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .organization-section .container {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+            .org-chart-container {
+                min-width: 900px;
+            }
+        }
         </style>
 
             @php
