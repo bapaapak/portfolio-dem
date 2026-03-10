@@ -9,7 +9,7 @@
 </div>
 
 <div class="form-card">
-    <form action="{{ route('admin.experiences.update', $experience) }}" method="POST">
+    <form action="{{ route('admin.experiences.update', $experience) }}" method="POST" enctype="multipart/form-data">
         @csrf
         @method('PUT')
         
@@ -18,9 +18,25 @@
                 <label for="title">Job Title *</label>
                 <input type="text" id="title" name="title" class="form-control" value="{{ old('title', $experience->title) }}" required>
             </div>
+        </div>
+
+        <div class="form-row">
             <div class="form-group">
                 <label for="company">Company Name *</label>
                 <input type="text" id="company" name="company" class="form-control" value="{{ old('company', $experience->company) }}" required>
+            </div>
+            <div class="form-group">
+                <label for="logo">Logo Perusahaan</label>
+                @if($experience->logo)
+                    <div style="margin-bottom: 8px; display: flex; align-items: center; gap: 12px;">
+                        <img src="{{ asset('storage/' . $experience->logo) }}" alt="Logo" style="height: 50px; width: auto; object-fit: contain; border: 1px solid #ddd; border-radius: 6px; padding: 4px; background: #fff;">
+                        <label style="display: flex; align-items: center; gap: 6px; cursor: pointer; font-size: 0.85em; color: #e53e3e;">
+                            <input type="checkbox" name="remove_logo" value="1"> Hapus logo
+                        </label>
+                    </div>
+                @endif
+                <input type="file" id="logo" name="logo" class="form-control" accept="image/*">
+                <small class="form-text" style="color: var(--text-secondary); margin-top: 4px;">Upload logo perusahaan (JPEG, PNG, SVG, WebP, max 2MB)</small>
             </div>
         </div>
 

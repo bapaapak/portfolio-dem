@@ -9,7 +9,7 @@
 </div>
 
 <div class="form-card">
-    <form action="{{ route('admin.experiences.store') }}" method="POST">
+    <form action="{{ route('admin.experiences.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
         
         <div class="form-row">
@@ -17,9 +17,17 @@
                 <label for="title">Job Title *</label>
                 <input type="text" id="title" name="title" class="form-control" value="{{ old('title') }}" required placeholder="e.g. Senior Frontend Engineer">
             </div>
+        </div>
+
+        <div class="form-row">
             <div class="form-group">
                 <label for="company">Company Name *</label>
                 <input type="text" id="company" name="company" class="form-control" value="{{ old('company') }}" required placeholder="e.g. TechStart Inc">
+            </div>
+            <div class="form-group">
+                <label for="logo">Logo Perusahaan</label>
+                <input type="file" id="logo" name="logo" class="form-control" accept="image/*">
+                <small class="form-text" style="color: var(--text-secondary); margin-top: 4px;">Upload logo perusahaan (JPEG, PNG, SVG, WebP, max 2MB)</small>
             </div>
         </div>
 

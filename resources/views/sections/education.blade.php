@@ -25,6 +25,9 @@
                             </div>
                         </div>
                         <div class="exp-card">
+                            @if($education->logo)
+                                <img src="{{ asset('storage/' . $education->logo) }}" alt="{{ $education->institution }} logo" class="exp-card-logo">
+                            @endif
                             <h3 class="exp-company">{{ $education->institution }}</h3>
                             <p class="exp-position">{{ $education->degree }}
                                 @if($education->gpa)
@@ -77,6 +80,9 @@
                             </div>
                         </div>
                         <div class="exp-card">
+                            @if($education->logo)
+                                <img src="{{ asset('storage/' . $education->logo) }}" alt="{{ $education->institution }} logo" class="exp-card-logo">
+                            @endif
                             <h3 class="exp-company">{{ $education->institution }}</h3>
                             <p class="exp-position">{{ $education->degree }}
                                 @if($education->gpa)

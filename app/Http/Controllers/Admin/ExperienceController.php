@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Experience;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Storage;
 use App\Models\Skill;
 
 class ExperienceController extends Controller
@@ -50,6 +50,7 @@ class ExperienceController extends Controller
             'description_en' => 'nullable|string',
             'show_description' => 'nullable|boolean',
             'show_tags' => 'nullable|boolean',
+            'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
         ]);
 
         $validated['featured'] = $request->has('featured');
@@ -62,6 +63,10 @@ class ExperienceController extends Controller
         
         if ($request->filled('technologies_en')) {
             $validated['technologies_en'] = array_map('trim', explode(',', $request->input('technologies_en')));
+        }
+
+        if ($request->hasFile('logo')) {
+            $validated['logo'] = $request->file('logo')->store('experiences/logos', 'public');
         }
 
         Experience::create($validated);
@@ -102,6 +107,7 @@ class ExperienceController extends Controller
             'description_en' => 'nullable|string',
             'show_description' => 'nullable|boolean',
             'show_tags' => 'nullable|boolean',
+            'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
         ]);
 
         $validated['featured'] = $request->has('featured');
@@ -121,6 +127,20 @@ class ExperienceController extends Controller
         
         }
 
+        if ($request->hasFile('logo')) {
+            if ($experience->logo) {
+                Storage::disk('public')->delete($experience->logo);
+            }
+            $validated['logo'] = $request->file('logo')->store('experiences/logos', 'public');
+        }
+
+        if ($request->has('remove_logo') && $request->remove_logo) {
+            if ($experience->logo) {
+                Storage::disk('public')->delete($experience->logo);
+            }
+            $validated['logo'] = null;
+        }
+
         $experience->update($validated);
 
         return redirect()->route('admin.experiences.index')->with('success', 'Experience updated successfully!');
@@ -128,6 +148,9 @@ class ExperienceController extends Controller
 
     public function destroy(Experience $experience)
     {
+        if ($experience->logo) {
+            Storage::disk('public')->delete($experience->logo);
+        }
         $experience->delete();
         return redirect()->route('admin.experiences.index')->with('success', 'Experience deleted successfully!');
     }

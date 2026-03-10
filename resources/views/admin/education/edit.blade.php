@@ -9,7 +9,7 @@
 </div>
 
 <div class="form-card">
-    <form action="{{ route('admin.education.update', $education) }}" method="POST">
+    <form action="{{ route('admin.education.update', $education) }}" method="POST" enctype="multipart/form-data">
         @csrf
         @method('PUT')
         
@@ -18,6 +18,22 @@
                 <label for="institution">Institution *</label>
                 <input type="text" id="institution" name="institution" class="form-control" value="{{ old('institution', $education->institution) }}" required>
             </div>
+            <div class="form-group">
+                <label for="logo">Logo Institusi</label>
+                @if($education->logo)
+                    <div style="margin-bottom: 8px; display: flex; align-items: center; gap: 12px;">
+                        <img src="{{ asset('storage/' . $education->logo) }}" alt="Logo" style="height: 50px; width: auto; object-fit: contain; border: 1px solid #ddd; border-radius: 6px; padding: 4px; background: #fff;">
+                        <label style="display: flex; align-items: center; gap: 6px; cursor: pointer; font-size: 0.85em; color: #e53e3e;">
+                            <input type="checkbox" name="remove_logo" value="1"> Hapus logo
+                        </label>
+                    </div>
+                @endif
+                <input type="file" id="logo" name="logo" class="form-control" accept="image/*">
+                <small class="form-text" style="color: var(--text-secondary); margin-top: 4px;">Upload logo institusi (JPEG, PNG, SVG, WebP, max 2MB)</small>
+            </div>
+        </div>
+
+        <div class="form-row">
             <div class="form-group">
                 <label for="degree">Degree/Major *</label>
                 <input type="text" id="degree" name="degree" class="form-control" value="{{ old('degree', $education->degree) }}" required>

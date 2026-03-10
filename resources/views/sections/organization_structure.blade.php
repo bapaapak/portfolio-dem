@@ -8,126 +8,166 @@
         
         @if($organizationMembers->count() > 0)
             <style>
-            /* Organization Card Styles */
+            /* ===== ORG CARD BASE ===== */
             .org-card {
-                background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
-                border-radius: 16px;
+                background: linear-gradient(160deg, #eef2ff 0%, #e0e7ff 100%);
+                border: 1.5px solid rgba(99, 102, 241, 0.22);
+                border-radius: 18px;
                 padding: 0;
-                box-shadow: 
-                    0 4px 6px -1px rgba(0, 0, 0, 0.06),
-                    0 2px 4px -1px rgba(0, 0, 0, 0.04),
-                    0 0 0 1px rgba(99, 102, 241, 0.08);
-                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                box-shadow: 0 3px 12px rgba(99, 102, 241, 0.10);
+                transition: transform 0.25s ease, box-shadow 0.25s ease;
                 overflow: hidden;
                 position: relative;
                 z-index: 10;
             }
-
             .org-card:hover {
-                transform: translateY(-4px);
-                box-shadow: 
-                    0 20px 25px -5px rgba(99, 102, 241, 0.1),
-                    0 10px 10px -5px rgba(99, 102, 241, 0.04),
-                    0 0 0 2px rgba(99, 102, 241, 0.15);
+                transform: translateY(-3px);
+                box-shadow: 0 10px 28px rgba(99, 102, 241, 0.18);
             }
 
+            /* Top accent bar */
             .org-card-accent {
                 height: 4px;
-                background: linear-gradient(90deg, #6366f1, #8b5cf6, #a855f7);
+                background: linear-gradient(90deg, #6366f1 0%, #8b5cf6 50%, #a78bfa 100%);
                 width: 100%;
             }
 
-            .org-avatar-wrapper {
-                width: 52px;
-                height: 52px;
-                padding: 3px;
-                border-radius: 50%;
-                background: linear-gradient(135deg, #6366f1, #8b5cf6);
-                box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
-            }
-
+            /* Avatar */
             .org-avatar-icon {
-                width: 52px;
-                height: 52px;
+                width: 54px;
+                height: 54px;
                 border-radius: 50%;
-                background: linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 100%);
+                background: linear-gradient(135deg, #c7d2fe 0%, #a5b4fc 100%);
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                color: #6366f1;
-                box-shadow: 
-                    0 4px 12px rgba(99, 102, 241, 0.2),
-                    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+                color: #4338ca;
+                font-size: 20px;
+                border: 2.5px solid rgba(99, 102, 241, 0.25);
+                box-shadow: 0 3px 10px rgba(99, 102, 241, 0.20);
+                margin: 0 auto;
+            }
+            .org-avatar-wrapper {
+                width: 54px;
+                height: 54px;
+                border-radius: 50%;
+                overflow: hidden;
+                border: 2.5px solid rgba(99, 102, 241, 0.3);
+                box-shadow: 0 3px 10px rgba(99, 102, 241, 0.20);
+                margin: 0 auto;
             }
 
+            /* Name */
+            .org-member-name {
+                font-size: 11.5px;
+                font-weight: 800;
+                color: #1e1b4b;
+                text-transform: uppercase;
+                letter-spacing: 0.3px;
+                line-height: 1.3;
+                margin-bottom: 8px;
+            }
+
+            /* Position badge */
             .org-position-badge {
+                display: inline-block;
                 font-size: 9px;
                 font-weight: 700;
                 text-transform: uppercase;
-                letter-spacing: 0.5px;
-                color: #6366f1;
-                background: linear-gradient(135deg, #eef2ff 0%, #e0e7ff 100%);
+                letter-spacing: 0.4px;
+                color: #78350f;
+                background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+                border: 1px solid rgba(234, 179, 8, 0.35);
                 padding: 4px 10px;
-                border-radius: 12px;
-                display: inline-block;
-                border: 1px solid rgba(99, 102, 241, 0.15);
+                border-radius: 20px;
+                max-width: 160px;
+                word-break: break-word;
+                line-height: 1.4;
             }
 
+            /* Department tag */
             .org-dept-tag {
-                font-size: 9px;
-                color: #64748b;
-                font-weight: 500;
                 display: inline-flex;
                 align-items: center;
-                padding: 3px 8px;
-                background: #f1f5f9;
+                gap: 4px;
+                font-size: 9px;
+                font-weight: 500;
+                color: #475569;
+                background: rgba(241, 245, 249, 0.9);
+                border: 1px solid #cbd5e1;
                 border-radius: 8px;
-                border: 1px solid #e2e8f0;
+                padding: 3px 8px;
+                margin-top: 7px;
             }
 
-            /* CSS Tree for Organization Chart */
+            /* ===== TUBAGUS GREEN HIGHLIGHT ===== */
+            .tree li[data-member-name*="Tubagus" i] > .org-card {
+                background: linear-gradient(160deg, #f0fdf4 0%, #dcfce7 100%) !important;
+                border: 1.5px solid rgba(34, 197, 94, 0.30) !important;
+                box-shadow: 0 3px 12px rgba(34, 197, 94, 0.13) !important;
+            }
+            .tree li[data-member-name*="Tubagus" i] > .org-card .org-card-accent {
+                background: linear-gradient(90deg, #22c55e, #16a34a) !important;
+            }
+            .tree li[data-member-name*="Tubagus" i] > .org-card .org-avatar-icon {
+                background: linear-gradient(135deg, #bbf7d0 0%, #86efac 100%) !important;
+                color: #15803d !important;
+                border-color: rgba(34, 197, 94, 0.3) !important;
+                box-shadow: 0 3px 10px rgba(34, 197, 94, 0.20) !important;
+            }
+
+            /* ===== TREE / CONNECTOR LINES ===== */
             .tree ul {
                 padding-top: 20px;
                 position: relative;
                 display: flex;
                 justify-content: center;
             }
-
             .tree li {
-                /* float: left; */
                 text-align: center;
                 list-style-type: none;
                 position: relative;
-                padding: 20px 4px 0 4px;
+                padding: 20px 8px 0 8px;
                 display: flex;
                 flex-direction: column;
                 align-items: center;
             }
-
-            /* Connectors */
             .tree li::before, .tree li::after {
                 content: '';
                 position: absolute; top: 0; right: 50%;
-                border-top: 2px solid #c7d2fe;
+                border-top: 2px solid #a5b4fc;
                 width: 50%; height: 20px;
                 z-index: 1;
             }
             .tree li::after {
                 right: auto; left: 50%;
-                border-left: 2px solid #c7d2fe;
+                border-left: 2px solid #a5b4fc;
+            }
+            .tree li:only-child::after, .tree li:only-child::before { display: none; }
+            .tree li:only-child { padding-top: 0; }
+            .tree li:first-child::before, .tree li:last-child::after { border: 0 none; }
+            .tree li:last-child::before {
+                border-right: 2px solid #a5b4fc;
+                border-radius: 0 5px 0 0;
+            }
+            .tree li:first-child::after {
+                border-radius: 5px 0 0 0;
+                border-left: 2px solid #a5b4fc;
+            }
+            .org-chart-container > ul > li::before,
+            .org-chart-container > ul > li::after { display: none !important; }
+            .org-chart-container > ul > li { padding-top: 0 !important; }
+            .tree ul ul::before {
+                content: '';
+                position: absolute; top: 0; left: 50%;
+                border-left: 2px solid #a5b4fc;
+                width: 0; height: 20px;
+                z-index: 1;
             }
 
-            /* Remove connectors from single/first/last */
-            .tree li:only-child::after, .tree li:only-child::before {
-                display: none;
-            }
-            .tree li:only-child {
-                padding-top: 0;
-            }
-
-            /* FIX: Deep Drop Single Child needs the vertical line */
+            /* ===== DEEP DROP ===== */
             .tree li.deep-drop:only-child {
-                padding-top: 190px !important; 
+                padding-top: 190px !important;
             }
             .tree li.deep-drop:only-child::after {
                 display: block !important;
@@ -135,117 +175,39 @@
                 height: 190px !important;
                 z-index: 1;
             }
-
-            .tree li:first-child::before, .tree li:last-child::after {
-                border: 0 none;
-            }
-
-            /* Add back the vertical connector for the first and last nodes */
-            .tree li:last-child::before {
-                border-right: 2px solid #c7d2fe;
-                border-radius: 0 5px 0 0;
-            }
-            .tree li:first-child::after {
-                border-radius: 5px 0 0 0;
-                border-left: 2px solid #c7d2fe;
-            }
-
-            /* REMOVE LINES FROM ROOT - IMPORTANT! */
-            .org-chart-container > ul > li::before,
-            .org-chart-container > ul > li::after {
-                display: none !important;
-            }
-            .org-chart-container > ul > li {
-                padding-top: 0 !important;
-            }
-
-
-            /* Downward connector from parent to children */
-            .tree ul ul::before {
-                content: '';
-                position: absolute; top: 0; left: 50%;
-                border-left: 2px solid #c7d2fe;
-                width: 0; height: 20px;
-                z-index: 1;
-            }
-
-            /* Deep Drop & Flex adjustments */
             .tree li.deep-drop {
                 padding-top: 190px !important;
             }
-            .tree li.deep-drop::before, 
+            .tree li.deep-drop::before,
             .tree li.deep-drop::after {
                 height: 190px !important;
             }
-
-        /* Specific offset for Rina Merriana card */
-        .tree li[data-member-name*="Rina" i] > .org-card {
-            transform: translateY(50px);
-        }
-        .tree li[data-member-name*="Rina" i]::before,
-        .tree li[data-member-name*="Rina" i]::after {
-            height: 50px;
-        }
-            /* ========== UNIVERSAL CARD COLORS (Indigo + Gold) ========== */
-        .org-card {
-            background: linear-gradient(145deg, #eef2ff 0%, #e0e7ff 100%);
-            box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.12), 0 0 0 2px rgba(79, 70, 229, 0.15);
-        }
-        .org-card .org-card-accent {
-            background: #6366f1;
-        }
-        .org-card .org-avatar-icon {
-            background: linear-gradient(135deg, #c7d2fe 0%, #a5b4fc 100%);
-            color: #4338ca;
-            box-shadow: 0 4px 12px rgba(67, 56, 202, 0.25);
-        }
-        .org-card .org-position-badge {
-            color: #92400e;
-            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-            border-color: rgba(234, 179, 8, 0.3);
-        }
-
-        /* ========== SPECIAL HIGHLIGHT: Tubagus Imran (Green) ========== */
-        .tree li[data-member-name*="Tubagus" i] > .org-card {
-            background: linear-gradient(145deg, #f0fdf4 0%, #dcfce7 100%) !important;
-            box-shadow: 0 4px 6px -1px rgba(34, 197, 94, 0.1), 0 0 0 2px rgba(34, 197, 94, 0.2) !important;
-        }
-        .tree li[data-member-name*="Tubagus" i] > .org-card .org-card-accent {
-            background: linear-gradient(90deg, #22c55e, #16a34a, #15803d) !important;
-        }
-        .tree li[data-member-name*="Tubagus" i] > .org-card .org-avatar-icon {
-            background: linear-gradient(135deg, #bbf7d0 0%, #86efac 100%) !important;
-            color: #16a34a !important;
-            box-shadow: 0 4px 12px rgba(34, 197, 94, 0.2) !important;
-        }
-        .tree li[data-member-name*="Tubagus" i] > .org-card .org-position-badge {
-            color: #92400e !important;
-            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%) !important;
-            border-color: rgba(234, 179, 8, 0.3) !important;
-        }
-
-        /* Mobile: buat org chart bisa di-scroll horizontal */
-        @media (max-width: 768px) {
-            .organization-section .container {
-                overflow-x: auto;
-                -webkit-overflow-scrolling: touch;
-                padding-bottom: 16px;
+            /* RINA: same level as LABERTE's direct children but visually drops to MONICA row */
+            .tree li[data-member-name*="Rina" i].deep-drop {
+                padding-top: 255px !important;
             }
-            .org-chart-container {
-                min-width: 1100px;
+            .tree li[data-member-name*="Rina" i].deep-drop::before,
+            .tree li[data-member-name*="Rina" i].deep-drop::after {
+                height: 255px !important;
             }
-        }
 
-        @media (min-width: 769px) and (max-width: 1024px) {
-            .organization-section .container {
-                overflow-x: auto;
-                -webkit-overflow-scrolling: touch;
+            /* ===== RESPONSIVE ===== */
+            @media (max-width: 768px) {
+                .organization-section .container {
+                    overflow-x: auto;
+                    -webkit-overflow-scrolling: touch;
+                    padding-bottom: 16px;
+                }
+                .org-chart-container { min-width: 1100px; }
             }
-            .org-chart-container {
-                min-width: 900px;
+            @media (min-width: 769px) and (max-width: 1024px) {
+                .organization-section .container {
+                    overflow-x: auto;
+                    -webkit-overflow-scrolling: touch;
+                }
+                .org-chart-container { min-width: 900px; }
             }
-        }
-        </style>
+            </style>
 
             @php
                 $levelColors = [

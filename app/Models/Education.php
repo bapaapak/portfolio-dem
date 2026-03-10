@@ -11,6 +11,7 @@ class Education extends Model
 
     protected $fillable = [
         'institution',
+        'logo',
         'degree',
         'start_date',
         'end_date',

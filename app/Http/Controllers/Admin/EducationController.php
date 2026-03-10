@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Education;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class EducationController extends Controller
 {
@@ -31,11 +32,16 @@ class EducationController extends Controller
             'description' => 'nullable|string',
             'order' => 'integer|min:0',
             'is_current' => 'boolean',
+            'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
         ]);
 
         // Clear end_date if currently studying
         if ($request->has('is_current') && $request->is_current) {
             $validated['end_date'] = null;
+        }
+
+        if ($request->hasFile('logo')) {
+            $validated['logo'] = $request->file('logo')->store('education/logos', 'public');
         }
 
         Education::create($validated);
@@ -60,11 +66,26 @@ class EducationController extends Controller
             'description' => 'nullable|string',
             'order' => 'integer|min:0',
             'is_current' => 'boolean',
+            'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
         ]);
 
         // Clear end_date if currently studying
         if ($request->has('is_current') && $request->is_current) {
             $validated['end_date'] = null;
+        }
+
+        if ($request->hasFile('logo')) {
+            if ($education->logo) {
+                Storage::disk('public')->delete($education->logo);
+            }
+            $validated['logo'] = $request->file('logo')->store('education/logos', 'public');
+        }
+
+        if ($request->has('remove_logo') && $request->remove_logo) {
+            if ($education->logo) {
+                Storage::disk('public')->delete($education->logo);
+            }
+            $validated['logo'] = null;
         }
 
         $education->update($validated);
@@ -74,6 +95,9 @@ class EducationController extends Controller
 
     public function destroy(Education $education)
     {
+        if ($education->logo) {
+            Storage::disk('public')->delete($education->logo);
+        }
         $education->delete();
         return redirect()->route('admin.education.index')->with('success', 'Education deleted successfully!');
     }

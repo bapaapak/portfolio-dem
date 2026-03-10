@@ -9,7 +9,7 @@
 </div>
 
 <div class="form-card">
-    <form action="{{ route('admin.education.store') }}" method="POST">
+    <form action="{{ route('admin.education.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
         
         <div class="form-row">
@@ -17,6 +17,15 @@
                 <label for="institution">Institution *</label>
                 <input type="text" id="institution" name="institution" class="form-control" value="{{ old('institution') }}" required placeholder="e.g. University of Technology">
             </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label for="logo">Logo Institusi</label>
+                <input type="file" id="logo" name="logo" class="form-control" accept="image/*">
+                <small class="form-text" style="color: var(--text-secondary); margin-top: 4px;">Upload logo institusi (JPEG, PNG, SVG, WebP, max 2MB)</small>
+            </div>
+        </div>
+
+        <div class="form-row">
             <div class="form-group">
                 <label for="degree">Degree/Major *</label>
                 <input type="text" id="degree" name="degree" class="form-control" value="{{ old('degree') }}" required placeholder="e.g. Bachelor of Computer Science">

@@ -28,6 +28,9 @@
                             </div>
                         </div>
                         <div class="exp-card">
+                            @if($experience->logo)
+                                <img src="{{ asset('storage/' . $experience->logo) }}" alt="{{ $experience->company }} logo" class="exp-card-logo">
+                            @endif
                             <!-- Company ID -->
                             <h3 class="exp-company lang-id" data-display="block" style="display: block;">{{ $experience->company }}</h3>
                             <!-- Company EN -->
@@ -144,6 +147,9 @@
                             </div>
                         </div>
                         <div class="exp-card">
+                            @if($experience->logo)
+                                <img src="{{ asset('storage/' . $experience->logo) }}" alt="{{ $experience->company }} logo" class="exp-card-logo">
+                            @endif
                              <!-- Company ID -->
                             <h3 class="exp-company lang-id" style="display: block;">{{ $experience->company }}</h3>
                             <!-- Company EN -->

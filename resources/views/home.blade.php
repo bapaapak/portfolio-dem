@@ -510,6 +510,19 @@
         padding: 40px;
         width: 100%;
         box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+        position: relative;
+    }
+
+    .exp-card-logo {
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        height: 72px;
+        width: auto;
+        max-width: 120px;
+        object-fit: contain;
+        border-radius: 8px;
+        opacity: 0.85;
     }
 
     .exp-company {
