@@ -1,35 +1,9 @@
-name: Deploy to cPanel
+name: Deploy to Production
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
 
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Deploy via SSH
-        uses: appleboy/ssh-action@v1
-        with:
-          host: ${{ secrets.CPANEL_HOST }}
-          username: ${{ secrets.CPANEL_USER }}
-          password: ${{ secrets.CPANEL_PASS }}
-          port: ${{ secrets.CPANEL_PORT }}
-          script: |
-            cd ~/portfolio-deploy
-            git pull origin main
-            /usr/local/cpanel/bin/git-post-receive 2>/dev/null || true
-            cd ~/public_html
-            cp -r ~/portfolio-deploy/app ./
-            cp -r ~/portfolio-deploy/bootstrap ./
-            cp -r ~/portfolio-deploy/config ./
-            cp -r ~/portfolio-deploy/database ./
-            cp -r ~/portfolio-deploy/public ./
-            cp -r ~/portfolio-deploy/resources ./
-            cp -r ~/portfolio-deploy/routes ./
-            cp -r ~/portfolio-deploy/storage ./
-            cp -r ~/portfolio-deploy/vendor ./
-            cp ~/portfolio-deploy/artisan ./
-            cp ~/portfolio-deploy/composer.json ./
-            cp ~/portfolio-deploy/composer.lock ./
-            cp ~/portfolio-deploy/index.php ./
+# Deploy otomatis menggunakan GitHub Webhook ke public/webhook.php
+# Setup: GitHub repo -> Settings -> Webhooks -> https://tubagus.my.id/webhook.php
