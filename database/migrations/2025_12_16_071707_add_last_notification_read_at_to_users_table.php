@@ -11,9 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->timestamp('last_notification_read_at')->nullable()->after('role');
-        });
+        if (!Schema::hasColumn('users', 'last_notification_read_at')) {
+            Schema::table('users', function (Blueprint $table) {
+                if (Schema::hasColumn('users', 'role')) {
+                    $table->timestamp('last_notification_read_at')->nullable()->after('role');
+                } else {
+                    $table->timestamp('last_notification_read_at')->nullable();
+                }
+            });
+        }
     }
 
     /**

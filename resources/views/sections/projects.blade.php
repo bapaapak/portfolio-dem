@@ -15,7 +15,9 @@
             @forelse($allProjects->take(6) as $project)
                 <a href="{{ route('projects.show', $project->slug) }}" class="project-card" data-category="{{ $project->category->slug ?? 'uncategorized' }}">
                     <div class="project-thumbnail">
-                        @if($project->thumbnail)
+                        @if($project->thumbnail_data ?? null)
+                            <img src="{{ $project->thumbnail_data }}" alt="{{ $project->title }}">
+                        @elseif($project->thumbnail && file_exists(public_path('storage/' . $project->thumbnail)))
                             <img src="{{ asset('storage/' . $project->thumbnail) }}" alt="{{ $project->title }}">
                         @else
                             <div class="project-thumbnail-placeholder">

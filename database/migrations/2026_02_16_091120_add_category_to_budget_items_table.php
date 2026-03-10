@@ -10,6 +10,8 @@ return new class extends Migration {
      */
     public function up(): void
     {
+        if (!Schema::hasTable('budget_items')) return;
+        if (Schema::hasColumn('budget_items', 'category')) return;
         Schema::table('budget_items', function (Blueprint $table) {
             $table->string('category')->nullable()->after('item_code');
         });

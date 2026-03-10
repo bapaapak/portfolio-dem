@@ -10,6 +10,7 @@ return new class extends Migration {
      */
     public function up(): void
     {
+        if (!Schema::hasTable('budget_plans')) return;
         \Illuminate\Support\Facades\DB::statement("ALTER TABLE `budget_plans` MODIFY COLUMN `status` ENUM('Draft', 'Submitted', 'Approved', 'Rejected') NOT NULL DEFAULT 'Draft'");
     }
 

@@ -10,10 +10,14 @@ return new class extends Migration {
      */
     public function up(): void
     {
+        Schema::dropIfExists('po_items');
         Schema::create('po_items', function (Blueprint $table) {
             $table->id();
             $table->foreignId('po_id')->constrained('purchase_orders')->onDelete('cascade');
-            $table->foreignId('pr_item_id')->nullable()->constrained('purchase_requests')->onDelete('set null');
+            $table->unsignedBigInteger('pr_item_id')->nullable();
+            if (Schema::hasTable('purchase_requests')) {
+                $table->foreign('pr_item_id')->references('id')->on('purchase_requests')->onDelete('set null');
+            }
             $table->string('item_description');
             $table->decimal('qty', 10, 2);
             $table->string('uom')->nullable();

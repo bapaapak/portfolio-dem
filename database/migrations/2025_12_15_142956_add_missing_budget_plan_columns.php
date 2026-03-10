@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (!Schema::hasTable('budget_plans')) {
+            return;
+        }
+
         Schema::table('budget_plans', function (Blueprint $table) {
             // Only add columns that don't exist yet
             if (!Schema::hasColumn('budget_plans', 'end_year')) {

@@ -9,19 +9,23 @@ return new class extends Migration
     public function up(): void
     {
         // Create master_assets table for Asset No (AUC)
-        Schema::create('master_assets', function (Blueprint $table) {
-            $table->id();
-            $table->string('asset_no', 50)->unique();
-            $table->string('asset_name')->nullable();
-            $table->string('description')->nullable();
-            $table->string('status', 20)->default('Active');
-            $table->timestamps();
-        });
+        if (!Schema::hasTable('master_assets')) {
+            Schema::create('master_assets', function (Blueprint $table) {
+                $table->id();
+                $table->string('asset_no', 50)->unique();
+                $table->string('asset_name')->nullable();
+                $table->string('description')->nullable();
+                $table->string('status', 20)->default('Active');
+                $table->timestamps();
+            });
+        }
 
         // Add asset_no column to purchase_requests
-        Schema::table('purchase_requests', function (Blueprint $table) {
-            $table->string('asset_no', 50)->nullable()->after('notes');
-        });
+        if (Schema::hasTable('purchase_requests') && !Schema::hasColumn('purchase_requests', 'asset_no')) {
+            Schema::table('purchase_requests', function (Blueprint $table) {
+                $table->string('asset_no', 50)->nullable()->after('notes');
+            });
+        }
     }
 
     public function down(): void

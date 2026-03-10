@@ -23,7 +23,10 @@
                             <div class="relative w-full">
                                 <div
                                     style="border: 5px solid #9cc2e5; border-radius: 4px; overflow: hidden; max-height: 180px;">
-                                    @if($companyProfile->plant_1_image)
+                                    @if($companyProfile->plant_1_image_data ?? null)
+                                        <img src="{{ $companyProfile->plant_1_image_data }}"
+                                            style="width: 100%; height: auto; object-fit: cover;">
+                                    @elseif($companyProfile->plant_1_image && file_exists(public_path('storage/' . $companyProfile->plant_1_image)))
                                         <img src="{{ asset('storage/' . $companyProfile->plant_1_image) }}"
                                             style="width: 100%; height: auto; object-fit: cover;">
                                     @else
@@ -43,7 +46,10 @@
                             <div class="relative w-full">
                                 <div
                                     style="border: 5px solid #9cc2e5; border-radius: 4px; overflow: hidden; max-height: 180px;">
-                                    @if($companyProfile->plant_2_image)
+                                    @if($companyProfile->plant_2_image_data ?? null)
+                                        <img src="{{ $companyProfile->plant_2_image_data }}"
+                                            style="width: 100%; height: auto; object-fit: cover;">
+                                    @elseif($companyProfile->plant_2_image && file_exists(public_path('storage/' . $companyProfile->plant_2_image)))
                                         <img src="{{ asset('storage/' . $companyProfile->plant_2_image) }}"
                                             style="width: 100%; height: auto; object-fit: cover;">
                                     @else
@@ -98,7 +104,10 @@
 
                         {{-- Header Section --}}
                         <div class="flex items-center gap-4 mb-4">
-                            @if($companyProfile->logo)
+                            @if($companyProfile->logo_data ?? null)
+                                <img src="{{ $companyProfile->logo_data }}"
+                                    style="height: 80px; width: auto; object-fit: contain;">
+                            @elseif($companyProfile->logo && file_exists(public_path('storage/' . $companyProfile->logo)))
                                 <img src="{{ asset('storage/' . $companyProfile->logo) }}"
                                     style="height: 80px; width: auto; object-fit: contain;">
                             @else
@@ -159,7 +168,10 @@
                                     <div class="flex flex-col items-center">
                                         <div
                                             style="width: 70px; height: 70px; border-radius: 50%; border: 3px solid #0f244a; display: flex; align-items: center; justify-content: center; background: white; margin-bottom: 8px; overflow: hidden; padding: 2px;">
-                                            @if(isset($model['image']) && $model['image'])
+                                            @if(isset($model['image_data']) && $model['image_data'])
+                                                <img src="{{ $model['image_data'] }}"
+                                                    style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+                                            @elseif(isset($model['image']) && $model['image'] && file_exists(public_path('storage/' . $model['image'])))
                                                 <img src="{{ asset('storage/' . $model['image']) }}"
                                                     style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
                                             @else
@@ -196,7 +208,10 @@
                                     <div
                                         style="background: white; padding: 4px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); border: 1px solid #ddd; width: 100%;">
                                         <div style="width: 100%; bg-gray-100 overflow: hidden;">
-                                            @if($companyProfile->director_image)
+                                            @if($companyProfile->director_image_data ?? null)
+                                                <img src="{{ $companyProfile->director_image_data }}"
+                                                    style="width: 100%; height: auto; object-fit: cover; object-position: top;">
+                                            @elseif($companyProfile->director_image && file_exists(public_path('storage/' . $companyProfile->director_image)))
                                                 <img src="{{ asset('storage/' . $companyProfile->director_image) }}"
                                                     style="width: 100%; height: auto; object-fit: cover; object-position: top;">
                                             @else

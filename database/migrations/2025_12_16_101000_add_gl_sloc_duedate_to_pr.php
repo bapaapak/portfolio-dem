@@ -8,6 +8,9 @@ return new class extends Migration
 {
     public function up(): void
     {
+        if (!Schema::hasTable('purchase_requests')) {
+            return;
+        }
         Schema::table('purchase_requests', function (Blueprint $table) {
             $table->string('gl_account', 50)->nullable()->after('asset_no');
             $table->string('storage_location', 50)->nullable()->after('gl_account');

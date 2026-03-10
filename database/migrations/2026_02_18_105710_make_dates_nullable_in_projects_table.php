@@ -10,6 +10,7 @@ return new class extends Migration {
      */
     public function up(): void
     {
+        if (!Schema::hasColumn('projects', 'start_date') || !Schema::hasColumn('projects', 'end_date')) return;
         Schema::table('projects', function (Blueprint $table) {
             $table->date('start_date')->nullable()->change();
             $table->date('end_date')->nullable()->change();

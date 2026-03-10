@@ -13,11 +13,13 @@ return new class extends Migration {
         Schema::dropIfExists('user_customers');
         Schema::create('user_customers', function (Blueprint $table) {
             $table->id();
-            $table->integer('user_id');
-            $table->integer('master_customer_id');
+            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('master_customer_id');
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('master_customer_id')->references('id')->on('master_customers')->onDelete('cascade');
+            if (Schema::hasTable('master_customers')) {
+                $table->foreign('master_customer_id')->references('id')->on('master_customers')->onDelete('cascade');
+            }
             $table->timestamps();
         });
     }

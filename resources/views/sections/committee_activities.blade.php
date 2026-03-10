@@ -9,11 +9,17 @@
         <div class="committee-grid">
             @forelse($committeeActivities as $activity)
                 <div class="committee-card">
-                    @if($activity->image)
-                        <div class="committee-image">
+                    <div class="committee-image">
+                        @if($activity->image_data)
+                            <img src="{{ $activity->image_data }}" alt="{{ $activity->title }}">
+                        @elseif($activity->image && file_exists(public_path('storage/' . $activity->image)))
                             <img src="{{ asset('storage/' . $activity->image) }}" alt="{{ $activity->title }}">
-                        </div>
-                    @endif
+                        @else
+                            <div class="committee-image-placeholder">
+                                <i class="fas fa-image" style="font-size:2rem; opacity:0.3;"></i>
+                            </div>
+                        @endif
+                    </div>
                     <div class="committee-content">
                         <div class="committee-header">
                             <h3 class="committee-title">

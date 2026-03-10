@@ -11,6 +11,7 @@ return new class extends Migration {
      */
     public function up(): void
     {
+        if (!Schema::hasTable('purchase_requests')) return;
         // Drop the foreign key constraint first
         DB::statement('ALTER TABLE purchase_requests DROP FOREIGN KEY fk_pr_item');
 

@@ -10,6 +10,9 @@ return new class extends Migration {
      */
     public function up(): void
     {
+        if (!Schema::hasTable('budget_plans')) {
+            return;
+        }
         Schema::table('budget_plans', function (Blueprint $table) {
             $table->timestamp('submitted_at')->nullable()->after('status');
         });

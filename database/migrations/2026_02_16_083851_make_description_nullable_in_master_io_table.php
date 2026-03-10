@@ -10,6 +10,7 @@ return new class extends Migration {
      */
     public function up(): void
     {
+        if (!Schema::hasTable('master_io')) return;
         Schema::table('master_io', function (Blueprint $table) {
             $table->string('description')->nullable()->change();
         });

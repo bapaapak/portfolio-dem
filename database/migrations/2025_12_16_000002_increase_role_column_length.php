@@ -9,9 +9,11 @@ return new class extends Migration
     public function up(): void
     {
         // Increase role column length to accommodate new role names
-        Schema::table('users', function (Blueprint $table) {
-            $table->string('role', 50)->change();
-        });
+        if (Schema::hasColumn('users', 'role')) {
+            Schema::table('users', function (Blueprint $table) {
+                $table->string('role', 50)->change();
+            });
+        }
     }
 
     public function down(): void

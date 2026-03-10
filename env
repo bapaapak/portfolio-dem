@@ -1,0 +1,51 @@
+APP_NAME=Laravel
+APP_ENV=production
+APP_KEY=base64:ZCjYBnG/6zPe9/4tPp3P40n+x8Kyjnfckx8z2ThxbYU=
+APP_DEBUG=false
+APP_URL=https://tubagus.my.id
+
+# ===================================
+# GANTI DENGAN DATA DARI cPANEL ANDA
+# ===================================
+
+# Database - Lihat di cPanel > MySQL Databases
+DB_CONNECTION=mysql
+DB_HOST=localhost
+DB_PORT=3306
+DB_DATABASE=ssotoght_portfolio_db
+DB_USERNAME=ssotoght_user10
+DB_PASSWORD=Lz38;eNlGKzfj9;@
+
+# ===================================
+# PENGATURAN PRODUCTION
+# ===================================
+
+LOG_CHANNEL=stack
+LOG_STACK=single
+LOG_DEPRECATIONS_CHANNEL=null
+LOG_LEVEL=error
+
+SESSION_DRIVER=database
+SESSION_LIFETIME=120
+SESSION_ENCRYPT=false
+SESSION_PATH=/
+SESSION_DOMAIN=null
+
+BROADCAST_CONNECTION=log
+FILESYSTEM_DISK=local
+QUEUE_CONNECTION=database
+CACHE_STORE=database
+
+# ===================================
+# MAIL (Opsional - jika perlu email)
+# ===================================
+MAIL_MAILER=smtp
+MAIL_HOST=mail.yourdomain.com
+MAIL_PORT=465
+MAIL_USERNAME=noreply@yourdomain.com
+MAIL_PASSWORD=password_email
+MAIL_ENCRYPTION=ssl
+MAIL_FROM_ADDRESS="noreply@yourdomain.com"
+MAIL_FROM_NAME="${APP_NAME}"
+
+VITE_APP_NAME="${APP_NAME}"

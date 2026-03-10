@@ -10,6 +10,7 @@ return new class extends Migration {
      */
     public function up(): void
     {
+        if (!Schema::hasTable('budget_items')) return;
         if (Schema::hasColumn('budget_items', 'parent_item_id')) {
             Schema::table('budget_items', function (Blueprint $table) {
                 $table->dropColumn('parent_item_id');

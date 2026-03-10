@@ -12,6 +12,9 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (!Schema::hasTable('budget_items')) {
+            return;
+        }
         // Drop foreign keys first
         Schema::table('budget_items', function (Blueprint $table) {
             // Try to drop foreign key constraints

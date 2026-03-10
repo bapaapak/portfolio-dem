@@ -10,17 +10,21 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::table('budget_plans', function (Blueprint $table) {
-            $table->string('purpose', 50)->nullable()->after('description');
-        });
+        if (Schema::hasTable('budget_plans')) {
+            Schema::table('budget_plans', function (Blueprint $table) {
+                $table->string('purpose', 50)->nullable()->after('description');
+            });
+        }
 
-        Schema::table('budget_items', function (Blueprint $table) {
-            $table->string('brand_spec', 255)->nullable()->after('item_name');
-            $table->string('application_process', 255)->nullable()->after('process');
-            $table->enum('condition_status', ['Ready', 'Not Ready'])->nullable()->after('application_process');
-            $table->text('condition_notes')->nullable()->after('condition_status');
-            $table->string('target_schedule', 50)->nullable()->after('total_amount');
-        });
+        if (Schema::hasTable('budget_items')) {
+            Schema::table('budget_items', function (Blueprint $table) {
+                $table->string('brand_spec', 255)->nullable()->after('item_name');
+                $table->string('application_process', 255)->nullable()->after('process');
+                $table->enum('condition_status', ['Ready', 'Not Ready'])->nullable()->after('application_process');
+                $table->text('condition_notes')->nullable()->after('condition_status');
+                $table->string('target_schedule', 50)->nullable()->after('total_amount');
+            });
+        }
     }
 
     /**

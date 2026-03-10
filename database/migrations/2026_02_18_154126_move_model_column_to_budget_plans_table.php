@@ -10,6 +10,9 @@ return new class extends Migration {
      */
     public function up(): void
     {
+        if (!Schema::hasTable('budget_plans') || !Schema::hasTable('budget_items')) {
+            return;
+        }
         // First drop from budget_items
         Schema::table('budget_items', function (Blueprint $table) {
             if (Schema::hasColumn('budget_items', 'model')) {
