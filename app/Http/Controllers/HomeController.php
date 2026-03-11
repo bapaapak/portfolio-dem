@@ -51,11 +51,22 @@ class HomeController extends Controller
         // Fetch certifications
         $certifications = \App\Models\Certification::orderBy('issued_at', 'desc')->get();
 
-        // Fetch committee activities
+        // Fetch committee activities grouped by year
         $committeeActivities = CommitteeActivity::active()
-            ->orderBy('order')
             ->orderBy('event_date', 'desc')
-            ->get();
+            ->orderBy('order')
+            ->get()
+            ->groupBy(function ($activity) {
+                if ($activity->event_date) {
+                    return $activity->event_date->format('Y');
+                }
+                // Fallback: extract year from title (e.g. "Culture Day 2024")
+                if (preg_match('/\b(20\d{2})\b/', $activity->title, $matches)) {
+                    return $matches[1];
+                }
+                return 'Other';
+            })
+            ->sortKeysDesc();  // Sort years descending, 'Other' goes last naturally
 
         // Fetch company profile
         $companyProfile = CompanyProfile::first();

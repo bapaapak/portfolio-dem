@@ -517,9 +517,9 @@
         position: absolute;
         top: 16px;
         right: 16px;
-        height: 72px;
+        height: 80px;
         width: auto;
-        max-width: 120px;
+        max-width: 130px;
         object-fit: contain;
         border-radius: 8px;
         opacity: 0.85;
