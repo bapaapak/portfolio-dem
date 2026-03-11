@@ -66,7 +66,11 @@ class HomeController extends Controller
                 }
                 return 'Other';
             })
-            ->sortKeysDesc();  // Sort years descending, 'Other' goes last naturally
+            ->sortBy(function ($items, $key) {
+                // Numeric years sort descending (larger = higher priority = lower value)
+                // 'Other' always goes last (highest value)
+                return is_numeric($key) ? (9999 - (int)$key) : 99999;
+            });
 
         // Fetch company profile
         $companyProfile = CompanyProfile::first();
