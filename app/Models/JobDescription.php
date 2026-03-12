@@ -11,9 +11,12 @@ class JobDescription extends Model
 
     protected $fillable = [
         'type',
+        'year',
+        'year_end',
         'title',
         'description',
         'items',
+        'illustration_image',
         'order',
         'is_active',
     ];
@@ -21,7 +24,18 @@ class JobDescription extends Model
     protected $casts = [
         'items' => 'array',
         'is_active' => 'boolean',
+        'year' => 'integer',
+        'year_end' => 'integer',
     ];
+
+    public function getYearLabelAttribute(): string
+    {
+        if (!$this->year) return 'Lainnya';
+        if ($this->year_end) {
+            return $this->year . ' – ' . $this->year_end;
+        }
+        return $this->year . ' – Sekarang';
+    }
 
     // Scopes
     public function scopeDescriptions($query)

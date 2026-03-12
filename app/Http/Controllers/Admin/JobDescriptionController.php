@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\JobDescription;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class JobDescriptionController extends Controller
 {
@@ -25,16 +26,31 @@ class JobDescriptionController extends Controller
     {
         $validated = $request->validate([
             'type' => 'required|in:description,activity',
+            'year' => 'nullable|integer|min:2000|max:2099',
+            'year_end' => 'nullable|integer|min:2000|max:2099',
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
             'items' => 'nullable|array',
             'items.*' => 'nullable|string',
             'order' => 'nullable|integer',
             'is_active' => 'nullable|boolean',
+            'illustration_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:10240',
         ]);
 
         $validated['items'] = array_filter($validated['items'] ?? []);
         $validated['is_active'] = $request->has('is_active');
+        if ($validated['type'] === 'description') {
+            $validated['year'] = null;
+            $validated['year_end'] = null;
+        }
+        if ($request->boolean('until_now')) {
+            $validated['year_end'] = null;
+        }
+        if ($request->hasFile('illustration_image')) {
+            $validated['illustration_image'] = $request->file('illustration_image')->store('job_descriptions', 'public');
+        } else {
+            unset($validated['illustration_image']);
+        }
 
         JobDescription::create($validated);
 
@@ -51,16 +67,34 @@ class JobDescriptionController extends Controller
     {
         $validated = $request->validate([
             'type' => 'required|in:description,activity',
+            'year' => 'nullable|integer|min:2000|max:2099',
+            'year_end' => 'nullable|integer|min:2000|max:2099',
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
             'items' => 'nullable|array',
             'items.*' => 'nullable|string',
             'order' => 'nullable|integer',
             'is_active' => 'nullable|boolean',
+            'illustration_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:10240',
         ]);
 
         $validated['items'] = array_filter($validated['items'] ?? []);
         $validated['is_active'] = $request->has('is_active');
+        if ($validated['type'] === 'description') {
+            $validated['year'] = null;
+            $validated['year_end'] = null;
+        }
+        if ($request->boolean('until_now')) {
+            $validated['year_end'] = null;
+        }
+        if ($request->hasFile('illustration_image')) {
+            if ($jobDescription->illustration_image) {
+                Storage::disk('public')->delete($jobDescription->illustration_image);
+            }
+            $validated['illustration_image'] = $request->file('illustration_image')->store('job_descriptions', 'public');
+        } else {
+            unset($validated['illustration_image']);
+        }
 
         $jobDescription->update($validated);
 
@@ -70,6 +104,9 @@ class JobDescriptionController extends Controller
 
     public function destroy(JobDescription $jobDescription)
     {
+        if ($jobDescription->illustration_image) {
+            Storage::disk('public')->delete($jobDescription->illustration_image);
+        }
         $jobDescription->delete();
 
         return redirect()->route('admin.job-descriptions.index')

@@ -54,35 +54,36 @@
                     <h3>Activity Jobs</h3>
                 </div>
                 <div class="jd-content">
-                    @forelse($jobActivities ?? [] as $activity)
-                    <div class="jd-card activity-card">
-                        <h4 class="jd-title">{{ $activity->title }}</h4>
-                        @if($activity->description)
-                            <div class="jd-description-container">
-                                @if(Str::contains($activity->description, '- '))
-                                    <ul class="jd-description-list">
-                                        @foreach(explode("\n", $activity->description) as $line)
-                                            @if(trim($line))
-                                                @if(str_starts_with(trim($line), '-'))
-                                                    <li>{{ trim(substr(trim($line), 1)) }}</li>
-                                                @else
-                                                    <li class="no-bullet">{{ $line }}</li>
-                                                @endif
-                                            @endif
+                    @forelse($jobActivities ?? [] as $year => $activities)
+                    <div class="activity-year-group">
+                        <div class="activity-year-label">
+                            <span>{{ $year }}</span>
+                        </div>
+                        <div class="activity-timeline">
+                            @foreach($activities as $activity)
+                            <div class="activity-milestone">
+                                <div class="milestone-dot"></div>
+                                <div class="milestone-content">
+                                    <h4 class="jd-title">{{ $activity->title }}</h4>
+                                    @if($activity->illustration_image)
+                                        <div class="activity-illustration-wrapper">
+                                            <img src="{{ Storage::url($activity->illustration_image) }}"
+                                                 alt="{{ $activity->title }}"
+                                                 class="activity-illustration-img lightbox-trigger"
+                                                 onclick="openLightbox(this)">
+                                        </div>
+                                    @endif
+                                    @if($activity->items && count($activity->items) > 0)
+                                    <ul class="jd-items">
+                                        @foreach($activity->items as $item)
+                                        <li>{{ $item }}</li>
                                         @endforeach
                                     </ul>
-                                @else
-                                    <p class="jd-description">{{ $activity->description }}</p>
-                                @endif
+                                    @endif
+                                </div>
                             </div>
-                        @endif
-                        @if($activity->items && count($activity->items) > 0)
-                        <ul class="jd-items">
-                            @foreach($activity->items as $item)
-                            <li>{{ $item }}</li>
                             @endforeach
-                        </ul>
-                        @endif
+                        </div>
                     </div>
                     @empty
                     <p class="jd-empty">Belum ada activity job.</p>
@@ -147,6 +148,18 @@
     padding: 24px;
 }
 
+.activity-illustration-wrapper {
+    margin-bottom: 20px;
+}
+
+.activity-illustration-img {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    object-fit: contain;
+    display: block;
+}
+
 .jd-card {
     padding: 16px;
     border-radius: 10px;
@@ -170,6 +183,70 @@
 .activity-card {
     background: rgba(16, 185, 129, 0.05);
     border-left: 4px solid #10b981;
+}
+
+/* Activity Timeline / Milestone Styles */
+.activity-year-group {
+    margin-bottom: 28px;
+}
+
+.activity-year-group:last-child {
+    margin-bottom: 0;
+}
+
+.activity-year-label {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+    color: white;
+    font-size: 0.9rem;
+    font-weight: 700;
+    padding: 5px 18px;
+    border-radius: 999px;
+    margin-bottom: 16px;
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+    letter-spacing: 0.04em;
+}
+
+.activity-timeline {
+    position: relative;
+    padding-left: 24px;
+    border-left: 2px solid rgba(16, 185, 129, 0.3);
+}
+
+.activity-milestone {
+    position: relative;
+    margin-bottom: 14px;
+}
+
+.activity-milestone:last-child {
+    margin-bottom: 0;
+}
+
+.milestone-dot {
+    position: absolute;
+    left: -30px;
+    top: 14px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #10b981;
+    border: 2px solid white;
+    box-shadow: 0 0 0 2px #10b981;
+    flex-shrink: 0;
+}
+
+.milestone-content {
+    background: rgba(16, 185, 129, 0.05);
+    border-left: 3px solid #10b981;
+    border-radius: 0 10px 10px 0;
+    padding: 12px 14px;
+    transition: transform 0.2s ease;
+}
+
+.milestone-content:hover {
+    transform: translateX(4px);
 }
 
 .jd-title {
@@ -235,4 +312,129 @@
         grid-template-columns: 1fr;
     }
 }
+
+/* Lightbox */
+.lightbox-trigger {
+    cursor: zoom-in;
+    transition: opacity 0.2s ease;
+}
+.lightbox-trigger:hover {
+    opacity: 0.85;
+}
+#jd-lightbox {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: rgba(0, 0, 0, 0.85);
+    align-items: center;
+    justify-content: center;
+}
+#jd-lightbox.active {
+    display: flex;
+}
+#jd-lightbox img {
+    max-width: 92vw;
+    max-height: 92vh;
+    border-radius: 10px;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.6);
+    object-fit: contain;
+    animation: lightboxIn 0.2s ease;
+}
+@keyframes lightboxIn {
+    from { transform: scale(0.9); opacity: 0; }
+    to   { transform: scale(1);   opacity: 1; }
+}
+#jd-lightbox-close {
+    position: fixed;
+    top: 18px;
+    right: 24px;
+    color: white;
+    font-size: 2.2rem;
+    cursor: pointer;
+    line-height: 1;
+    background: rgba(0,0,0,0.4);
+    border-radius: 50%;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+}
+#jd-lightbox-close:hover {
+    background: rgba(255,255,255,0.2);
+}
+.jd-lightbox-nav {
+    position: fixed;
+    top: 50%;
+    transform: translateY(-50%);
+    color: white;
+    font-size: 2rem;
+    cursor: pointer;
+    background: rgba(0,0,0,0.45);
+    border-radius: 50%;
+    width: 52px;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+    user-select: none;
+    z-index: 10000;
+}
+.jd-lightbox-nav:hover {
+    background: rgba(255,255,255,0.2);
+}
+#jd-lightbox-prev { left: 16px; }
+#jd-lightbox-next { right: 16px; }
+.jd-lightbox-nav.hidden { opacity: 0; pointer-events: none; }
 </style>
+
+<!-- Lightbox Modal -->
+<div id="jd-lightbox" onclick="closeLightbox(event)">
+    <span id="jd-lightbox-close" onclick="closeLightbox()">&times;</span>
+    <span id="jd-lightbox-prev" class="jd-lightbox-nav" onclick="lightboxNav(-1, event)">&#8249;</span>
+    <img id="jd-lightbox-img" src="" alt="">
+    <span id="jd-lightbox-next" class="jd-lightbox-nav" onclick="lightboxNav(1, event)">&#8250;</span>
+</div>
+
+<script>
+var _lbImages = [];
+var _lbIndex = 0;
+
+function openLightbox(el) {
+    _lbImages = Array.from(document.querySelectorAll('.lightbox-trigger'));
+    _lbIndex = _lbImages.indexOf(el);
+    _lbShow();
+    document.getElementById('jd-lightbox').classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+function _lbShow() {
+    var img = document.getElementById('jd-lightbox-img');
+    img.src = _lbImages[_lbIndex].src;
+    img.alt = _lbImages[_lbIndex].alt;
+    document.getElementById('jd-lightbox-prev').classList.toggle('hidden', _lbIndex === 0);
+    document.getElementById('jd-lightbox-next').classList.toggle('hidden', _lbIndex === _lbImages.length - 1);
+}
+function lightboxNav(dir, e) {
+    if (e) e.stopPropagation();
+    var next = _lbIndex + dir;
+    if (next >= 0 && next < _lbImages.length) {
+        _lbIndex = next;
+        _lbShow();
+    }
+}
+function closeLightbox(e) {
+    if (e && (e.target === document.getElementById('jd-lightbox-img')
+           || e.target.classList.contains('jd-lightbox-nav'))) return;
+    document.getElementById('jd-lightbox').classList.remove('active');
+    document.body.style.overflow = '';
+}
+document.addEventListener('keydown', function(e) {
+    if (!document.getElementById('jd-lightbox').classList.contains('active')) return;
+    if (e.key === 'Escape')      closeLightbox();
+    if (e.key === 'ArrowRight') lightboxNav(1);
+    if (e.key === 'ArrowLeft')  lightboxNav(-1);
+});
+</script>

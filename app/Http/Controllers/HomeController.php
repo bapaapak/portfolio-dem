@@ -96,7 +96,16 @@ class HomeController extends Controller
 
         // Fetch job descriptions and activities
         $jobDescriptions = \App\Models\JobDescription::descriptions()->active()->ordered()->get();
-        $jobActivities = \App\Models\JobDescription::activities()->active()->ordered()->get();
+        $jobActivities = \App\Models\JobDescription::activities()->active()->ordered()->get()
+            ->groupBy(function ($activity) {
+                return $activity->year_label;
+            })
+            ->sortBy(function ($items, $key) {
+                // Sort by numeric start year ascending, "Lainnya" goes last
+                if ($key === 'Lainnya') return PHP_INT_MAX;
+                preg_match('/^(\d{4})/', $key, $m);
+                return isset($m[1]) ? (int)$m[1] : PHP_INT_MAX - 1;
+            });
 
         // Fetch Business Process Flows
         $businessFlows = \App\Models\BusinessProcessFlow::orderBy('step_order')->get();

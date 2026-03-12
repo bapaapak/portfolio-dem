@@ -3,15 +3,10 @@
 @section('title', 'Job Description & Activity')
 
 @section('content')
-@extends('admin.layouts.app')
-
-@section('title', 'Job Description & Activity')
-
-@section('content')
-<div class="page-header">
-    <div class="header-title">
+<div class="content-header">
+    <div class="header-left">
         <h1>Job Description & Activity</h1>
-        <p>Manage job descriptions and activity jobs lists.</p>
+        <p class="subtitle">Kelola job description dan activity jobs.</p>
     </div>
     <div class="header-actions">
         <a href="{{ route('admin.job-descriptions.create') }}" class="btn btn-primary">
@@ -20,121 +15,163 @@
     </div>
 </div>
 
-@if(session('success'))
-<div class="mb-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
-    <span class="block sm:inline">{{ session('success') }}</span>
-</div>
-@endif
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
 
-<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-    <!-- Job Descriptions Section -->
-    <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-        <div class="px-6 py-4 border-b border-gray-200 bg-gray-50 flex justify-between items-center">
-            <h3 class="text-lg font-medium text-gray-900"><i class="fas fa-file-alt mr-2 text-blue-500"></i>Job Descriptions</h3>
+    <!-- Job Descriptions -->
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title"><i class="fas fa-file-alt mr-2" style="color:#3b82f6;"></i>Job Descriptions</h3>
         </div>
-        <div class="p-6 bg-white">
+        <div class="card-body" style="padding:0;">
             @if($descriptions->count() > 0)
-            <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-gray-50">
-                        <tr>
-                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Order</th>
-                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
-                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                            <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody class="bg-white divide-y divide-gray-200">
-                        @foreach($descriptions as $item)
-                        <tr>
-                            <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500">{{ $item->order }}</td>
-                            <td class="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-900">{{ $item->title }}</td>
-                            <td class="px-4 py-3 whitespace-nowrap text-sm">
-                                @if($item->is_active)
-                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                                    Active
-                                </span>
-                                @else
-                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
-                                    Inactive
-                                </span>
-                                @endif
-                            </td>
-                            <td class="px-4 py-3 whitespace-nowrap text-right text-sm font-medium">
-                                <a href="{{ route('admin.job-descriptions.edit', $item) }}" class="text-indigo-600 hover:text-indigo-900 mr-3"><i class="fas fa-edit"></i></a>
-                                <form action="{{ route('admin.job-descriptions.destroy', $item) }}" method="POST" class="inline-block" onsubmit="return confirm('Are you sure?')">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th style="width:60px;">Order</th>
+                        <th>Judul</th>
+                        <th style="width:90px;">Status</th>
+                        <th style="width:90px;">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($descriptions as $item)
+                    <tr>
+                        <td>{{ $item->order }}</td>
+                        <td><strong>{{ $item->title }}</strong></td>
+                        <td>
+                            @if($item->is_active)
+                                <span class="badge badge-success">Aktif</span>
+                            @else
+                                <span class="badge badge-secondary">Nonaktif</span>
+                            @endif
+                        </td>
+                        <td>
+                            <div class="action-buttons">
+                                <a href="{{ route('admin.job-descriptions.edit', $item) }}" class="btn btn-sm btn-secondary" title="Edit">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <form action="{{ route('admin.job-descriptions.destroy', $item) }}" method="POST" class="inline" onsubmit="return confirm('Yakin ingin menghapus item ini?')">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="text-red-600 hover:text-red-900"><i class="fas fa-trash"></i></button>
+                                    <button type="submit" class="btn btn-sm btn-danger" title="Hapus">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
                                 </form>
-                            </td>
-                        </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
+                            </div>
+                        </td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
             @else
-            <div class="text-center py-8 text-gray-500">
-                <i class="fas fa-folder-open text-4xl mb-3 text-gray-300"></i>
-                <p>Belum ada job description.</p>
+            <div class="empty-state">
+                <i class="fas fa-file-alt"></i>
+                <h3>Belum ada job description</h3>
+                <p>Tambahkan job description pertama Anda.</p>
             </div>
             @endif
         </div>
     </div>
 
-    <!-- Activity Jobs Section -->
-    <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-        <div class="px-6 py-4 border-b border-gray-200 bg-gray-50 flex justify-between items-center">
-            <h3 class="text-lg font-medium text-gray-900"><i class="fas fa-tasks mr-2 text-green-500"></i>Activity Jobs</h3>
+    <!-- Activity Jobs -->
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title"><i class="fas fa-tasks mr-2" style="color:#10b981;"></i>Activity Jobs</h3>
         </div>
-        <div class="p-6 bg-white">
+        <div class="card-body" style="padding:0;">
             @if($activities->count() > 0)
-            <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-gray-50">
-                        <tr>
-                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Order</th>
-                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
-                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                            <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody class="bg-white divide-y divide-gray-200">
-                        @foreach($activities as $item)
-                        <tr>
-                            <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500">{{ $item->order }}</td>
-                            <td class="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-900">{{ $item->title }}</td>
-                            <td class="px-4 py-3 whitespace-nowrap text-sm">
-                                @if($item->is_active)
-                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                                    Active
-                                </span>
-                                @else
-                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
-                                    Inactive
-                                </span>
-                                @endif
-                            </td>
-                            <td class="px-4 py-3 whitespace-nowrap text-right text-sm font-medium">
-                                <a href="{{ route('admin.job-descriptions.edit', $item) }}" class="text-indigo-600 hover:text-indigo-900 mr-3"><i class="fas fa-edit"></i></a>
-                                <form action="{{ route('admin.job-descriptions.destroy', $item) }}" method="POST" class="inline-block" onsubmit="return confirm('Are you sure?')">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th style="width:70px;">Tahun</th>
+                        <th style="width:50px;">Order</th>
+                        <th>Judul</th>
+                        <th style="width:90px;">Status</th>
+                        <th style="width:90px;">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($activities as $item)
+                    <tr>
+                        <td>
+                            @if($item->year)
+                                <span class="badge" style="background:rgba(16,185,129,0.15);color:#065f46;font-weight:700;">{{ $item->year_label }}</span>
+                            @else
+                                <span style="color:#9ca3af;">—</span>
+                            @endif
+                        </td>
+                        <td>{{ $item->order }}</td>
+                        <td><strong>{{ $item->title }}</strong></td>
+                        <td>
+                            @if($item->is_active)
+                                <span class="badge badge-success">Aktif</span>
+                            @else
+                                <span class="badge badge-secondary">Nonaktif</span>
+                            @endif
+                        </td>
+                        <td>
+                            <div class="action-buttons">
+                                <a href="{{ route('admin.job-descriptions.edit', $item) }}" class="btn btn-sm btn-secondary" title="Edit">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <form action="{{ route('admin.job-descriptions.destroy', $item) }}" method="POST" class="inline" onsubmit="return confirm('Yakin ingin menghapus item ini?')">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="text-red-600 hover:text-red-900"><i class="fas fa-trash"></i></button>
+                                    <button type="submit" class="btn btn-sm btn-danger" title="Hapus">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
                                 </form>
-                            </td>
-                        </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
+                            </div>
+                        </td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
             @else
-            <div class="text-center py-8 text-gray-500">
-                <i class="fas fa-clipboard-list text-4xl mb-3 text-gray-300"></i>
-                <p>Belum ada activity job.</p>
+            <div class="empty-state">
+                <i class="fas fa-clipboard-list"></i>
+                <h3>Belum ada activity job</h3>
+                <p>Tambahkan activity job pertama Anda.</p>
             </div>
             @endif
         </div>
     </div>
+
 </div>
+
+@push('styles')
+<style>
+    .inline { display: inline; }
+    .mr-2 { margin-right: 0.5rem; }
+    .mb-4 { margin-bottom: 1rem; }
+    .alert {
+        padding: 12px 16px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 0.9rem;
+    }
+    .alert-success {
+        background: rgba(16, 185, 129, 0.12);
+        border: 1px solid rgba(16, 185, 129, 0.3);
+        color: #10b981;
+    }
+    .card-header {
+        padding: 16px 20px;
+        border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .card-title {
+        margin: 0;
+        font-size: 1rem;
+        font-weight: 600;
+    }
+    @media (max-width: 900px) {
+        .jd-admin-grid {
+            grid-template-columns: 1fr !important;
+        }
+    }
+</style>
+@endpush
+
 @endsection

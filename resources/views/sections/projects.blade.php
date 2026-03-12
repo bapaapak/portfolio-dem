@@ -13,7 +13,7 @@
 
         <div class="projects-grid">
             @forelse($allProjects->take(6) as $project)
-                <a href="{{ route('projects.show', $project->slug) }}" class="project-card" data-category="{{ $project->category->slug ?? 'uncategorized' }}" target="_blank" rel="noopener noreferrer">
+                <a href="{{ route('projects.show', $project->slug) }}" class="project-card" data-category="{{ $project->category->slug ?? 'uncategorized' }}" target="_blank" rel="noopener noreferrer" target="_blank" rel="noopener noreferrer">
                     <div class="project-thumbnail">
                         @if($project->thumbnail_data ?? null)
                             <img src="{{ $project->thumbnail_data }}" alt="{{ $project->title }}">

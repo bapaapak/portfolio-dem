@@ -3,10 +3,10 @@
 @section('title', 'Tambah Job Description/Activity')
 
 @section('content')
-<div class="page-header">
-    <div class="header-title">
+<div class="content-header">
+    <div class="header-left">
         <h1>Tambah Job Description/Activity</h1>
-        <p>Tambahkan job description atau activity job baru.</p>
+        <p class="subtitle">Tambahkan job description atau activity job baru.</p>
     </div>
     <div class="header-actions">
         <a href="{{ route('admin.job-descriptions.index') }}" class="btn btn-outline">
@@ -16,7 +16,7 @@
 </div>
 
 <div class="form-card">
-    <form action="{{ route('admin.job-descriptions.store') }}" method="POST">
+    <form action="{{ route('admin.job-descriptions.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
         
         <div class="form-section">
@@ -25,11 +25,31 @@
             <div class="form-row">
                 <div class="form-group">
                     <label for="type">Tipe <span class="text-red-500">*</span></label>
-                    <select name="type" id="type" class="form-control @error('type') border-red-500 @enderror" required>
+                    <select name="type" id="type" class="form-control @error('type') border-red-500 @enderror" required onchange="toggleYearField(this.value)">
                         <option value="description" {{ old('type') == 'description' ? 'selected' : '' }}>Job Description</option>
                         <option value="activity" {{ old('type') == 'activity' ? 'selected' : '' }}>Activity Job</option>
                     </select>
                     @error('type')
+                    <div class="text-sm text-red-500 mt-1">{{ $message }}</div>
+                    @enderror
+                </div>
+                <div class="form-group" id="year-field" style="display: {{ old('type') == 'activity' ? 'block' : 'none' }}">
+                    <label for="year">Tahun Mulai</label>
+                    <input type="number" name="year" id="year" class="form-control @error('year') border-red-500 @enderror" value="{{ old('year', date('Y')) }}" min="2000" max="2099">
+                    @error('year')
+                    <div class="text-sm text-red-500 mt-1">{{ $message }}</div>
+                    @enderror
+                </div>
+                <div class="form-group" id="year-end-field" style="display: {{ old('type') == 'activity' ? 'block' : 'none' }}">
+                    <label for="year_end">Tahun Selesai</label>
+                    <div style="display:flex; align-items:center; gap:12px;">
+                        <input type="number" name="year_end" id="year_end" class="form-control @error('year_end') border-red-500 @enderror" value="{{ old('year_end') }}" min="2000" max="2099" placeholder="Kosongkan jika masih berlangsung" style="flex:1;">
+                        <label style="display:flex;align-items:center;gap:6px;cursor:pointer;white-space:nowrap;font-weight:500;">
+                            <input type="checkbox" id="until_now" name="until_now" value="1" onchange="toggleUntilNow(this)" {{ old('until_now') ? 'checked' : '' }} style="width:16px;height:16px;">
+                            Sampai Sekarang
+                        </label>
+                    </div>
+                    @error('year_end')
                     <div class="text-sm text-red-500 mt-1">{{ $message }}</div>
                     @enderror
                 </div>
@@ -79,6 +99,14 @@
                     <span>Aktif</span>
                 </label>
             </div>
+
+            <div class="form-group" id="illustration-field" style="display: {{ old('type') == 'activity' ? 'block' : 'none' }}">
+                <label>Gambar Ilustrasi</label>
+                <input type="file" name="illustration_image" id="illustration_image" class="form-control" accept="image/*">
+                @error('illustration_image')
+                <div class="text-sm text-red-500 mt-1">{{ $message }}</div>
+                @enderror
+            </div>
         </div>
 
         <div class="form-actions">
@@ -91,6 +119,19 @@
 </div>
 
 <script>
+function toggleYearField(type) {
+    const show = type === 'activity';
+    document.getElementById('year-field').style.display = show ? 'block' : 'none';
+    document.getElementById('year-end-field').style.display = show ? 'block' : 'none';
+    document.getElementById('illustration-field').style.display = show ? 'block' : 'none';
+}
+
+function toggleUntilNow(checkbox) {
+    const yearEndInput = document.getElementById('year_end');
+    yearEndInput.disabled = checkbox.checked;
+    if (checkbox.checked) yearEndInput.value = '';
+}
+
 function addItem() {
     const container = document.getElementById('items-container');
     const div = document.createElement('div');
