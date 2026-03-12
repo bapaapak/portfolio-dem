@@ -47,6 +47,7 @@ $commands = [
     "cd {$basePath} && git reset --hard origin/main 2>&1",
     "cd {$basePath} && git clean -fd --exclude=.env --exclude=storage 2>&1",
     "cd {$basePath} && php artisan migrate --force 2>&1",
+    "cd {$basePath} && php artisan storage:link --force 2>&1",
     "cd {$basePath} && php artisan config:cache 2>&1",
     "cd {$basePath} && php artisan route:cache 2>&1",
     "cd {$basePath} && php artisan view:cache 2>&1",

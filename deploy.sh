@@ -41,4 +41,8 @@ php artisan view:cache
 echo ">> Fixing permissions..."
 chmod -R 775 storage bootstrap/cache
 
+# Create storage symlink
+echo ">> Creating storage symlink..."
+php artisan storage:link --force
+
 echo "=== Deployment Complete! ==="

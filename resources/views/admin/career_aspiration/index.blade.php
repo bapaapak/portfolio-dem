@@ -11,7 +11,7 @@
 </div>
 
 <div class="form-card">
-    <form action="{{ route('admin.career-aspiration.update') }}" method="POST">
+    <form action="{{ route('admin.career-aspiration.update') }}" method="POST" enctype="multipart/form-data">
         @csrf
         @method('PUT')
         
@@ -21,6 +21,19 @@
                 <label for="career_aspiration">Pernyataan Aspirasi <span class="text-red-500">*</span></label>
                 <textarea name="career_aspiration" id="career_aspiration" class="form-control min-h-[120px]" placeholder="Contoh: Menjadi arsitek perangkat lunak kelas dunia...">{{ old('career_aspiration', $profile->career_aspiration) }}</textarea>
                 <p class="text-sm text-gray-500 mt-1">Deskripsikan tujuan jangka panjang dan visi karir Anda.</p>
+            </div>
+            <div class="form-group">
+                <label>Gambar Ilustrasi Aspirasi</label>
+                @if($profile->aspiration_image)
+                    <div style="margin-bottom:10px;">
+                        <img src="{{ Storage::url($profile->aspiration_image) }}" alt="Ilustrasi Aspirasi" style="max-width:100%;max-height:220px;border-radius:8px;border:1px solid #374151;">
+                        <small style="display:block;margin-top:4px;color:#9ca3af;">Upload gambar baru untuk menggantinya.</small>
+                    </div>
+                @endif
+                <input type="file" name="aspiration_image" class="form-control" accept="image/*">
+                @error('aspiration_image')
+                <div class="text-sm text-red-500 mt-1">{{ $message }}</div>
+                @enderror
             </div>
         </div>
 

@@ -24,6 +24,16 @@
                         {!! nl2br(e($profile->career_aspiration ?? 'No career aspiration added yet.')) !!}
                     </span>
                 </div>
+                @if($profile->aspiration_image)
+                <div style="margin-top: 20px;">
+                    <img src="{{ Storage::url($profile->aspiration_image) }}"
+                         alt="Ilustrasi Aspirasi"
+                         style="width:100%;border-radius:10px;cursor:zoom-in;transition:opacity 0.2s;"
+                         onclick="openAspirationLightbox(this)"
+                         onmouseover="this.style.opacity='0.85'"
+                         onmouseout="this.style.opacity='1'">
+                </div>
+                @endif
             </div>
 
             <!-- Milestones Timeline -->
@@ -70,5 +80,30 @@
                 }
              }
         </style>
+
+        <!-- Aspiration Lightbox -->
+        <div id="aspiration-lightbox" onclick="closeAspirationLightbox(event)" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.85);align-items:center;justify-content:center;">
+            <span onclick="closeAspirationLightbox()" style="position:fixed;top:18px;right:24px;color:white;font-size:2.2rem;cursor:pointer;background:rgba(0,0,0,0.4);border-radius:50%;width:44px;height:44px;display:flex;align-items:center;justify-content:center;">&times;</span>
+            <img id="aspiration-lightbox-img" src="" alt="" style="max-width:92vw;max-height:92vh;border-radius:10px;box-shadow:0 8px 40px rgba(0,0,0,0.6);object-fit:contain;animation:lbIn 0.2s ease;">
+        </div>
+        <style>
+            @keyframes lbIn { from{transform:scale(0.9);opacity:0} to{transform:scale(1);opacity:1} }
+        </style>
+        <script>
+        function openAspirationLightbox(el) {
+            var lb = document.getElementById('aspiration-lightbox');
+            document.getElementById('aspiration-lightbox-img').src = el.src;
+            lb.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+        function closeAspirationLightbox(e) {
+            if (e && e.target === document.getElementById('aspiration-lightbox-img')) return;
+            document.getElementById('aspiration-lightbox').style.display = 'none';
+            document.body.style.overflow = '';
+        }
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeAspirationLightbox();
+        });
+        </script>
     </div>
 </section>
