@@ -16,9 +16,9 @@
                         <div class="committee-card">
                             <div class="committee-image">
                                 @if($activity->image)
-                                    <img src="{{ asset('storage/' . $activity->image) }}" alt="{{ $activity->title }}">
+                                    <img src="{{ asset('storage/' . $activity->image) }}" alt="{{ $activity->title }}" class="committee-lightbox-trigger" onclick="openCommitteeLightbox(this)">
                                 @elseif($activity->image_data)
-                                    <img src="{{ $activity->image_data }}" alt="{{ $activity->title }}">
+                                    <img src="{{ $activity->image_data }}" alt="{{ $activity->title }}" class="committee-lightbox-trigger" onclick="openCommitteeLightbox(this)">
                                 @else
                                     <div class="committee-image-placeholder">
                                         <i class="fas fa-image" style="font-size:2rem; opacity:0.3;"></i>
@@ -78,3 +78,117 @@
         @endforelse
     </div>
 </section>
+
+<style>
+.committee-lightbox-trigger {
+    cursor: zoom-in;
+    transition: opacity 0.2s ease;
+}
+.committee-lightbox-trigger:hover {
+    opacity: 0.85;
+}
+#committee-lightbox {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: rgba(0,0,0,0.85);
+    align-items: center;
+    justify-content: center;
+}
+#committee-lightbox.active {
+    display: flex;
+}
+#committee-lightbox img {
+    max-width: 92vw;
+    max-height: 92vh;
+    border-radius: 10px;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.6);
+    object-fit: contain;
+    animation: cbLbIn 0.2s ease;
+}
+@keyframes cbLbIn {
+    from { transform: scale(0.9); opacity: 0; }
+    to   { transform: scale(1);   opacity: 1; }
+}
+#committee-lightbox-close {
+    position: fixed;
+    top: 18px;
+    right: 24px;
+    color: white;
+    font-size: 2.2rem;
+    cursor: pointer;
+    background: rgba(0,0,0,0.4);
+    border-radius: 50%;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+    z-index: 10000;
+}
+#committee-lightbox-close:hover { background: rgba(255,255,255,0.2); }
+.cb-lightbox-nav {
+    position: fixed;
+    top: 50%;
+    transform: translateY(-50%);
+    color: white;
+    font-size: 2rem;
+    cursor: pointer;
+    background: rgba(0,0,0,0.45);
+    border-radius: 50%;
+    width: 52px;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+    z-index: 10000;
+}
+.cb-lightbox-nav:hover { background: rgba(255,255,255,0.2); }
+#committee-lightbox-prev { left: 16px; }
+#committee-lightbox-next { right: 16px; }
+.cb-lightbox-nav.hidden { opacity: 0; pointer-events: none; }
+</style>
+
+<div id="committee-lightbox" onclick="closeCbLightbox(event)">
+    <span id="committee-lightbox-close" onclick="closeCbLightbox()">&times;</span>
+    <span id="committee-lightbox-prev" class="cb-lightbox-nav" onclick="cbLbNav(-1,event)">&#8249;</span>
+    <img id="committee-lightbox-img" src="" alt="">
+    <span id="committee-lightbox-next" class="cb-lightbox-nav" onclick="cbLbNav(1,event)">&#8250;</span>
+</div>
+
+<script>
+var _cbImages = [];
+var _cbIndex = 0;
+function openCommitteeLightbox(el) {
+    _cbImages = Array.from(document.querySelectorAll('.committee-lightbox-trigger'));
+    _cbIndex = _cbImages.indexOf(el);
+    _cbShow();
+    document.getElementById('committee-lightbox').classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+function _cbShow() {
+    document.getElementById('committee-lightbox-img').src = _cbImages[_cbIndex].src;
+    document.getElementById('committee-lightbox-img').alt = _cbImages[_cbIndex].alt;
+    document.getElementById('committee-lightbox-prev').classList.toggle('hidden', _cbIndex === 0);
+    document.getElementById('committee-lightbox-next').classList.toggle('hidden', _cbIndex === _cbImages.length - 1);
+}
+function cbLbNav(dir, e) {
+    if (e) e.stopPropagation();
+    var next = _cbIndex + dir;
+    if (next >= 0 && next < _cbImages.length) { _cbIndex = next; _cbShow(); }
+}
+function closeCbLightbox(e) {
+    if (e && (e.target === document.getElementById('committee-lightbox-img') || (e.target.classList && e.target.classList.contains('cb-lightbox-nav')))) return;
+    document.getElementById('committee-lightbox').classList.remove('active');
+    document.body.style.overflow = '';
+}
+document.addEventListener('keydown', function(e) {
+    if (!document.getElementById('committee-lightbox').classList.contains('active')) return;
+    if (e.key === 'Escape')     closeCbLightbox();
+    if (e.key === 'ArrowRight') cbLbNav(1);
+    if (e.key === 'ArrowLeft')  cbLbNav(-1);
+});
+</script>
