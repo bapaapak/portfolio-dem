@@ -53,6 +53,24 @@ class HomeController extends Controller
 
         // Fetch committee activities grouped by year
         $committeeActivities = CommitteeActivity::active()
+            ->select([
+                'id',
+                'title',
+                'title_en',
+                'role',
+                'role_en',
+                'description',
+                'description_en',
+                'organization',
+                'event_date',
+                'end_date',
+                'location',
+                'image',
+                'order',
+                'is_active',
+                'created_at',
+                'updated_at',
+            ])
             ->orderBy('event_date', 'desc')
             ->orderBy('order')
             ->get()

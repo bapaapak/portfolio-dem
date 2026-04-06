@@ -16,9 +16,7 @@
                         <div class="committee-card">
                             <div class="committee-image">
                                 @if($activity->image)
-                                    <img src="{{ asset('storage/' . $activity->image) }}" alt="{{ $activity->title }}" class="committee-lightbox-trigger" onclick="openCommitteeLightbox(this)">
-                                @elseif($activity->image_data)
-                                    <img src="{{ $activity->image_data }}" alt="{{ $activity->title }}" class="committee-lightbox-trigger" onclick="openCommitteeLightbox(this)">
+                                    <img src="{{ '/media/' . ltrim($activity->image, '/') }}" alt="{{ $activity->title }}" class="committee-lightbox-trigger" onclick="openCommitteeLightbox(this)">
                                 @else
                                     <div class="committee-image-placeholder">
                                         <i class="fas fa-image" style="font-size:2rem; opacity:0.3;"></i>

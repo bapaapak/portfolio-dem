@@ -213,5 +213,63 @@
         display: block;
     }
 </style>
+<script>
+async function compressCommitteeImage(file, maxBytes = 1200 * 1024) {
+    if (!file || !file.type.startsWith('image/')) return file;
+    if (file.size <= maxBytes) return file;
+
+    const dataUrl = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+    });
+
+    const img = await new Promise((resolve, reject) => {
+        const image = new Image();
+        image.onload = () => resolve(image);
+        image.onerror = reject;
+        image.src = dataUrl;
+    });
+
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    const maxDimension = 1600;
+    let width = img.width;
+    let height = img.height;
+    if (width > maxDimension || height > maxDimension) {
+        const ratio = Math.min(maxDimension / width, maxDimension / height);
+        width = Math.round(width * ratio);
+        height = Math.round(height * ratio);
+    }
+
+    canvas.width = width;
+    canvas.height = height;
+    ctx.drawImage(img, 0, 0, width, height);
+
+    let quality = 0.82;
+    let blob = await new Promise((resolve) => canvas.toBlob(resolve, 'image/jpeg', quality));
+    while (blob && blob.size > maxBytes && quality > 0.4) {
+        quality -= 0.1;
+        blob = await new Promise((resolve) => canvas.toBlob(resolve, 'image/jpeg', quality));
+    }
+
+    if (!blob) return file;
+    const baseName = (file.name || 'committee').replace(/\.[^/.]+$/, '');
+    return new File([blob], baseName + '.jpg', { type: 'image/jpeg' });
+}
+
+document.getElementById('image')?.addEventListener('change', async function () {
+    const file = this.files && this.files[0] ? this.files[0] : null;
+    if (!file) return;
+
+    const compressed = await compressCommitteeImage(file);
+    if (compressed !== file) {
+        const dt = new DataTransfer();
+        dt.items.add(compressed);
+        this.files = dt.files;
+    }
+});
+</script>
 @endpush
 @endsection

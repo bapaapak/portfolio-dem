@@ -35,7 +35,7 @@
                 <tr>
                     <td>
                         @if($activity->image)
-                            <img src="{{ asset('storage/' . $activity->image) }}" alt="{{ $activity->title }}" class="table-image">
+                            <img src="{{ '/media/' . ltrim($activity->image, '/') }}" alt="{{ $activity->title }}" class="table-image">
                         @else
                             <div class="table-image-placeholder">
                                 <i class="fas fa-image"></i>
