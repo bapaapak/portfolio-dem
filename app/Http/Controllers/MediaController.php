@@ -3,8 +3,6 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -25,28 +23,25 @@ class MediaController extends Controller
                 $cleanPath = substr($cleanPath, strlen('storage/'));
             }
 
-            if (Storage::disk('public')->exists($cleanPath)) {
-                $storagePath = Storage::disk('public')->path($cleanPath);
-                if (is_file($storagePath) && is_readable($storagePath)) {
-                    return new BinaryFileResponse($storagePath, 200, [
+            // Fallback-friendly candidates for container/shared-hosting layouts.
+            $candidates = [
+                base_path('storage/app/public/' . $cleanPath),
+                base_path('public/storage/' . $cleanPath),
+                '/app/storage/app/public/' . $cleanPath,
+                '/storage/app/public/' . $cleanPath,
+            ];
+
+            foreach ($candidates as $absolutePath) {
+                if (is_file($absolutePath) && is_readable($absolutePath)) {
+                    return new BinaryFileResponse($absolutePath, 200, [
                         'Cache-Control' => 'public, max-age=86400',
                     ]);
                 }
             }
 
-            // Fallback path for environments with custom storage/symlink layouts.
-            $publicStoragePath = public_path('storage/' . $cleanPath);
-            if (is_file($publicStoragePath) && is_readable($publicStoragePath)) {
-                return new BinaryFileResponse($publicStoragePath, 200, [
-                    'Cache-Control' => 'public, max-age=86400',
-                ]);
-            }
-
             return new Response('', 404);
         } catch (\Throwable $e) {
-            Log::warning('MediaController show failed: ' . $e->getMessage(), [
-                'path' => $path,
-            ]);
+            // Avoid Laravel logging/rendering dependencies for this endpoint.
             return new Response('', 404);
         }
     }
