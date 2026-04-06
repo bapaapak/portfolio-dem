@@ -146,7 +146,7 @@ function addItem() {
     container.appendChild(div);
 }
 
-async function compressImageFile(file, maxBytes = 2 * 1024 * 1024) {
+async function compressImageFile(file, maxBytes = 1200 * 1024) {
     if (!file || !file.type.startsWith('image/')) return file;
     if (file.size <= maxBytes) return file;
 
@@ -167,7 +167,7 @@ async function compressImageFile(file, maxBytes = 2 * 1024 * 1024) {
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
 
-    const maxDimension = 2200;
+    const maxDimension = 1600;
     let width = img.width;
     let height = img.height;
     if (width > maxDimension || height > maxDimension) {
@@ -180,9 +180,9 @@ async function compressImageFile(file, maxBytes = 2 * 1024 * 1024) {
     canvas.height = height;
     ctx.drawImage(img, 0, 0, width, height);
 
-    let quality = 0.9;
+    let quality = 0.82;
     let blob = await new Promise((resolve) => canvas.toBlob(resolve, 'image/jpeg', quality));
-    while (blob && blob.size > maxBytes && quality > 0.45) {
+    while (blob && blob.size > maxBytes && quality > 0.4) {
         quality -= 0.1;
         blob = await new Promise((resolve) => canvas.toBlob(resolve, 'image/jpeg', quality));
     }

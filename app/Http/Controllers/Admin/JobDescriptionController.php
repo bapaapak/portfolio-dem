@@ -55,7 +55,7 @@ class JobDescriptionController extends Controller
 
         $validated = $this->normalizePayload($validated, $request);
         if ($request->hasFile('illustration_image')) {
-            $validated['illustration_image'] = $request->file('illustration_image')->store('job_descriptions', 'public');
+            $validated['illustration_image'] = $this->storeCompressedIllustration($request->file('illustration_image'));
         } else {
             unset($validated['illustration_image']);
         }
@@ -104,7 +104,7 @@ class JobDescriptionController extends Controller
             if ($jobDescription->illustration_image) {
                 Storage::disk('public')->delete($jobDescription->illustration_image);
             }
-            $validated['illustration_image'] = $request->file('illustration_image')->store('job_descriptions', 'public');
+            $validated['illustration_image'] = $this->storeCompressedIllustration($request->file('illustration_image'));
         } else {
             unset($validated['illustration_image']);
         }
@@ -181,6 +181,77 @@ class JobDescriptionController extends Controller
                 'created_at',
                 'updated_at',
             ];
+        }
+    }
+
+    private function storeCompressedIllustration($uploadedFile): string
+    {
+        $storedFileName = null;
+
+        try {
+            $tmpPath = $uploadedFile->getRealPath();
+            $imageContents = $tmpPath ? file_get_contents($tmpPath) : false;
+
+            if ($imageContents === false || !function_exists('imagecreatefromstring')) {
+                return $uploadedFile->store('job_descriptions', 'public');
+            }
+
+            $sourceImage = @imagecreatefromstring($imageContents);
+            if (!$sourceImage) {
+                return $uploadedFile->store('job_descriptions', 'public');
+            }
+
+            $sourceWidth = imagesx($sourceImage);
+            $sourceHeight = imagesy($sourceImage);
+            $maxDimension = 1600;
+            $scale = min(1, $maxDimension / max($sourceWidth, $sourceHeight));
+            $targetWidth = (int) max(1, round($sourceWidth * $scale));
+            $targetHeight = (int) max(1, round($sourceHeight * $scale));
+
+            $targetImage = imagecreatetruecolor($targetWidth, $targetHeight);
+
+            if (function_exists('imagealphablending') && function_exists('imagesavealpha')) {
+                imagealphablending($targetImage, false);
+                imagesavealpha($targetImage, true);
+                $transparent = imagecolorallocatealpha($targetImage, 0, 0, 0, 127);
+                imagefilledrectangle($targetImage, 0, 0, $targetWidth, $targetHeight, $transparent);
+            }
+
+            imagecopyresampled(
+                $targetImage,
+                $sourceImage,
+                0,
+                0,
+                0,
+                0,
+                $targetWidth,
+                $targetHeight,
+                $sourceWidth,
+                $sourceHeight
+            );
+
+            $storedFileName = 'job_descriptions/' . uniqid('jd_', true) . '.webp';
+            $fullTargetPath = Storage::disk('public')->path($storedFileName);
+            $targetDirectory = dirname($fullTargetPath);
+
+            if (!is_dir($targetDirectory)) {
+                mkdir($targetDirectory, 0775, true);
+            }
+
+            if (function_exists('imagewebp')) {
+                imagewebp($targetImage, $fullTargetPath, 82);
+            } else {
+                $storedFileName = 'job_descriptions/' . uniqid('jd_', true) . '.jpg';
+                $fullTargetPath = Storage::disk('public')->path($storedFileName);
+                imagejpeg($targetImage, $fullTargetPath, 82);
+            }
+
+            imagedestroy($sourceImage);
+            imagedestroy($targetImage);
+
+            return $storedFileName;
+        } catch (\Throwable $e) {
+            return $uploadedFile->store('job_descriptions', 'public');
         }
     }
 }
