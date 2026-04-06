@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\JobDescription;
 use Illuminate\Http\Request;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
 
@@ -161,30 +160,27 @@ class JobDescriptionController extends Controller
 
     private function ensureOptionalColumnsExist(): void
     {
-        $table = (new JobDescription())->getTable();
+        try {
+            $table = (new JobDescription())->getTable();
+            if (!Schema::hasTable($table)) {
+                return;
+            }
 
-        if (!Schema::hasTable($table)) {
-            return;
+            // Refresh known columns for safe payload filtering.
+            $this->jobDescriptionColumns = Schema::getColumnListing($table);
+        } catch (\Throwable $e) {
+            // Keep app usable even when schema introspection fails on production.
+            $this->jobDescriptionColumns = [
+                'id',
+                'type',
+                'title',
+                'description',
+                'items',
+                'order',
+                'is_active',
+                'created_at',
+                'updated_at',
+            ];
         }
-
-        if (!Schema::hasColumn($table, 'year')) {
-            Schema::table($table, function (Blueprint $blueprint) {
-                $blueprint->year('year')->nullable()->after('type');
-            });
-        }
-
-        if (!Schema::hasColumn($table, 'year_end')) {
-            Schema::table($table, function (Blueprint $blueprint) {
-                $blueprint->smallInteger('year_end')->nullable()->after('year');
-            });
-        }
-
-        if (!Schema::hasColumn($table, 'illustration_image')) {
-            Schema::table($table, function (Blueprint $blueprint) {
-                $blueprint->string('illustration_image')->nullable()->after('items');
-            });
-        }
-
-        $this->jobDescriptionColumns = null;
     }
 }
