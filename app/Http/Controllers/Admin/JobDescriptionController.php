@@ -5,10 +5,13 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\JobDescription;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
 
 class JobDescriptionController extends Controller
 {
+    private ?array $jobDescriptionColumns = null;
+
     public function index()
     {
         $descriptions = JobDescription::descriptions()->ordered()->get();
@@ -44,20 +47,14 @@ class JobDescriptionController extends Controller
             'illustration_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:10240',
         ]);
 
-        $validated['items'] = array_filter($validated['items'] ?? []);
-        $validated['is_active'] = $request->has('is_active');
-        if ($validated['type'] === 'description') {
-            $validated['year'] = null;
-            $validated['year_end'] = null;
-        }
-        if ($request->boolean('until_now')) {
-            $validated['year_end'] = null;
-        }
+        $validated = $this->normalizePayload($validated, $request);
         if ($request->hasFile('illustration_image')) {
             $validated['illustration_image'] = $request->file('illustration_image')->store('job_descriptions', 'public');
         } else {
             unset($validated['illustration_image']);
         }
+
+        $validated = $this->filterByExistingColumns($validated);
 
         JobDescription::create($validated);
 
@@ -92,15 +89,7 @@ class JobDescriptionController extends Controller
             'illustration_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:10240',
         ]);
 
-        $validated['items'] = array_filter($validated['items'] ?? []);
-        $validated['is_active'] = $request->has('is_active');
-        if ($validated['type'] === 'description') {
-            $validated['year'] = null;
-            $validated['year_end'] = null;
-        }
-        if ($request->boolean('until_now')) {
-            $validated['year_end'] = null;
-        }
+        $validated = $this->normalizePayload($validated, $request);
         if ($request->hasFile('illustration_image')) {
             if ($jobDescription->illustration_image) {
                 Storage::disk('public')->delete($jobDescription->illustration_image);
@@ -109,6 +98,8 @@ class JobDescriptionController extends Controller
         } else {
             unset($validated['illustration_image']);
         }
+
+        $validated = $this->filterByExistingColumns($validated);
 
         $jobDescription->update($validated);
 
@@ -125,5 +116,35 @@ class JobDescriptionController extends Controller
 
         return redirect()->route('admin.job-descriptions.index')
             ->with('success', 'Item berhasil dihapus!');
+    }
+
+    private function normalizePayload(array $validated, Request $request): array
+    {
+        $validated['items'] = array_filter($validated['items'] ?? []);
+        $validated['is_active'] = $request->has('is_active');
+
+        if (($validated['type'] ?? null) === 'description') {
+            $validated['year'] = null;
+            $validated['year_end'] = null;
+        }
+
+        if ($request->boolean('until_now')) {
+            $validated['year_end'] = null;
+        }
+
+        return $validated;
+    }
+
+    private function filterByExistingColumns(array $payload): array
+    {
+        if ($this->jobDescriptionColumns === null) {
+            $this->jobDescriptionColumns = Schema::getColumnListing((new JobDescription())->getTable());
+        }
+
+        return array_filter(
+            $payload,
+            fn ($key) => in_array($key, $this->jobDescriptionColumns, true),
+            ARRAY_FILTER_USE_KEY
+        );
     }
 }
