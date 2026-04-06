@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Profile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Schema;
 
 class CareerAspirationController extends Controller
 {
@@ -26,7 +27,7 @@ class CareerAspirationController extends Controller
             'aspiration_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:10240',
         ]);
 
-        $profile = Profile::first();
+        $profile = Profile::firstOrCreate([]);
         
         $milestones = array_filter($request->input('career_milestones', []), function($item) {
             return !empty($item['year']) || !empty($item['title']);
@@ -37,7 +38,7 @@ class CareerAspirationController extends Controller
             'career_milestones' => array_values($milestones),
         ];
 
-        if ($request->hasFile('aspiration_image')) {
+        if ($request->hasFile('aspiration_image') && Schema::hasColumn('profiles', 'aspiration_image')) {
             if ($profile->aspiration_image) {
                 Storage::disk('public')->delete($profile->aspiration_image);
             }
