@@ -115,8 +115,17 @@
             <div class="form-group" id="illustration-field" style="display: {{ old('type', $jobDescription->type) == 'activity' ? 'block' : 'none' }}">
                 <label>Gambar Ilustrasi</label>
                 @if($jobDescription->illustration_image)
+                    @php
+                        $illustrationPath = ltrim($jobDescription->illustration_image, '/');
+                        if (!str_starts_with($illustrationPath, 'http://') && !str_starts_with($illustrationPath, 'https://') && !str_starts_with($illustrationPath, 'storage/')) {
+                            $illustrationPath = 'storage/' . $illustrationPath;
+                        }
+                        $illustrationUrl = str_starts_with($illustrationPath, 'http://') || str_starts_with($illustrationPath, 'https://')
+                            ? $illustrationPath
+                            : '/' . ltrim($illustrationPath, '/');
+                    @endphp
                     <div style="margin-bottom:10px;">
-                        <img src="{{ Storage::url($jobDescription->illustration_image) }}" alt="Ilustrasi" style="max-width:100%;max-height:200px;border-radius:8px;border:1px solid #374151;">
+                        <img src="{{ $illustrationUrl }}" alt="Ilustrasi" style="max-width:100%;max-height:200px;border-radius:8px;border:1px solid #374151;" onerror="this.style.display='none'">
                         <small style="display:block;margin-top:4px;color:#9ca3af;">Upload gambar baru untuk menggantinya.</small>
                     </div>
                 @endif
