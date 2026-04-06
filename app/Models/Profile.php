@@ -50,4 +50,42 @@ class Profile extends Model
         'show_cv_button' => 'boolean',
         'show_contact_button' => 'boolean',
     ];
+
+    public function getAspirationImageUrlAttribute(): ?string
+    {
+        if (!$this->aspiration_image) {
+            return null;
+        }
+
+        $path = ltrim($this->aspiration_image, '/');
+
+        if (preg_match('#^https?://#', $path)) {
+            return $path;
+        }
+
+        if (str_starts_with($path, 'storage/')) {
+            return '/' . $path;
+        }
+
+        return '/storage/' . $path;
+    }
+
+    public function getAspirationImageFallbackUrlAttribute(): ?string
+    {
+        if (!$this->aspiration_image) {
+            return null;
+        }
+
+        $path = ltrim($this->aspiration_image, '/');
+
+        if (preg_match('#^https?://#', $path)) {
+            return $path;
+        }
+
+        if (str_starts_with($path, 'storage/')) {
+            $path = substr($path, strlen('storage/'));
+        }
+
+        return '/media/' . ltrim($path, '/');
+    }
 }

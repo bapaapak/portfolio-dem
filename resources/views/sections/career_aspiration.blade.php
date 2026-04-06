@@ -26,10 +26,12 @@
                 </div>
                 @if($profile->aspiration_image)
                 <div style="margin-top: 20px;">
-                    <img src="{{ Storage::url($profile->aspiration_image) }}"
+                    <img src="{{ $profile->aspiration_image_url }}"
+                        data-fallback="{{ $profile->aspiration_image_fallback_url }}"
                          alt="Ilustrasi Aspirasi"
                          style="width:100%;border-radius:10px;cursor:zoom-in;transition:opacity 0.2s;"
                          onclick="openAspirationLightbox(this)"
+                        onerror="if (this.dataset.fallback && this.src !== this.dataset.fallback) { this.src = this.dataset.fallback; } else { this.style.display='none'; }"
                          onmouseover="this.style.opacity='0.85'"
                          onmouseout="this.style.opacity='1'">
                 </div>
