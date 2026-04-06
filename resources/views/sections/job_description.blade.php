@@ -66,20 +66,12 @@
                                 <div class="milestone-content">
                                     <h4 class="jd-title">{{ $activity->title }}</h4>
                                     @if($activity->illustration_image)
-                                        @php
-                                            $illustrationPath = ltrim($activity->illustration_image, '/');
-                                            if (str_starts_with($illustrationPath, 'storage/')) {
-                                                $illustrationPath = substr($illustrationPath, strlen('storage/'));
-                                            }
-                                            $illustrationUrl = str_starts_with($illustrationPath, 'http://') || str_starts_with($illustrationPath, 'https://')
-                                                ? $illustrationPath
-                                                : '/media/' . ltrim($illustrationPath, '/');
-                                        @endphp
                                         <div class="activity-illustration-wrapper">
-                                            <img src="{{ $illustrationUrl }}"
+                                            <img src="{{ $activity->illustration_image_url }}"
+                                                 data-fallback="{{ $activity->illustration_image_fallback_url }}"
                                                  alt="{{ $activity->title }}"
                                                  class="activity-illustration-img lightbox-trigger"
-                                                 onerror="this.style.display='none'"
+                                                 onerror="if (this.dataset.fallback && this.src !== this.dataset.fallback) { this.src = this.dataset.fallback; } else { this.style.display='none'; }"
                                                  onclick="openLightbox(this)">
                                         </div>
                                     @endif

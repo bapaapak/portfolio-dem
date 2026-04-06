@@ -28,6 +28,44 @@ class JobDescription extends Model
         'year_end' => 'integer',
     ];
 
+    public function getIllustrationImageUrlAttribute(): ?string
+    {
+        if (!$this->illustration_image) {
+            return null;
+        }
+
+        $path = str_replace('\\', '/', ltrim($this->illustration_image, '/'));
+
+        if (preg_match('#^https?://#', $path)) {
+            return $path;
+        }
+
+        if (str_starts_with($path, 'storage/')) {
+            return '/' . $path;
+        }
+
+        return '/storage/' . $path;
+    }
+
+    public function getIllustrationImageFallbackUrlAttribute(): ?string
+    {
+        if (!$this->illustration_image) {
+            return null;
+        }
+
+        $path = str_replace('\\', '/', ltrim($this->illustration_image, '/'));
+
+        if (preg_match('#^https?://#', $path)) {
+            return $path;
+        }
+
+        if (str_starts_with($path, 'storage/')) {
+            $path = substr($path, strlen('storage/'));
+        }
+
+        return '/media/' . ltrim($path, '/');
+    }
+
     public function getYearLabelAttribute(): string
     {
         if (!$this->year) return 'Lainnya';
