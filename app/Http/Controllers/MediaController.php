@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\Response;
 
 class MediaController extends Controller
 {
@@ -15,7 +17,7 @@ class MediaController extends Controller
 
             // Prevent path traversal attempts
             if (str_contains($cleanPath, '..')) {
-                abort(404);
+                return new Response('', 404);
             }
 
             // Accept both "job_descriptions/file.jpg" and "storage/job_descriptions/file.jpg"
@@ -24,25 +26,28 @@ class MediaController extends Controller
             }
 
             if (Storage::disk('public')->exists($cleanPath)) {
-                return Storage::disk('public')->response($cleanPath, null, [
-                    'Cache-Control' => 'public, max-age=86400',
-                ]);
+                $storagePath = Storage::disk('public')->path($cleanPath);
+                if (is_file($storagePath) && is_readable($storagePath)) {
+                    return new BinaryFileResponse($storagePath, 200, [
+                        'Cache-Control' => 'public, max-age=86400',
+                    ]);
+                }
             }
 
             // Fallback path for environments with custom storage/symlink layouts.
             $publicStoragePath = public_path('storage/' . $cleanPath);
             if (is_file($publicStoragePath) && is_readable($publicStoragePath)) {
-                return response()->file($publicStoragePath, [
+                return new BinaryFileResponse($publicStoragePath, 200, [
                     'Cache-Control' => 'public, max-age=86400',
                 ]);
             }
 
-            abort(404);
+            return new Response('', 404);
         } catch (\Throwable $e) {
             Log::warning('MediaController show failed: ' . $e->getMessage(), [
                 'path' => $path,
             ]);
-            abort(404);
+            return new Response('', 404);
         }
     }
 }
