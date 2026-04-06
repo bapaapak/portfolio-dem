@@ -4,42 +4,64 @@
 # Jalankan setelah git pull di VPS
 
 echo "=== Portfolio VPS Setup ==="
+set -e
+
+# 0. Create necessary directories
+echo "[0/7] Creating storage directories..."
+mkdir -p storage/app/public/experiences/logos
+mkdir -p storage/logs
+chmod -R 775 storage bootstrap/cache
 
 # 1. Run migrations
-echo "[1/5] Running migrations..."
+echo "[1/7] Running migrations..."
 php8.3 artisan migrate --force
 
-# 2. Create storage symlink
-echo "[2/5] Creating storage symlink..."
-php8.3 artisan storage:link
+# 2. Remove old symlink if exists
+echo "[2/7] Recreating storage symlink..."
+rm -f public/storage
+php8.3 artisan storage:link --force
 
-# 3. Create logo directory
-echo "[3/5] Creating logo directory..."
-mkdir -p storage/app/public/experiences/logos
+# 3. Verify symlink was created
+echo "[3/7] Verifying symlink..."
+if [ -L public/storage ]; then
+    echo "✓ Symlink created successfully"
+    ls -la public/storage
+else
+    echo "✗ WARNING: Symlink not created! Checking permissions..."
+    ls -la public/
+fi
 
-# 4. Copy logo files
-echo "[4/5] Copying logo files..."
-cp -v public/images/logo_dharma.svg storage/app/public/experiences/logos/ || echo "Logo file already exists"
+# 4. Set proper permissions
+echo "[4/7] Setting file permissions..."
+chmod -R 755 public/storage
+chmod -R 777 storage/app/public/experiences/logos
 
-# 5. Update database with logo path
-echo "[5/5] Updating database..."
-php8.3 artisan tinker << 'EOF'
-$experience = \App\Models\Experience::where('company', 'like', '%Dharma%')->first();
-if ($experience && !$experience->logo) {
-    $experience->update(['logo' => 'experiences/logos/logo_dharma.svg']);
-    echo "✓ Updated Dharma logo in database\n";
-} else {
-    echo "✓ Dharma logo already configured\n";
-}
-exit();
-EOF
+# 5. Test URL accessibility
+echo "[5/7] Testing storage URL..."
+if [ -f public/storage/experiences/logos/*.webp ]; then
+    echo "✓ Logo files accessible via storage symlink"
+else
+    echo "ℹ No logo files found yet (will be uploaded via admin panel)"
+fi
 
 # 6. Clear cache
-echo ""
-echo "[6/6] Clearing cache..."
+echo "[6/7] Clearing cache and config..."
 php8.3 artisan cache:clear
 php8.3 artisan config:clear
 php8.3 artisan view:clear
 
+# 7. Check final status
+echo ""
+echo "[7/7] Final Verification..."
+echo "App URL: $(php8.3 artisan config:get app.url)"
+echo "Storage path: $(php8.3 artisan config:get filesystems.disks.public.root)"
+echo "Storage URL: $(php8.3 artisan config:get filesystems.disks.public.url)"
+
 echo ""
 echo "=== Setup Complete! ==="
+echo ""
+echo "💡 Next steps:"
+echo "1. Upload logo via admin panel at: /admin/experiences"
+echo "2. Logo will be saved to: storage/app/public/experiences/logos/"
+echo "3. URL will be accessible at: https://yourdomain.com/storage/experiences/logos/[filename]"
+echo ""
