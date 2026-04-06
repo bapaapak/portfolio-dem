@@ -57,3 +57,17 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+## Deployment Notes
+
+If uploads fail with `413 Request Entity Too Large`, the request is being blocked by nginx before Laravel receives it. Raise the nginx limit on the server, for example:
+
+```nginx
+server {
+	client_max_body_size 20M;
+}
+```
+
+If you also need PHP limits aligned with that setting, keep `upload_max_filesize` and `post_max_size` in sync in [public/.user.ini](public/.user.ini).
+
+See [NGINX_UPLOAD_LIMIT.md](NGINX_UPLOAD_LIMIT.md) for a ready-to-use nginx snippet.

@@ -29,16 +29,14 @@
                         </div>
                         <div class="exp-card">
                             @if($experience->logo)
-                                @php
-                                    $logoPath = ltrim($experience->logo, '/');
-                                    if (!str_starts_with($logoPath, 'http://') && !str_starts_with($logoPath, 'https://') && !str_starts_with($logoPath, 'storage/')) {
-                                        $logoPath = 'storage/' . $logoPath;
-                                    }
-                                    $logoUrl = str_starts_with($logoPath, 'http://') || str_starts_with($logoPath, 'https://')
-                                        ? $logoPath
-                                        : '/' . ltrim($logoPath, '/');
-                                @endphp
-                                <img src="{{ $logoUrl }}" alt="{{ $experience->company }} logo" class="exp-card-logo" loading="lazy" onerror="this.style.display='none'">
+                                <img
+                                    src="{{ $experience->logo_url }}"
+                                    data-fallback="{{ $experience->logo_fallback_url }}"
+                                    alt="{{ $experience->company }} logo"
+                                    class="exp-card-logo"
+                                    loading="lazy"
+                                    onerror="if (this.dataset.fallback && this.src !== this.dataset.fallback) { this.src = this.dataset.fallback; } else { this.style.display='none'; }"
+                                >
                             @endif
                             <!-- Company ID -->
                             <h3 class="exp-company lang-id" data-display="block" style="display: block;">{{ $experience->company }}</h3>
@@ -157,16 +155,14 @@
                         </div>
                         <div class="exp-card">
                             @if($experience->logo)
-                                @php
-                                    $logoPath = ltrim($experience->logo, '/');
-                                    if (!str_starts_with($logoPath, 'http://') && !str_starts_with($logoPath, 'https://') && !str_starts_with($logoPath, 'storage/')) {
-                                        $logoPath = 'storage/' . $logoPath;
-                                    }
-                                    $logoUrl = str_starts_with($logoPath, 'http://') || str_starts_with($logoPath, 'https://')
-                                        ? $logoPath
-                                        : '/' . ltrim($logoPath, '/');
-                                @endphp
-                                <img src="{{ $logoUrl }}" alt="{{ $experience->company }} logo" class="exp-card-logo" loading="lazy" onerror="this.style.display='none'">
+                                <img
+                                    src="{{ $experience->logo_url }}"
+                                    data-fallback="{{ $experience->logo_fallback_url }}"
+                                    alt="{{ $experience->company }} logo"
+                                    class="exp-card-logo"
+                                    loading="lazy"
+                                    onerror="if (this.dataset.fallback && this.src !== this.dataset.fallback) { this.src = this.dataset.fallback; } else { this.style.display='none'; }"
+                                >
                             @endif
                              <!-- Company ID -->
                             <h3 class="exp-company lang-id" style="display: block;">{{ $experience->company }}</h3>

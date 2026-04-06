@@ -41,6 +41,36 @@ class Experience extends Model
         'show_tags' => 'boolean',
     ];
 
+    public function getLogoUrlAttribute(): ?string
+    {
+        if (!$this->logo) {
+            return null;
+        }
+
+        $logoPath = ltrim($this->logo, '/');
+
+        if (preg_match('#^https?://#', $logoPath)) {
+            return $logoPath;
+        }
+
+        return '/storage/' . $logoPath;
+    }
+
+    public function getLogoFallbackUrlAttribute(): ?string
+    {
+        if (!$this->logo) {
+            return null;
+        }
+
+        $logoPath = ltrim($this->logo, '/');
+
+        if (preg_match('#^https?://#', $logoPath)) {
+            return $logoPath;
+        }
+
+        return '/media/' . $logoPath;
+    }
+
     public function scopeFeatured($query)
     {
         return $query->where('featured', true);

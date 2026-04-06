@@ -42,9 +42,7 @@ class CommitteeActivityController extends Controller
         ]);
 
         if ($request->hasFile('image')) {
-            if ($request->file('image')) {
-                $validated['image'] = $this->storeCompressedImage($request->file('image'));
-            }
+            $validated['image'] = $request->file('image')->store('committee', 'public');
         }
 
         $validated['is_active'] = $request->has('is_active');
@@ -84,7 +82,7 @@ class CommitteeActivityController extends Controller
             if ($committee_activity->image) {
                 Storage::disk('public')->delete($committee_activity->image);
             }
-            $validated['image'] = $this->storeCompressedImage($request->file('image'));
+            $validated['image'] = $request->file('image')->store('committee', 'public');
         }
 
         $validated['is_active'] = $request->has('is_active');
@@ -109,71 +107,4 @@ class CommitteeActivityController extends Controller
             ->with('success', 'Aktivitas kepanitiaan berhasil dihapus!');
     }
 
-    private function storeCompressedImage($uploadedFile): string
-    {
-        try {
-            $tmpPath = $uploadedFile->getRealPath();
-            $imageContents = $tmpPath ? file_get_contents($tmpPath) : false;
-
-            if ($imageContents === false || !function_exists('imagecreatefromstring')) {
-                return $uploadedFile->store('committee', 'public');
-            }
-
-            $sourceImage = @imagecreatefromstring($imageContents);
-            if (!$sourceImage) {
-                return $uploadedFile->store('committee', 'public');
-            }
-
-            $sourceWidth = imagesx($sourceImage);
-            $sourceHeight = imagesy($sourceImage);
-            $maxDimension = 1600;
-            $scale = min(1, $maxDimension / max($sourceWidth, $sourceHeight));
-            $targetWidth = (int) max(1, round($sourceWidth * $scale));
-            $targetHeight = (int) max(1, round($sourceHeight * $scale));
-
-            $targetImage = imagecreatetruecolor($targetWidth, $targetHeight);
-            if (function_exists('imagealphablending') && function_exists('imagesavealpha')) {
-                imagealphablending($targetImage, false);
-                imagesavealpha($targetImage, true);
-                $transparent = imagecolorallocatealpha($targetImage, 0, 0, 0, 127);
-                imagefilledrectangle($targetImage, 0, 0, $targetWidth, $targetHeight, $transparent);
-            }
-
-            imagecopyresampled(
-                $targetImage,
-                $sourceImage,
-                0,
-                0,
-                0,
-                0,
-                $targetWidth,
-                $targetHeight,
-                $sourceWidth,
-                $sourceHeight
-            );
-
-            $storedFileName = 'committee/' . uniqid('committee_', true) . '.webp';
-            $fullTargetPath = Storage::disk('public')->path($storedFileName);
-            $targetDirectory = dirname($fullTargetPath);
-
-            if (!is_dir($targetDirectory)) {
-                mkdir($targetDirectory, 0775, true);
-            }
-
-            if (function_exists('imagewebp')) {
-                imagewebp($targetImage, $fullTargetPath, 82);
-            } else {
-                $storedFileName = 'committee/' . uniqid('committee_', true) . '.jpg';
-                $fullTargetPath = Storage::disk('public')->path($storedFileName);
-                imagejpeg($targetImage, $fullTargetPath, 82);
-            }
-
-            imagedestroy($sourceImage);
-            imagedestroy($targetImage);
-
-            return $storedFileName;
-        } catch (\Throwable $e) {
-            return $uploadedFile->store('committee', 'public');
-        }
-    }
 }
