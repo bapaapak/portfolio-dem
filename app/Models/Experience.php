@@ -52,7 +52,7 @@ class Experience extends Model
             return $logoPath;
         }
 
-        return '/storage/' . $logoPath;
+        return '/media/' . $logoPath;
     }
 
     public function getLogoFallbackUrlAttribute(): ?string
@@ -66,7 +66,7 @@ class Experience extends Model
             return $logoPath;
         }
 
-        return '/media/' . $logoPath;
+        return '/storage/' . $logoPath;
     }
 
     private function normalizeMediaPath(?string $rawPath): ?string

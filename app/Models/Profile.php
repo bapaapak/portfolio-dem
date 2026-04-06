@@ -64,10 +64,10 @@ class Profile extends Model
         }
 
         if (str_starts_with($path, 'storage/')) {
-            return '/' . $path;
+            $path = substr($path, strlen('storage/'));
         }
 
-        return '/storage/' . $path;
+        return '/media/' . ltrim($path, '/');
     }
 
     public function getAspirationImageFallbackUrlAttribute(): ?string
@@ -83,9 +83,9 @@ class Profile extends Model
         }
 
         if (str_starts_with($path, 'storage/')) {
-            $path = substr($path, strlen('storage/'));
+            return '/' . $path;
         }
 
-        return '/media/' . ltrim($path, '/');
+        return '/storage/' . ltrim($path, '/');
     }
 }

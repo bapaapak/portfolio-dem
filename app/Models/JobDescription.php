@@ -39,7 +39,7 @@ class JobDescription extends Model
             return $path;
         }
 
-        return '/storage/' . $path;
+        return '/media/' . $path;
     }
 
     public function getIllustrationImageFallbackUrlAttribute(): ?string
@@ -53,7 +53,7 @@ class JobDescription extends Model
             return $path;
         }
 
-        return '/media/' . ltrim($path, '/');
+        return '/storage/' . ltrim($path, '/');
     }
 
     private function normalizeMediaPath(?string $rawPath): ?string

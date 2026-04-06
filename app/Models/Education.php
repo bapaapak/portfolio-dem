@@ -41,7 +41,7 @@ class Education extends Model
             return $logoPath;
         }
 
-        return '/storage/' . $logoPath;
+        return '/media/' . $logoPath;
     }
 
     public function getLogoFallbackUrlAttribute(): ?string
@@ -56,6 +56,6 @@ class Education extends Model
             return $logoPath;
         }
 
-        return '/media/' . $logoPath;
+        return '/storage/' . $logoPath;
     }
 }

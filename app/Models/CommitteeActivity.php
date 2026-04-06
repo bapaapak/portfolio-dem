@@ -63,7 +63,7 @@ class CommitteeActivity extends Model
             return $path;
         }
 
-        return '/storage/' . $path;
+        return '/media/' . $path;
     }
 
     public function getImageFallbackUrlAttribute(): ?string
@@ -77,7 +77,7 @@ class CommitteeActivity extends Model
             return $path;
         }
 
-        return '/media/' . $path;
+        return '/storage/' . $path;
     }
 
     private function normalizeMediaPath(?string $rawPath): ?string
