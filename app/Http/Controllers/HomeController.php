@@ -12,121 +12,146 @@ use App\Models\OrganizationStructure;
 use App\Models\Profile;
 use App\Models\Project;
 use App\Models\Technology;
+use Illuminate\Support\Facades\Cache;
 
 class HomeController extends Controller
 {
     public function index()
     {
-        $profile = Profile::first();
-        $categories = Category::all();
-        
-        // Only show featured experiences
-        $experiences = Experience::featured()->orderBy('start_date', 'desc')->get();
-        
-        $educations = Education::orderBy('order')->orderBy('start_date', 'desc')->get();
-        
-        // Only show featured technologies that are also active
-        $technologies = Technology::active()->featured()->orderBy('order')->orderBy('name')->get();
-        
-        // Get featured projects
-        $featuredProjects = Project::with('category')
-            ->published()
-            ->featured()
-            ->latest()
-            ->take(6)
-            ->get();
-            
-        // For project filtering, get all published projects
-        $allProjects = Project::with('category')
-            ->published()
-            ->featured()  // Only featured projects
-            ->latest()
-            ->take(6)
-            ->get();
+        $payload = Cache::remember('home_index_payload_v1', now()->addMinutes(2), function () {
+            $profile = Profile::first();
+            $categories = Category::all();
 
-        // Fetch skills
-        $technicalSkills = \App\Models\Skill::where('type', 'technical')->orderBy('order')->get();
-        $softSkills = \App\Models\Skill::where('type', 'soft')->orderBy('order')->get();
+            // Only show featured experiences
+            $experiences = Experience::featured()->orderBy('start_date', 'desc')->get();
 
-        // Fetch certifications
-        $certifications = \App\Models\Certification::orderBy('issued_at', 'desc')->get();
+            $educations = Education::orderBy('order')->orderBy('start_date', 'desc')->get();
 
-        // Fetch committee activities grouped by year
-        $committeeActivities = CommitteeActivity::active()
-            ->select([
-                'id',
-                'title',
-                'title_en',
-                'role',
-                'role_en',
-                'description',
-                'description_en',
-                'organization',
-                'event_date',
-                'end_date',
-                'location',
-                'image',
-                'order',
-                'is_active',
-                'created_at',
-                'updated_at',
-            ])
-            ->orderBy('event_date', 'desc')
-            ->orderBy('order')
-            ->get()
-            ->groupBy(function ($activity) {
-                if ($activity->event_date) {
-                    return $activity->event_date->format('Y');
-                }
-                // Fallback: extract year from title (e.g. "Culture Day 2024")
-                if (preg_match('/\b(20\d{2})\b/', $activity->title, $matches)) {
-                    return $matches[1];
-                }
-                return 'Other';
-            })
-            ->sortBy(function ($items, $key) {
-                // Numeric years sort descending (larger = higher priority = lower value)
-                // 'Other' always goes last (highest value)
-                return is_numeric($key) ? (9999 - (int)$key) : 99999;
-            });
+            // Only show featured technologies that are also active
+            $technologies = Technology::active()->featured()->orderBy('order')->orderBy('name')->get();
 
-        // Fetch company profile
-        $companyProfile = CompanyProfile::first();
+            // Get featured projects
+            $featuredProjects = Project::with('category')
+                ->published()
+                ->featured()
+                ->latest()
+                ->take(6)
+                ->get();
 
-        // Fetch organization structure (top level with hierarchy)
-        $organizationMembers = OrganizationStructure::topLevel()
-            ->active()
-            ->with('descendants')
-            ->orderBy('order')
-            ->get();
+            // For project filtering, get all published projects
+            $allProjects = Project::with('category')
+                ->published()
+                ->featured()  // Only featured projects
+                ->latest()
+                ->take(6)
+                ->get();
 
-        // Fetch automation strategies grouped by term type
-        $automationStrategies = AutomationStrategy::active()
-            ->orderBy('term_type')
-            ->orderBy('category')
-            ->orderBy('order')
-            ->get()
-            ->groupBy('term_type');
+            // Fetch skills
+            $technicalSkills = \App\Models\Skill::where('type', 'technical')->orderBy('order')->get();
+            $softSkills = \App\Models\Skill::where('type', 'soft')->orderBy('order')->get();
 
-        // Fetch obstacles and challenges
-        $obstacles = \App\Models\ObstacleChallenge::obstacles()->active()->ordered()->get();
-        $challenges = \App\Models\ObstacleChallenge::challenges()->active()->ordered()->get();
+            // Fetch certifications
+            $certifications = \App\Models\Certification::orderBy('issued_at', 'desc')->get();
 
-        // Fetch job descriptions and activities
-        $jobDescriptions = \App\Models\JobDescription::descriptions()->active()->ordered()->get();
-        $jobActivities = \App\Models\JobDescription::activities()->active()->ordered()->get()
-            ->groupBy(function ($activity) {
-                return $activity->year_label;
-            })
-            ->sortBy(function ($items, $key) {
-                // Sort by numeric start year ascending, "Lainnya" goes last
-                if ($key === 'Lainnya') return PHP_INT_MAX;
-                preg_match('/^(\d{4})/', $key, $m);
-                return isset($m[1]) ? (int)$m[1] : PHP_INT_MAX - 1;
-            });
+            // Fetch committee activities grouped by year
+            $committeeActivities = CommitteeActivity::active()
+                ->select([
+                    'id',
+                    'title',
+                    'title_en',
+                    'role',
+                    'role_en',
+                    'description',
+                    'description_en',
+                    'organization',
+                    'event_date',
+                    'end_date',
+                    'location',
+                    'image',
+                    'order',
+                    'is_active',
+                    'created_at',
+                    'updated_at',
+                ])
+                ->orderBy('event_date', 'desc')
+                ->orderBy('order')
+                ->get()
+                ->groupBy(function ($activity) {
+                    if ($activity->event_date) {
+                        return $activity->event_date->format('Y');
+                    }
+                    if (preg_match('/\b(20\d{2})\b/', $activity->title, $matches)) {
+                        return $matches[1];
+                    }
+                    return 'Other';
+                })
+                ->sortBy(function ($items, $key) {
+                    return is_numeric($key) ? (9999 - (int) $key) : 99999;
+                });
 
-        // Fetch Business Process Flows
-        $businessFlows = \App\Models\BusinessProcessFlow::orderBy('step_order')->get();
+            // Fetch company profile
+            $companyProfile = CompanyProfile::first();
+
+            // Fetch organization structure (top level with hierarchy)
+            $organizationMembers = OrganizationStructure::topLevel()
+                ->active()
+                ->with('descendants')
+                ->orderBy('order')
+                ->get();
+
+            // Fetch automation strategies grouped by term type
+            $automationStrategies = AutomationStrategy::active()
+                ->orderBy('term_type')
+                ->orderBy('category')
+                ->orderBy('order')
+                ->get()
+                ->groupBy('term_type');
+
+            // Fetch obstacles and challenges
+            $obstacles = \App\Models\ObstacleChallenge::obstacles()->active()->ordered()->get();
+            $challenges = \App\Models\ObstacleChallenge::challenges()->active()->ordered()->get();
+
+            // Fetch job descriptions and activities
+            $jobDescriptions = \App\Models\JobDescription::descriptions()->active()->ordered()->get();
+            $jobActivities = \App\Models\JobDescription::activities()->active()->ordered()->get()
+                ->groupBy(function ($activity) {
+                    return $activity->year_label;
+                })
+                ->sortBy(function ($items, $key) {
+                    if ($key === 'Lainnya') {
+                        return PHP_INT_MAX;
+                    }
+                    preg_match('/^(\d{4})/', $key, $m);
+                    return isset($m[1]) ? (int) $m[1] : PHP_INT_MAX - 1;
+                });
+
+            // Fetch Business Process Flows
+            $businessFlows = \App\Models\BusinessProcessFlow::orderBy('step_order')->get();
+
+            return compact(
+                'profile',
+                'categories',
+                'experiences',
+                'educations',
+                'technologies',
+                'featuredProjects',
+                'allProjects',
+                'technicalSkills',
+                'softSkills',
+                'certifications',
+                'committeeActivities',
+                'companyProfile',
+                'organizationMembers',
+                'automationStrategies',
+                'obstacles',
+                'challenges',
+                'jobDescriptions',
+                'jobActivities',
+                'businessFlows'
+            );
+        });
+
+        extract($payload);
 
         // Default Sections List (Canonical)
         $defaultSections = [
@@ -146,11 +171,27 @@ class HomeController extends Controller
         $sectionOrder = array_unique(array_merge($sectionOrder, $defaultSections));
 
         return view('home', compact(
-            'profile', 'categories', 'experiences', 'educations', 'technologies', 
-            'featuredProjects', 'allProjects', 'technicalSkills', 'softSkills', 
-            'certifications', 'committeeActivities', 'companyProfile', 
-            'organizationMembers', 'automationStrategies', 'obstacles', 'challenges', 
-            'jobDescriptions', 'jobActivities', 'businessFlows', 'visibleSections', 'sectionOrder'
+            'profile',
+            'categories',
+            'experiences',
+            'educations',
+            'technologies',
+            'featuredProjects',
+            'allProjects',
+            'technicalSkills',
+            'softSkills',
+            'certifications',
+            'committeeActivities',
+            'companyProfile',
+            'organizationMembers',
+            'automationStrategies',
+            'obstacles',
+            'challenges',
+            'jobDescriptions',
+            'jobActivities',
+            'businessFlows',
+            'visibleSections',
+            'sectionOrder'
         ));
     }
 }
