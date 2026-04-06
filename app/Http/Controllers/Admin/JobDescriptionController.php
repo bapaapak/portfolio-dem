@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\JobDescription;
 use Illuminate\Http\Request;
+use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
 
@@ -14,6 +15,8 @@ class JobDescriptionController extends Controller
 
     public function index()
     {
+        $this->ensureOptionalColumnsExist();
+
         $descriptions = JobDescription::descriptions()->ordered()->get();
         $activities = JobDescription::activities()->ordered()->get();
         
@@ -22,11 +25,15 @@ class JobDescriptionController extends Controller
 
     public function create()
     {
+        $this->ensureOptionalColumnsExist();
+
         return view('admin.job_descriptions.create');
     }
 
     public function store(Request $request)
     {
+        $this->ensureOptionalColumnsExist();
+
         $uploadError = $_FILES['illustration_image']['error'] ?? UPLOAD_ERR_OK;
         if ($uploadError === UPLOAD_ERR_INI_SIZE || $uploadError === UPLOAD_ERR_FORM_SIZE) {
             return back()
@@ -64,11 +71,15 @@ class JobDescriptionController extends Controller
 
     public function edit(JobDescription $jobDescription)
     {
+        $this->ensureOptionalColumnsExist();
+
         return view('admin.job_descriptions.edit', compact('jobDescription'));
     }
 
     public function update(Request $request, JobDescription $jobDescription)
     {
+        $this->ensureOptionalColumnsExist();
+
         $uploadError = $_FILES['illustration_image']['error'] ?? UPLOAD_ERR_OK;
         if ($uploadError === UPLOAD_ERR_INI_SIZE || $uploadError === UPLOAD_ERR_FORM_SIZE) {
             return back()
@@ -146,5 +157,34 @@ class JobDescriptionController extends Controller
             fn ($key) => in_array($key, $this->jobDescriptionColumns, true),
             ARRAY_FILTER_USE_KEY
         );
+    }
+
+    private function ensureOptionalColumnsExist(): void
+    {
+        $table = (new JobDescription())->getTable();
+
+        if (!Schema::hasTable($table)) {
+            return;
+        }
+
+        if (!Schema::hasColumn($table, 'year')) {
+            Schema::table($table, function (Blueprint $blueprint) {
+                $blueprint->year('year')->nullable()->after('type');
+            });
+        }
+
+        if (!Schema::hasColumn($table, 'year_end')) {
+            Schema::table($table, function (Blueprint $blueprint) {
+                $blueprint->smallInteger('year_end')->nullable()->after('year');
+            });
+        }
+
+        if (!Schema::hasColumn($table, 'illustration_image')) {
+            Schema::table($table, function (Blueprint $blueprint) {
+                $blueprint->string('illustration_image')->nullable()->after('items');
+            });
+        }
+
+        $this->jobDescriptionColumns = null;
     }
 }
