@@ -20,8 +20,8 @@ class LogVisitorActivity
      */
     public function handle(Request $request, Closure $next)
     {
-        // Skip logging for admin routes, assets, or api if needed
-        if (!$request->is('admin/*') && !$request->is('_debugbar/*')) {
+        // Skip logging for admin/debug/tooling/media routes to keep asset delivery reliable.
+        if (!$request->is('admin/*') && !$request->is('_debugbar/*') && !$request->is('media/*') && !$request->is('storage/*')) {
              try {
                 $uniqueVisitorId = session()->getId(); // Could use session to dedup if needed, but for now simple log
                 
