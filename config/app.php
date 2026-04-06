@@ -39,7 +39,8 @@ return [
     |
     */
 
-    'debug' => (bool) env('APP_DEBUG', false),
+    // Force debug off in this deployment to avoid container env override issues.
+    'debug' => false,
 
     /*
     |--------------------------------------------------------------------------

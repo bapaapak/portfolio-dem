@@ -15,7 +15,8 @@ return [
     |
     */
 
-    'default' => env('CACHE_STORE', 'database'),
+    // Force file cache store to avoid heavy DB cache traffic in production.
+    'default' => 'file',
 
     /*
     |--------------------------------------------------------------------------

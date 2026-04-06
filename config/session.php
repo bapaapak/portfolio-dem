@@ -18,7 +18,8 @@ return [
     |
     */
 
-    'driver' => env('SESSION_DRIVER', 'database'),
+    // Force file session driver to avoid DB session bottlenecks in production.
+    'driver' => 'file',
 
     /*
     |--------------------------------------------------------------------------
