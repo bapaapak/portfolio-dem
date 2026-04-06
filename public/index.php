@@ -5,6 +5,18 @@ use Illuminate\Http\Request;
 
 define('LARAVEL_START', microtime(true));
 
+// Recover from stale/corrupt bootstrap cache files that can break provider resolution
+// on production servers where package discovery/cache was generated from a different
+// dependency set.
+foreach ([
+    __DIR__ . '/../bootstrap/cache/packages.php',
+    __DIR__ . '/../bootstrap/cache/services.php',
+] as $bootstrapCacheFile) {
+    if (is_file($bootstrapCacheFile) && is_writable($bootstrapCacheFile)) {
+        @unlink($bootstrapCacheFile);
+    }
+}
+
 // Determine if the application is in maintenance mode...
 if (file_exists($maintenance = __DIR__.'/../storage/framework/maintenance.php')) {
     require $maintenance;
