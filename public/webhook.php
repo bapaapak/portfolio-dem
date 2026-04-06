@@ -54,6 +54,9 @@ $commands = [
     "cd {$basePath} && php artisan storage:link --force 2>&1",
     "cd {$basePath} && php artisan optimize:clear 2>&1",
     "cd {$basePath} && php artisan config:cache 2>&1",
+    "cd {$basePath} && php artisan route:cache 2>&1",
+    "cd {$basePath} && php artisan view:cache 2>&1",
+    "cd {$basePath} && php artisan queue:restart 2>&1",
 ];
 
 foreach ($commands as $cmd) {

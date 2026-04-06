@@ -58,6 +58,15 @@ php artisan optimize:clear
 echo ">> Caching config..."
 php artisan config:cache
 
+echo ">> Caching routes..."
+php artisan route:cache
+
+echo ">> Caching views..."
+php artisan view:cache
+
+echo ">> Restarting queue workers..."
+php artisan queue:restart || true
+
 # Build frontend assets (uncomment jika Node.js tersedia di server)
 # echo ">> Building frontend assets..."
 # npm ci && npm run build

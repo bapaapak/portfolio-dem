@@ -71,3 +71,26 @@ server {
 If you also need PHP limits aligned with that setting, keep `upload_max_filesize` and `post_max_size` in sync in [public/.user.ini](public/.user.ini).
 
 See [NGINX_UPLOAD_LIMIT.md](NGINX_UPLOAD_LIMIT.md) for a ready-to-use nginx snippet.
+
+## Performance Quick Start
+
+1. Deploy latest code:
+
+```bash
+git pull origin main
+bash deploy.sh
+```
+
+2. Set production env values in your server `.env` (see [env.production](env.production)):
+
+```env
+APP_ENV=production
+APP_DEBUG=false
+CACHE_STORE=file
+SESSION_DRIVER=file
+QUEUE_CONNECTION=database
+```
+
+3. Run queue worker continuously with Supervisor using [sh/supervisor/laravel-worker.conf](sh/supervisor/laravel-worker.conf).
+
+4. Apply nginx tuning from [NGINX_PERFORMANCE.conf](NGINX_PERFORMANCE.conf).
