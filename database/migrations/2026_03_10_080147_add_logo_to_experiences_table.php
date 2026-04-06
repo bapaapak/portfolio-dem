@@ -11,15 +11,19 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('experiences', function (Blueprint $table) {
-            $table->string('logo')->nullable()->after('company');
-        });
+        if (!Schema::hasColumn('experiences', 'logo')) {
+            Schema::table('experiences', function (Blueprint $table) {
+                $table->string('logo')->nullable()->after('company');
+            });
+        }
     }
 
     public function down(): void
     {
-        Schema::table('experiences', function (Blueprint $table) {
-            $table->dropColumn('logo');
-        });
+        if (Schema::hasColumn('experiences', 'logo')) {
+            Schema::table('experiences', function (Blueprint $table) {
+                $table->dropColumn('logo');
+            });
+        }
     }
 };
