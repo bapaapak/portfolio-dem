@@ -75,13 +75,25 @@ class Experience extends Model
             return null;
         }
 
-        $path = str_replace('\\', '/', trim($rawPath));
+        $raw = str_replace('\\', '/', trim($rawPath));
+        $path = $raw;
 
-        if (preg_match('#^https?://#', $path)) {
-            return $path;
+        if (preg_match('#^https?://#', $raw)) {
+            $parsedPath = parse_url($raw, PHP_URL_PATH) ?: '';
+
+            // External CDN/file URL without local storage/media path: keep as-is.
+            if ($parsedPath === '' || !preg_match('#/(storage|media|public)/#', $parsedPath)) {
+                return $raw;
+            }
+
+            $path = $parsedPath;
         }
 
         $path = ltrim($path, '/');
+
+        if (str_starts_with($path, 'media/')) {
+            $path = substr($path, strlen('media/'));
+        }
 
         $prefixes = [
             'storage/app/public/',
