@@ -103,7 +103,7 @@
             <div class="form-group" id="illustration-field" style="display: {{ old('type') == 'activity' ? 'block' : 'none' }}">
                 <label>Gambar Ilustrasi</label>
                 <input type="file" name="illustration_image" id="illustration_image" class="form-control" accept="image/*">
-                <small style="display:block;margin-top:4px;color:#9ca3af;">Format: JPG, PNG, GIF, WebP. Maksimum 10MB.</small>
+                <small style="display:block;margin-top:4px;color:#9ca3af;">Format: JPG, PNG, GIF, WebP. Jika file besar, sistem akan kompres otomatis sebelum upload.</small>
                 @error('illustration_image')
                 <div class="text-sm text-red-500 mt-1">{{ $message }}</div>
                 @enderror
@@ -146,12 +146,67 @@ function addItem() {
     container.appendChild(div);
 }
 
-document.getElementById('illustration_image')?.addEventListener('change', function () {
-    const maxSize = 10 * 1024 * 1024;
+async function compressImageFile(file, maxBytes = 2 * 1024 * 1024) {
+    if (!file || !file.type.startsWith('image/')) return file;
+    if (file.size <= maxBytes) return file;
+
+    const dataUrl = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+    });
+
+    const img = await new Promise((resolve, reject) => {
+        const image = new Image();
+        image.onload = () => resolve(image);
+        image.onerror = reject;
+        image.src = dataUrl;
+    });
+
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+
+    const maxDimension = 2200;
+    let width = img.width;
+    let height = img.height;
+    if (width > maxDimension || height > maxDimension) {
+        const ratio = Math.min(maxDimension / width, maxDimension / height);
+        width = Math.round(width * ratio);
+        height = Math.round(height * ratio);
+    }
+
+    canvas.width = width;
+    canvas.height = height;
+    ctx.drawImage(img, 0, 0, width, height);
+
+    let quality = 0.9;
+    let blob = await new Promise((resolve) => canvas.toBlob(resolve, 'image/jpeg', quality));
+    while (blob && blob.size > maxBytes && quality > 0.45) {
+        quality -= 0.1;
+        blob = await new Promise((resolve) => canvas.toBlob(resolve, 'image/jpeg', quality));
+    }
+
+    if (!blob) return file;
+    const baseName = (file.name || 'illustration').replace(/\.[^/.]+$/, '');
+    return new File([blob], baseName + '.jpg', { type: 'image/jpeg' });
+}
+
+document.getElementById('illustration_image')?.addEventListener('change', async function () {
     const file = this.files && this.files[0] ? this.files[0] : null;
-    if (file && file.size > maxSize) {
-        alert('Ukuran gambar melebihi 10MB. Silakan kompres gambar terlebih dahulu.');
-        this.value = '';
+    if (!file) return;
+
+    const originalSize = file.size;
+    const compressed = await compressImageFile(file);
+
+    if (compressed !== file) {
+        const dt = new DataTransfer();
+        dt.items.add(compressed);
+        this.files = dt.files;
+
+        const beforeMB = (originalSize / (1024 * 1024)).toFixed(2);
+        const afterMB = (compressed.size / (1024 * 1024)).toFixed(2);
+        alert('Gambar dikompres otomatis dari ' + beforeMB + 'MB menjadi ' + afterMB + 'MB agar upload tidak macet di server.');
     }
 });
 </script>
