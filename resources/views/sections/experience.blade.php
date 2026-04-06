@@ -35,7 +35,7 @@
                                     alt="{{ $experience->company }} logo"
                                     class="exp-card-logo"
                                     loading="lazy"
-                                    onerror="if (this.dataset.fallback && this.src !== this.dataset.fallback) { this.src = this.dataset.fallback; } else { this.style.display='none'; }"
+                                    onerror="if (!this.dataset.fallbackApplied && this.dataset.fallback) { this.dataset.fallbackApplied = '1'; this.src = this.dataset.fallback; } else { this.style.display='none'; }"
                                 >
                             @endif
                             <!-- Company ID -->
@@ -161,7 +161,7 @@
                                     alt="{{ $experience->company }} logo"
                                     class="exp-card-logo"
                                     loading="lazy"
-                                    onerror="if (this.dataset.fallback && this.src !== this.dataset.fallback) { this.src = this.dataset.fallback; } else { this.style.display='none'; }"
+                                    onerror="if (!this.dataset.fallbackApplied && this.dataset.fallback) { this.dataset.fallbackApplied = '1'; this.src = this.dataset.fallback; } else { this.style.display='none'; }"
                                 >
                             @endif
                              <!-- Company ID -->

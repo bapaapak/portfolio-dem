@@ -23,7 +23,7 @@
                                         class="committee-lightbox-trigger"
                                         loading="lazy"
                                         decoding="async"
-                                        onerror="if (this.dataset.fallback && this.src !== this.dataset.fallback) { this.src = this.dataset.fallback; } else { this.style.display='none'; }"
+                                        onerror="if (!this.dataset.fallbackApplied && this.dataset.fallback) { this.dataset.fallbackApplied = '1'; this.src = this.dataset.fallback; } else { this.style.display='none'; }"
                                         onclick="openCommitteeLightbox(this)"
                                     >
                                 @else

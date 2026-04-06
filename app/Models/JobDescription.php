@@ -72,16 +72,23 @@ class JobDescription extends Model
 
         $prefixes = [
             'storage/app/public/',
+            'app/storage/app/public/',
+            'var/www/html/storage/app/public/',
             'app/public/',
             'public/storage/',
-            'public/',
             'storage/',
+            'public/',
         ];
 
-        foreach ($prefixes as $prefix) {
-            if (str_starts_with($path, $prefix)) {
-                $path = substr($path, strlen($prefix));
-                break;
+        $stripped = true;
+        while ($stripped) {
+            $stripped = false;
+            foreach ($prefixes as $prefix) {
+                if (str_starts_with($path, $prefix)) {
+                    $path = ltrim(substr($path, strlen($prefix)), '/');
+                    $stripped = true;
+                    break;
+                }
             }
         }
 
