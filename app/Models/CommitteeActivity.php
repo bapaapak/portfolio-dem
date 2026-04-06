@@ -18,7 +18,6 @@ class CommitteeActivity extends Model
         'end_date',
         'location',
         'image',
-        'image_data',
         'order',
         'is_active',
     ];
