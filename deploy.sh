@@ -15,8 +15,8 @@ git clean -fd --exclude=.env --exclude=storage
 
 # Install PHP dependencies
 echo ">> Installing Composer dependencies..."
-composer install --no-dev --optimize-autoloader --no-interaction
-composer dump-autoload -o
+composer install --no-dev --optimize-autoloader --no-interaction --no-scripts
+composer dump-autoload -o --no-scripts
 
 # Critical recovery for "Target class [view] does not exist"
 echo ">> Resetting bootstrap cache..."
