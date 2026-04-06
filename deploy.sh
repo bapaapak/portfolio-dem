@@ -48,7 +48,7 @@ fi
 # Create necessary directories
 echo ">> Creating required directories..."
 mkdir -p storage/app/public/experiences/logos
-chmod -R 777 storage/app/public/experiences/logos
+mkdir -p storage/framework/views storage/framework/cache storage/framework/sessions storage/logs bootstrap/cache
 
 # Clear old cache
 echo ">> Clearing cache..."
@@ -64,8 +64,23 @@ php artisan config:cache
 
 # Fix storage permissions
 echo ">> Fixing permissions..."
-chmod -R 775 storage bootstrap/cache
-chmod -R 775 public
+WEB_USER=""
+for CANDIDATE in www-data nginx apache apache2 nobody; do
+    if id "$CANDIDATE" >/dev/null 2>&1; then
+        WEB_USER="$CANDIDATE"
+        break
+    fi
+done
+
+if [ "$(id -u)" -eq 0 ] && [ -n "$WEB_USER" ]; then
+    echo ">> Setting ownership to $WEB_USER..."
+    chown -R "$WEB_USER":"$WEB_USER" storage bootstrap/cache public/storage || true
+fi
+
+chmod -R ug+rwX storage bootstrap/cache
+find storage bootstrap/cache -type d -exec chmod 775 {} \;
+find storage bootstrap/cache -type f -exec chmod 664 {} \;
+chmod -R 755 public
 
 echo ""
 echo "=== Deployment Complete! ==="
