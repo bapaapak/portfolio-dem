@@ -24,7 +24,8 @@
                         {!! nl2br(e($profile->career_aspiration ?? 'No career aspiration added yet.')) !!}
                     </span>
                 </div>
-                @if($profile->aspiration_image)
+                @php $aspirationPath = $profile->aspiration_image_storage_path ?? null; @endphp
+                @if($aspirationPath && \Illuminate\Support\Facades\Storage::disk('public')->exists($aspirationPath))
                 <div style="margin-top: 20px;">
                     <img src="{{ $profile->aspiration_image_url }}"
                         data-fallback="{{ $profile->aspiration_image_fallback_url }}"
@@ -34,6 +35,10 @@
                         onerror="if (this.dataset.fallback && this.src !== this.dataset.fallback) { this.src = this.dataset.fallback; } else { this.style.display='none'; }"
                          onmouseover="this.style.opacity='0.85'"
                          onmouseout="this.style.opacity='1'">
+                </div>
+                @else
+                <div style="margin-top: 20px; height: 220px; border-radius: 10px; border: 1px dashed rgba(255,255,255,0.2); display:flex; align-items:center; justify-content:center; color: var(--text-secondary);">
+                    <span>Ilustrasi belum tersedia</span>
                 </div>
                 @endif
             </div>

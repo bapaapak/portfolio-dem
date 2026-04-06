@@ -65,16 +65,19 @@
                                 <div class="milestone-dot"></div>
                                 <div class="milestone-content">
                                     <h4 class="jd-title">{{ $activity->title }}</h4>
-                                    @if($activity->illustration_image)
+                                    @php $illustrationPath = $activity->illustration_image_storage_path ?? null; @endphp
+                                    @if($illustrationPath && \Illuminate\Support\Facades\Storage::disk('public')->exists($illustrationPath))
                                         <div class="activity-illustration-wrapper">
                                             <img src="{{ $activity->illustration_image_url }}"
-                                                 data-fallback="{{ $activity->illustration_image_fallback_url }}"
                                                  alt="{{ $activity->title }}"
                                                  class="activity-illustration-img lightbox-trigger"
-                                                    loading="lazy"
-                                                    decoding="async"
-                                                 onerror="if (!this.dataset.fallbackApplied && this.dataset.fallback) { this.dataset.fallbackApplied = '1'; this.src = this.dataset.fallback; } else { this.style.display='none'; }"
+                                                 loading="lazy"
+                                                 decoding="async"
                                                  onclick="openLightbox(this)">
+                                        </div>
+                                    @else
+                                        <div class="activity-illustration-wrapper" style="height:160px; display:flex; align-items:center; justify-content:center; border:1px dashed rgba(0,0,0,0.12); border-radius:8px;">
+                                            <span style="color:#9ca3af; font-size:0.9rem;">Ilustrasi belum tersedia</span>
                                         </div>
                                     @endif
                                     @if($activity->items && count($activity->items) > 0)

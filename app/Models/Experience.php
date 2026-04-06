@@ -43,7 +43,7 @@ class Experience extends Model
 
     public function getLogoUrlAttribute(): ?string
     {
-        $logoPath = $this->normalizeMediaPath($this->logo);
+        $logoPath = $this->getLogoStoragePathAttribute();
         if (!$logoPath) {
             return null;
         }
@@ -57,7 +57,7 @@ class Experience extends Model
 
     public function getLogoFallbackUrlAttribute(): ?string
     {
-        $logoPath = $this->normalizeMediaPath($this->logo);
+        $logoPath = $this->getLogoStoragePathAttribute();
         if (!$logoPath) {
             return null;
         }
@@ -67,6 +67,11 @@ class Experience extends Model
         }
 
         return '/storage/' . $logoPath;
+    }
+
+    public function getLogoStoragePathAttribute(): ?string
+    {
+        return $this->normalizeMediaPath($this->logo);
     }
 
     private function normalizeMediaPath(?string $rawPath): ?string

@@ -25,14 +25,19 @@
                             </div>
                         </div>
                         <div class="exp-card">
-                            @if($education->logo)
+                            @php $educationLogoPath = $education->logo_storage_path; @endphp
+                            @if($educationLogoPath && \Illuminate\Support\Facades\Storage::disk('public')->exists($educationLogoPath))
                                 <img
                                     src="{{ $education->logo_url }}"
-                                    data-fallback="{{ $education->logo_fallback_url }}"
                                     alt="{{ $education->institution }} logo"
                                     class="exp-card-logo"
-                                    onerror="if (this.dataset.fallback && this.src !== this.dataset.fallback) { this.src = this.dataset.fallback; } else { this.style.display='none'; }"
+                                    loading="lazy"
+                                    decoding="async"
                                 >
+                            @else
+                                <div class="committee-image-placeholder" style="height: 100px; margin-bottom: 12px;">
+                                    <i class="fas fa-graduation-cap" style="font-size:2rem; opacity:0.3;"></i>
+                                </div>
                             @endif
                             <h3 class="exp-company">{{ $education->institution }}</h3>
                             <p class="exp-position">{{ $education->degree }}
@@ -86,14 +91,19 @@
                             </div>
                         </div>
                         <div class="exp-card">
-                            @if($education->logo)
+                            @php $educationLogoPath = $education->logo_storage_path; @endphp
+                            @if($educationLogoPath && \Illuminate\Support\Facades\Storage::disk('public')->exists($educationLogoPath))
                                 <img
                                     src="{{ $education->logo_url }}"
-                                    data-fallback="{{ $education->logo_fallback_url }}"
                                     alt="{{ $education->institution }} logo"
                                     class="exp-card-logo"
-                                    onerror="if (this.dataset.fallback && this.src !== this.dataset.fallback) { this.src = this.dataset.fallback; } else { this.style.display='none'; }"
+                                    loading="lazy"
+                                    decoding="async"
                                 >
+                            @else
+                                <div class="committee-image-placeholder" style="height: 100px; margin-bottom: 12px;">
+                                    <i class="fas fa-graduation-cap" style="font-size:2rem; opacity:0.3;"></i>
+                                </div>
                             @endif
                             <h3 class="exp-company">{{ $education->institution }}</h3>
                             <p class="exp-position">{{ $education->degree }}

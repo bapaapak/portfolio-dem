@@ -54,7 +54,7 @@ class CommitteeActivity extends Model
 
     public function getImageUrlAttribute(): ?string
     {
-        $path = $this->normalizeMediaPath($this->image);
+        $path = $this->image_storage_path;
         if (!$path) {
             return null;
         }
@@ -68,7 +68,7 @@ class CommitteeActivity extends Model
 
     public function getImageFallbackUrlAttribute(): ?string
     {
-        $path = $this->normalizeMediaPath($this->image);
+        $path = $this->image_storage_path;
         if (!$path) {
             return null;
         }
@@ -78,6 +78,11 @@ class CommitteeActivity extends Model
         }
 
         return '/storage/' . $path;
+    }
+
+    public function getImageStoragePathAttribute(): ?string
+    {
+        return $this->normalizeMediaPath($this->image);
     }
 
     private function normalizeMediaPath(?string $rawPath): ?string

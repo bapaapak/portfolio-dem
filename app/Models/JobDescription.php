@@ -30,7 +30,7 @@ class JobDescription extends Model
 
     public function getIllustrationImageUrlAttribute(): ?string
     {
-        $path = $this->normalizeMediaPath($this->illustration_image);
+        $path = $this->illustration_image_storage_path;
         if (!$path) {
             return null;
         }
@@ -44,7 +44,7 @@ class JobDescription extends Model
 
     public function getIllustrationImageFallbackUrlAttribute(): ?string
     {
-        $path = $this->normalizeMediaPath($this->illustration_image);
+        $path = $this->illustration_image_storage_path;
         if (!$path) {
             return null;
         }
@@ -54,6 +54,11 @@ class JobDescription extends Model
         }
 
         return '/storage/' . ltrim($path, '/');
+    }
+
+    public function getIllustrationImageStoragePathAttribute(): ?string
+    {
+        return $this->normalizeMediaPath($this->illustration_image);
     }
 
     private function normalizeMediaPath(?string $rawPath): ?string

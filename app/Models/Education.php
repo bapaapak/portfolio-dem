@@ -31,11 +31,12 @@ class Education extends Model
 
     public function getLogoUrlAttribute(): ?string
     {
-        if (!$this->logo) {
+        $path = $this->logo_storage_path;
+        if (!$path) {
             return null;
         }
 
-        $logoPath = ltrim($this->logo, '/');
+        $logoPath = ltrim($path, '/');
 
         if (preg_match('#^https?://#', $logoPath)) {
             return $logoPath;
@@ -46,16 +47,52 @@ class Education extends Model
 
     public function getLogoFallbackUrlAttribute(): ?string
     {
-        if (!$this->logo) {
+        $path = $this->logo_storage_path;
+        if (!$path) {
             return null;
         }
 
-        $logoPath = ltrim($this->logo, '/');
+        $logoPath = ltrim($path, '/');
 
         if (preg_match('#^https?://#', $logoPath)) {
             return $logoPath;
         }
 
         return '/storage/' . $logoPath;
+    }
+
+    public function getLogoStoragePathAttribute(): ?string
+    {
+        if (!$this->logo) {
+            return null;
+        }
+
+        $logoPath = str_replace('\\', '/', trim($this->logo));
+
+        if (preg_match('#^https?://#', $logoPath)) {
+            $parsedPath = parse_url($logoPath, PHP_URL_PATH) ?: '';
+            if ($parsedPath === '' || !preg_match('#/(storage|media|public)/#', $parsedPath)) {
+                return $logoPath;
+            }
+            $logoPath = $parsedPath;
+        }
+
+        $logoPath = ltrim($logoPath, '/');
+
+        foreach ([
+            'storage/app/public/',
+            'app/storage/app/public/',
+            'var/www/html/storage/app/public/',
+            'public/storage/',
+            'storage/',
+            'public/',
+        ] as $prefix) {
+            if (str_starts_with($logoPath, $prefix)) {
+                $logoPath = ltrim(substr($logoPath, strlen($prefix)), '/');
+                break;
+            }
+        }
+
+        return ltrim($logoPath, '/');
     }
 }

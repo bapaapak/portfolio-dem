@@ -28,15 +28,19 @@
                             </div>
                         </div>
                         <div class="exp-card">
-                            @if($experience->logo)
+                            @php $experienceLogoPath = $experience->logo_storage_path; @endphp
+                            @if($experienceLogoPath && \Illuminate\Support\Facades\Storage::disk('public')->exists($experienceLogoPath))
                                 <img
                                     src="{{ $experience->logo_url }}"
-                                    data-fallback="{{ $experience->logo_fallback_url }}"
                                     alt="{{ $experience->company }} logo"
                                     class="exp-card-logo"
                                     loading="lazy"
-                                    onerror="if (!this.dataset.fallbackApplied && this.dataset.fallback) { this.dataset.fallbackApplied = '1'; this.src = this.dataset.fallback; } else { this.style.display='none'; }"
+                                    decoding="async"
                                 >
+                            @else
+                                <div class="committee-image-placeholder" style="height: 100px; margin-bottom: 12px;">
+                                    <i class="fas fa-building" style="font-size:2rem; opacity:0.3;"></i>
+                                </div>
                             @endif
                             <!-- Company ID -->
                             <h3 class="exp-company lang-id" data-display="block" style="display: block;">{{ $experience->company }}</h3>
@@ -154,15 +158,19 @@
                             </div>
                         </div>
                         <div class="exp-card">
-                            @if($experience->logo)
+                            @php $experienceLogoPath = $experience->logo_storage_path; @endphp
+                            @if($experienceLogoPath && \Illuminate\Support\Facades\Storage::disk('public')->exists($experienceLogoPath))
                                 <img
                                     src="{{ $experience->logo_url }}"
-                                    data-fallback="{{ $experience->logo_fallback_url }}"
                                     alt="{{ $experience->company }} logo"
                                     class="exp-card-logo"
                                     loading="lazy"
-                                    onerror="if (!this.dataset.fallbackApplied && this.dataset.fallback) { this.dataset.fallbackApplied = '1'; this.src = this.dataset.fallback; } else { this.style.display='none'; }"
+                                    decoding="async"
                                 >
+                            @else
+                                <div class="committee-image-placeholder" style="height: 100px; margin-bottom: 12px;">
+                                    <i class="fas fa-building" style="font-size:2rem; opacity:0.3;"></i>
+                                </div>
                             @endif
                              <!-- Company ID -->
                             <h3 class="exp-company lang-id" style="display: block;">{{ $experience->company }}</h3>

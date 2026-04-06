@@ -15,15 +15,14 @@
                     @foreach($activities as $activity)
                         <div class="committee-card">
                             <div class="committee-image">
-                                @if($activity->image)
+                                @php $committeeImagePath = $activity->image_storage_path; @endphp
+                                @if($committeeImagePath && \Illuminate\Support\Facades\Storage::disk('public')->exists($committeeImagePath))
                                     <img
                                         src="{{ $activity->image_url }}"
-                                        data-fallback="{{ $activity->image_fallback_url }}"
                                         alt="{{ $activity->title }}"
                                         class="committee-lightbox-trigger"
                                         loading="lazy"
                                         decoding="async"
-                                        onerror="if (!this.dataset.fallbackApplied && this.dataset.fallback) { this.dataset.fallbackApplied = '1'; this.src = this.dataset.fallback; } else { this.style.display='none'; }"
                                         onclick="openCommitteeLightbox(this)"
                                     >
                                 @else
