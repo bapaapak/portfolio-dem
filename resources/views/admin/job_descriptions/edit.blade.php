@@ -122,7 +122,7 @@
                         }
                         $illustrationUrl = str_starts_with($illustrationPath, 'http://') || str_starts_with($illustrationPath, 'https://')
                             ? $illustrationPath
-                            : route('media.show', ['path' => $illustrationPath]);
+                            : '/media/' . ltrim($illustrationPath, '/');
                     @endphp
                     <div style="margin-bottom:10px;">
                         <img src="{{ $illustrationUrl }}" alt="Ilustrasi" style="max-width:100%;max-height:200px;border-radius:8px;border:1px solid #374151;" onerror="this.style.display='none'">

@@ -73,7 +73,7 @@
                                             }
                                             $illustrationUrl = str_starts_with($illustrationPath, 'http://') || str_starts_with($illustrationPath, 'https://')
                                                 ? $illustrationPath
-                                                : route('media.show', ['path' => $illustrationPath]);
+                                                : '/media/' . ltrim($illustrationPath, '/');
                                         @endphp
                                         <div class="activity-illustration-wrapper">
                                             <img src="{{ $illustrationUrl }}"
