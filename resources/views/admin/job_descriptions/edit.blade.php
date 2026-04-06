@@ -121,6 +121,7 @@
                     </div>
                 @endif
                 <input type="file" name="illustration_image" id="illustration_image" class="form-control" accept="image/*">
+                <small style="display:block;margin-top:4px;color:#9ca3af;">Format: JPG, PNG, GIF, WebP. Maksimum 10MB.</small>
                 @error('illustration_image')
                 <div class="text-sm text-red-500 mt-1">{{ $message }}</div>
                 @enderror
@@ -162,5 +163,14 @@ function addItem() {
     `;
     container.appendChild(div);
 }
+
+document.getElementById('illustration_image')?.addEventListener('change', function () {
+    const maxSize = 10 * 1024 * 1024;
+    const file = this.files && this.files[0] ? this.files[0] : null;
+    if (file && file.size > maxSize) {
+        alert('Ukuran gambar melebihi 10MB. Silakan kompres gambar terlebih dahulu.');
+        this.value = '';
+    }
+});
 </script>
 @endsection

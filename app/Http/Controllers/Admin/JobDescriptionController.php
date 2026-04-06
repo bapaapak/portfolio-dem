@@ -24,6 +24,13 @@ class JobDescriptionController extends Controller
 
     public function store(Request $request)
     {
+        $uploadError = $_FILES['illustration_image']['error'] ?? UPLOAD_ERR_OK;
+        if ($uploadError === UPLOAD_ERR_INI_SIZE || $uploadError === UPLOAD_ERR_FORM_SIZE) {
+            return back()
+                ->withInput()
+                ->withErrors(['illustration_image' => 'Ukuran file terlalu besar untuk konfigurasi server. Maksimum saat ini sekitar 2MB. Hubungi admin server untuk menaikkan upload_max_filesize/post_max_size minimal 10MB.']);
+        }
+
         $validated = $request->validate([
             'type' => 'required|in:description,activity',
             'year' => 'nullable|integer|min:2000|max:2099',
@@ -65,6 +72,13 @@ class JobDescriptionController extends Controller
 
     public function update(Request $request, JobDescription $jobDescription)
     {
+        $uploadError = $_FILES['illustration_image']['error'] ?? UPLOAD_ERR_OK;
+        if ($uploadError === UPLOAD_ERR_INI_SIZE || $uploadError === UPLOAD_ERR_FORM_SIZE) {
+            return back()
+                ->withInput()
+                ->withErrors(['illustration_image' => 'Ukuran file terlalu besar untuk konfigurasi server. Maksimum saat ini sekitar 2MB. Hubungi admin server untuk menaikkan upload_max_filesize/post_max_size minimal 10MB.']);
+        }
+
         $validated = $request->validate([
             'type' => 'required|in:description,activity',
             'year' => 'nullable|integer|min:2000|max:2099',
