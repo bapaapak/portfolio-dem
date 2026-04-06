@@ -15,7 +15,15 @@ git clean -fd --exclude=.env --exclude=storage
 
 # Install PHP dependencies
 echo ">> Installing Composer dependencies..."
-php artisan composer install --no-dev --optimize-autoloader || composer install --no-dev --optimize-autoloader
+composer install --no-dev --optimize-autoloader --no-interaction
+composer dump-autoload -o
+
+# Critical recovery for "Target class [view] does not exist"
+echo ">> Resetting bootstrap cache..."
+rm -f bootstrap/cache/*.php
+
+echo ">> Re-discovering packages..."
+php artisan package:discover --ansi
 
 # Run migrations
 echo ">> Running migrations..."
@@ -44,15 +52,11 @@ chmod -R 777 storage/app/public/experiences/logos
 
 # Clear old cache
 echo ">> Clearing cache..."
-php artisan config:clear
-php artisan route:clear
-php artisan view:clear
+php artisan optimize:clear
 
-# Re-cache for production
-echo ">> Caching config, routes, views..."
+# Re-cache for production (keep conservative to avoid broken route/view cache)
+echo ">> Caching config..."
 php artisan config:cache
-php artisan route:cache
-php artisan view:cache
 
 # Build frontend assets (uncomment jika Node.js tersedia di server)
 # echo ">> Building frontend assets..."

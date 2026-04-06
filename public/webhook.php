@@ -46,14 +46,14 @@ $commands = [
     "cd {$basePath} && git fetch origin 2>&1",
     "cd {$basePath} && git reset --hard origin/main 2>&1",
     "cd {$basePath} && git clean -fd --exclude=.env --exclude=storage 2>&1",
+    "cd {$basePath} && composer install --no-dev --optimize-autoloader --no-interaction 2>&1",
+    "cd {$basePath} && composer dump-autoload -o 2>&1",
+    "cd {$basePath} && rm -f bootstrap/cache/*.php 2>&1",
+    "cd {$basePath} && php artisan package:discover --ansi 2>&1",
     "cd {$basePath} && php artisan migrate --force 2>&1",
     "cd {$basePath} && php artisan storage:link --force 2>&1",
-    "cd {$basePath} && php artisan config:clear 2>&1",
-    "cd {$basePath} && php artisan route:clear 2>&1",
-    "cd {$basePath} && php artisan view:clear 2>&1",
+    "cd {$basePath} && php artisan optimize:clear 2>&1",
     "cd {$basePath} && php artisan config:cache 2>&1",
-    "cd {$basePath} && php artisan route:cache 2>&1",
-    "cd {$basePath} && php artisan view:cache 2>&1",
 ];
 
 foreach ($commands as $cmd) {
