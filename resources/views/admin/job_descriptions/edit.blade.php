@@ -117,12 +117,12 @@
                 @if($jobDescription->illustration_image)
                     @php
                         $illustrationPath = ltrim($jobDescription->illustration_image, '/');
-                        if (!str_starts_with($illustrationPath, 'http://') && !str_starts_with($illustrationPath, 'https://') && !str_starts_with($illustrationPath, 'storage/')) {
-                            $illustrationPath = 'storage/' . $illustrationPath;
+                        if (str_starts_with($illustrationPath, 'storage/')) {
+                            $illustrationPath = substr($illustrationPath, strlen('storage/'));
                         }
                         $illustrationUrl = str_starts_with($illustrationPath, 'http://') || str_starts_with($illustrationPath, 'https://')
                             ? $illustrationPath
-                            : '/' . ltrim($illustrationPath, '/');
+                            : route('media.show', ['path' => $illustrationPath]);
                     @endphp
                     <div style="margin-bottom:10px;">
                         <img src="{{ $illustrationUrl }}" alt="Ilustrasi" style="max-width:100%;max-height:200px;border-radius:8px;border:1px solid #374151;" onerror="this.style.display='none'">

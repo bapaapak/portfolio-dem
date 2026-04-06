@@ -68,12 +68,12 @@
                                     @if($activity->illustration_image)
                                         @php
                                             $illustrationPath = ltrim($activity->illustration_image, '/');
-                                            if (!str_starts_with($illustrationPath, 'http://') && !str_starts_with($illustrationPath, 'https://') && !str_starts_with($illustrationPath, 'storage/')) {
-                                                $illustrationPath = 'storage/' . $illustrationPath;
+                                            if (str_starts_with($illustrationPath, 'storage/')) {
+                                                $illustrationPath = substr($illustrationPath, strlen('storage/'));
                                             }
                                             $illustrationUrl = str_starts_with($illustrationPath, 'http://') || str_starts_with($illustrationPath, 'https://')
                                                 ? $illustrationPath
-                                                : '/' . ltrim($illustrationPath, '/');
+                                                : route('media.show', ['path' => $illustrationPath]);
                                         @endphp
                                         <div class="activity-illustration-wrapper">
                                             <img src="{{ $illustrationUrl }}"
