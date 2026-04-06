@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\JobDescription;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
 
 class JobDescriptionController extends Controller
@@ -14,8 +13,6 @@ class JobDescriptionController extends Controller
 
     public function index()
     {
-        $this->ensureOptionalColumnsExist();
-
         $descriptions = JobDescription::descriptions()->ordered()->get();
         $activities = JobDescription::activities()->ordered()->get();
         
@@ -24,15 +21,11 @@ class JobDescriptionController extends Controller
 
     public function create()
     {
-        $this->ensureOptionalColumnsExist();
-
         return view('admin.job_descriptions.create');
     }
 
     public function store(Request $request)
     {
-        $this->ensureOptionalColumnsExist();
-
         $uploadError = $_FILES['illustration_image']['error'] ?? UPLOAD_ERR_OK;
         if ($uploadError === UPLOAD_ERR_INI_SIZE || $uploadError === UPLOAD_ERR_FORM_SIZE) {
             return back()
@@ -70,15 +63,11 @@ class JobDescriptionController extends Controller
 
     public function edit(JobDescription $jobDescription)
     {
-        $this->ensureOptionalColumnsExist();
-
         return view('admin.job_descriptions.edit', compact('jobDescription'));
     }
 
     public function update(Request $request, JobDescription $jobDescription)
     {
-        $this->ensureOptionalColumnsExist();
-
         $uploadError = $_FILES['illustration_image']['error'] ?? UPLOAD_ERR_OK;
         if ($uploadError === UPLOAD_ERR_INI_SIZE || $uploadError === UPLOAD_ERR_FORM_SIZE) {
             return back()
@@ -147,41 +136,23 @@ class JobDescriptionController extends Controller
 
     private function filterByExistingColumns(array $payload): array
     {
-        if ($this->jobDescriptionColumns === null) {
-            $this->jobDescriptionColumns = Schema::getColumnListing((new JobDescription())->getTable());
-        }
+        $allowedColumns = [
+            'type',
+            'year',
+            'year_end',
+            'title',
+            'description',
+            'items',
+            'illustration_image',
+            'order',
+            'is_active',
+        ];
 
         return array_filter(
             $payload,
-            fn ($key) => in_array($key, $this->jobDescriptionColumns, true),
+            fn ($key) => in_array($key, $allowedColumns, true),
             ARRAY_FILTER_USE_KEY
         );
-    }
-
-    private function ensureOptionalColumnsExist(): void
-    {
-        try {
-            $table = (new JobDescription())->getTable();
-            if (!Schema::hasTable($table)) {
-                return;
-            }
-
-            // Refresh known columns for safe payload filtering.
-            $this->jobDescriptionColumns = Schema::getColumnListing($table);
-        } catch (\Throwable $e) {
-            // Keep app usable even when schema introspection fails on production.
-            $this->jobDescriptionColumns = [
-                'id',
-                'type',
-                'title',
-                'description',
-                'items',
-                'order',
-                'is_active',
-                'created_at',
-                'updated_at',
-            ];
-        }
     }
 
     private function storeCompressedIllustration($uploadedFile): string
