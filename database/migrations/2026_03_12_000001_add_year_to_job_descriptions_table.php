@@ -8,15 +8,19 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::table('job_descriptions', function (Blueprint $table) {
-            $table->year('year')->nullable()->after('type');
-        });
+        if (!Schema::hasColumn('job_descriptions', 'year')) {
+            Schema::table('job_descriptions', function (Blueprint $table) {
+                $table->year('year')->nullable()->after('type');
+            });
+        }
     }
 
     public function down(): void
     {
-        Schema::table('job_descriptions', function (Blueprint $table) {
-            $table->dropColumn('year');
-        });
+        if (Schema::hasColumn('job_descriptions', 'year')) {
+            Schema::table('job_descriptions', function (Blueprint $table) {
+                $table->dropColumn('year');
+            });
+        }
     }
 };

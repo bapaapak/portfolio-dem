@@ -8,15 +8,19 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::table('job_descriptions', function (Blueprint $table) {
-            $table->smallInteger('year_end')->nullable()->after('year');
-        });
+        if (!Schema::hasColumn('job_descriptions', 'year_end')) {
+            Schema::table('job_descriptions', function (Blueprint $table) {
+                $table->smallInteger('year_end')->nullable()->after('year');
+            });
+        }
     }
 
     public function down(): void
     {
-        Schema::table('job_descriptions', function (Blueprint $table) {
-            $table->dropColumn('year_end');
-        });
+        if (Schema::hasColumn('job_descriptions', 'year_end')) {
+            Schema::table('job_descriptions', function (Blueprint $table) {
+                $table->dropColumn('year_end');
+            });
+        }
     }
 };
