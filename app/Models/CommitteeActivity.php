@@ -51,4 +51,64 @@ class CommitteeActivity extends Model
         
         return $this->event_date->format('d M Y');
     }
+
+    public function getImageUrlAttribute(): ?string
+    {
+        $path = $this->normalizeMediaPath($this->image);
+        if (!$path) {
+            return null;
+        }
+
+        if (preg_match('#^https?://#', $path)) {
+            return $path;
+        }
+
+        return '/storage/' . $path;
+    }
+
+    public function getImageFallbackUrlAttribute(): ?string
+    {
+        $path = $this->normalizeMediaPath($this->image);
+        if (!$path) {
+            return null;
+        }
+
+        if (preg_match('#^https?://#', $path)) {
+            return $path;
+        }
+
+        return '/media/' . $path;
+    }
+
+    private function normalizeMediaPath(?string $rawPath): ?string
+    {
+        if (!$rawPath) {
+            return null;
+        }
+
+        $path = str_replace('\\', '/', trim($rawPath));
+
+        if (preg_match('#^https?://#', $path)) {
+            return $path;
+        }
+
+        $path = ltrim($path, '/');
+
+        $prefixes = [
+            'storage/app/public/',
+            'app/public/',
+            'public/storage/',
+            'public/',
+            'storage/',
+        ];
+
+        foreach ($prefixes as $prefix) {
+            if (str_starts_with($path, $prefix)) {
+                $path = substr($path, strlen($prefix));
+                break;
+            }
+        }
+
+        return ltrim($path, '/');
+    }
 }

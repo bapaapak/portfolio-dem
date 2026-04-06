@@ -71,6 +71,8 @@
                                                  data-fallback="{{ $activity->illustration_image_fallback_url }}"
                                                  alt="{{ $activity->title }}"
                                                  class="activity-illustration-img lightbox-trigger"
+                                                    loading="lazy"
+                                                    decoding="async"
                                                  onerror="if (this.dataset.fallback && this.src !== this.dataset.fallback) { this.src = this.dataset.fallback; } else { this.style.display='none'; }"
                                                  onclick="openLightbox(this)">
                                         </div>

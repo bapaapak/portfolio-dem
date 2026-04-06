@@ -43,11 +43,10 @@ class Experience extends Model
 
     public function getLogoUrlAttribute(): ?string
     {
-        if (!$this->logo) {
+        $logoPath = $this->normalizeMediaPath($this->logo);
+        if (!$logoPath) {
             return null;
         }
-
-        $logoPath = ltrim($this->logo, '/');
 
         if (preg_match('#^https?://#', $logoPath)) {
             return $logoPath;
@@ -58,17 +57,48 @@ class Experience extends Model
 
     public function getLogoFallbackUrlAttribute(): ?string
     {
-        if (!$this->logo) {
+        $logoPath = $this->normalizeMediaPath($this->logo);
+        if (!$logoPath) {
             return null;
         }
-
-        $logoPath = ltrim($this->logo, '/');
 
         if (preg_match('#^https?://#', $logoPath)) {
             return $logoPath;
         }
 
         return '/media/' . $logoPath;
+    }
+
+    private function normalizeMediaPath(?string $rawPath): ?string
+    {
+        if (!$rawPath) {
+            return null;
+        }
+
+        $path = str_replace('\\', '/', trim($rawPath));
+
+        if (preg_match('#^https?://#', $path)) {
+            return $path;
+        }
+
+        $path = ltrim($path, '/');
+
+        $prefixes = [
+            'storage/app/public/',
+            'app/public/',
+            'public/storage/',
+            'public/',
+            'storage/',
+        ];
+
+        foreach ($prefixes as $prefix) {
+            if (str_starts_with($path, $prefix)) {
+                $path = substr($path, strlen($prefix));
+                break;
+            }
+        }
+
+        return ltrim($path, '/');
     }
 
     public function scopeFeatured($query)

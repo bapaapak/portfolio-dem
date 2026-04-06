@@ -16,7 +16,16 @@
                         <div class="committee-card">
                             <div class="committee-image">
                                 @if($activity->image)
-                                    <img src="{{ '/media/' . ltrim($activity->image, '/') }}" alt="{{ $activity->title }}" class="committee-lightbox-trigger" onclick="openCommitteeLightbox(this)">
+                                    <img
+                                        src="{{ $activity->image_url }}"
+                                        data-fallback="{{ $activity->image_fallback_url }}"
+                                        alt="{{ $activity->title }}"
+                                        class="committee-lightbox-trigger"
+                                        loading="lazy"
+                                        decoding="async"
+                                        onerror="if (this.dataset.fallback && this.src !== this.dataset.fallback) { this.src = this.dataset.fallback; } else { this.style.display='none'; }"
+                                        onclick="openCommitteeLightbox(this)"
+                                    >
                                 @else
                                     <div class="committee-image-placeholder">
                                         <i class="fas fa-image" style="font-size:2rem; opacity:0.3;"></i>

@@ -30,18 +30,13 @@ class JobDescription extends Model
 
     public function getIllustrationImageUrlAttribute(): ?string
     {
-        if (!$this->illustration_image) {
+        $path = $this->normalizeMediaPath($this->illustration_image);
+        if (!$path) {
             return null;
         }
 
-        $path = str_replace('\\', '/', ltrim($this->illustration_image, '/'));
-
         if (preg_match('#^https?://#', $path)) {
             return $path;
-        }
-
-        if (str_starts_with($path, 'storage/')) {
-            return '/' . $path;
         }
 
         return '/storage/' . $path;
@@ -49,21 +44,48 @@ class JobDescription extends Model
 
     public function getIllustrationImageFallbackUrlAttribute(): ?string
     {
-        if (!$this->illustration_image) {
+        $path = $this->normalizeMediaPath($this->illustration_image);
+        if (!$path) {
             return null;
         }
-
-        $path = str_replace('\\', '/', ltrim($this->illustration_image, '/'));
 
         if (preg_match('#^https?://#', $path)) {
             return $path;
         }
 
-        if (str_starts_with($path, 'storage/')) {
-            $path = substr($path, strlen('storage/'));
+        return '/media/' . ltrim($path, '/');
+    }
+
+    private function normalizeMediaPath(?string $rawPath): ?string
+    {
+        if (!$rawPath) {
+            return null;
         }
 
-        return '/media/' . ltrim($path, '/');
+        $path = str_replace('\\', '/', trim($rawPath));
+
+        if (preg_match('#^https?://#', $path)) {
+            return $path;
+        }
+
+        $path = ltrim($path, '/');
+
+        $prefixes = [
+            'storage/app/public/',
+            'app/public/',
+            'public/storage/',
+            'public/',
+            'storage/',
+        ];
+
+        foreach ($prefixes as $prefix) {
+            if (str_starts_with($path, $prefix)) {
+                $path = substr($path, strlen($prefix));
+                break;
+            }
+        }
+
+        return ltrim($path, '/');
     }
 
     public function getYearLabelAttribute(): string
