@@ -26,7 +26,13 @@
                         </div>
                         <div class="exp-card">
                             @if($education->logo)
-                                <img src="{{ asset('storage/' . $education->logo) }}" alt="{{ $education->institution }} logo" class="exp-card-logo">
+                                <img
+                                    src="{{ $education->logo_url }}"
+                                    data-fallback="{{ $education->logo_fallback_url }}"
+                                    alt="{{ $education->institution }} logo"
+                                    class="exp-card-logo"
+                                    onerror="if (this.dataset.fallback && this.src !== this.dataset.fallback) { this.src = this.dataset.fallback; } else { this.style.display='none'; }"
+                                >
                             @endif
                             <h3 class="exp-company">{{ $education->institution }}</h3>
                             <p class="exp-position">{{ $education->degree }}
@@ -81,7 +87,13 @@
                         </div>
                         <div class="exp-card">
                             @if($education->logo)
-                                <img src="{{ asset('storage/' . $education->logo) }}" alt="{{ $education->institution }} logo" class="exp-card-logo">
+                                <img
+                                    src="{{ $education->logo_url }}"
+                                    data-fallback="{{ $education->logo_fallback_url }}"
+                                    alt="{{ $education->institution }} logo"
+                                    class="exp-card-logo"
+                                    onerror="if (this.dataset.fallback && this.src !== this.dataset.fallback) { this.src = this.dataset.fallback; } else { this.style.display='none'; }"
+                                >
                             @endif
                             <h3 class="exp-company">{{ $education->institution }}</h3>
                             <p class="exp-position">{{ $education->degree }}

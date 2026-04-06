@@ -22,7 +22,13 @@
                 <label for="logo">Logo Institusi</label>
                 @if($education->logo)
                     <div style="margin-bottom: 8px; display: flex; align-items: center; gap: 12px;">
-                        <img src="{{ asset('storage/' . $education->logo) }}" alt="Logo" style="height: 50px; width: auto; object-fit: contain; border: 1px solid #ddd; border-radius: 6px; padding: 4px; background: #fff;">
+                        <img
+                            src="{{ $education->logo_url }}"
+                            data-fallback="{{ $education->logo_fallback_url }}"
+                            alt="Logo"
+                            style="height: 50px; width: auto; object-fit: contain; border: 1px solid #ddd; border-radius: 6px; padding: 4px; background: #fff;"
+                            onerror="if (this.dataset.fallback && this.src !== this.dataset.fallback) { this.src = this.dataset.fallback; } else { this.style.display='none'; }"
+                        >
                         <label style="display: flex; align-items: center; gap: 6px; cursor: pointer; font-size: 0.85em; color: #e53e3e;">
                             <input type="checkbox" name="remove_logo" value="1"> Hapus logo
                         </label>
