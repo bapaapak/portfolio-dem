@@ -25,7 +25,18 @@ echo "<h1>🚀 Laravel Setup</h1>";
 chdir('..');
 $basePath = getcwd();
 
-// STEP 0: Fix git safe.directory and pull latest code
+// STEP 0: Fix permissions first
+echo "<h2>Fix Permissions</h2>";
+$permCmds = [
+    "chmod -R 775 {$basePath}/storage {$basePath}/bootstrap/cache 2>&1",
+    "chmod 664 {$basePath}/.env 2>/dev/null; chmod 664 {$basePath}/.env.local 2>/dev/null; echo 'done' 2>&1",
+];
+foreach ($permCmds as $cmd) {
+    $result = shell_exec($cmd);
+    echo "<pre>" . htmlspecialchars($cmd) . "\n" . htmlspecialchars($result ?: '(ok)') . "</pre>";
+}
+
+// STEP 1: Fix git safe.directory and pull latest code
 echo "<h2>Git Pull</h2>";
 $gitCmds = [
     "git config --global --add safe.directory {$basePath} 2>&1",
@@ -38,7 +49,10 @@ foreach ($gitCmds as $cmd) {
     echo "<pre>" . htmlspecialchars($cmd) . "\n" . htmlspecialchars($result ?: '(ok)') . "</pre>";
 }
 
-// STEP 1: Ensure .env exists
+// Re-fix permissions after git pull
+shell_exec("chmod -R 775 {$basePath}/storage {$basePath}/bootstrap/cache 2>&1");
+
+// STEP 2: Ensure .env exists
 echo "<h2>.env Check</h2>";
 if (!file_exists('.env')) {
     if (file_exists('.env.local')) {
