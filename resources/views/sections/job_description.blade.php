@@ -8,14 +8,17 @@
             <div class="jd-column descriptions-column fade-in-up">
                 <div class="jd-header descriptions-header">
                     <i class="fas fa-file-alt"></i>
-                    <h3>Job Descriptions</h3>
+                    <h3 data-translate="jd_descriptions">Job Descriptions</h3>
                 </div>
                 <div class="jd-content">
                     @forelse($jobDescriptions ?? [] as $desc)
                     <div class="jd-card description-card">
-                        <h4 class="jd-title">{{ $desc->title }}</h4>
+                        <h4 class="jd-title">
+                            <span class="lang-id" data-display="block">{{ $desc->title }}</span>
+                            <span class="lang-en" style="display: none;" data-display="block">{{ $desc->title_en ?: $desc->title }}</span>
+                        </h4>
                         @if($desc->description)
-                            <div class="jd-description-container">
+                            <div class="jd-description-container lang-id" data-display="block">
                                 @if(Str::contains($desc->description, '- '))
                                     <ul class="jd-description-list">
                                         @foreach(explode("\n", $desc->description) as $line)
@@ -32,17 +35,43 @@
                                     <p class="jd-description">{{ $desc->description }}</p>
                                 @endif
                             </div>
+                            @php $descEn = $desc->description_en ?: $desc->description; @endphp
+                            <div class="jd-description-container lang-en" style="display: none;" data-display="block">
+                                @if(Str::contains($descEn, '- '))
+                                    <ul class="jd-description-list">
+                                        @foreach(explode("\n", $descEn) as $line)
+                                            @if(trim($line))
+                                                @if(str_starts_with(trim($line), '-'))
+                                                    <li>{{ trim(substr(trim($line), 1)) }}</li>
+                                                @else
+                                                    <li class="no-bullet">{{ $line }}</li>
+                                                @endif
+                                            @endif
+                                        @endforeach
+                                    </ul>
+                                @else
+                                    <p class="jd-description">{{ $descEn }}</p>
+                                @endif
+                            </div>
                         @endif
                         @if($desc->items && count($desc->items) > 0)
-                        <ul class="jd-items">
+                        <ul class="jd-items lang-id" data-display="block">
                             @foreach($desc->items as $item)
+                            <li>{{ $item }}</li>
+                            @endforeach
+                        </ul>
+                        <ul class="jd-items lang-en" style="display: none;" data-display="block">
+                            @foreach(($desc->items_en ?: $desc->items) as $item)
                             <li>{{ $item }}</li>
                             @endforeach
                         </ul>
                         @endif
                     </div>
                     @empty
-                    <p class="jd-empty">Belum ada job description.</p>
+                    <p class="jd-empty">
+                        <span class="lang-id" data-display="inline">Belum ada job description.</span>
+                        <span class="lang-en" style="display: none;" data-display="inline">No job descriptions yet.</span>
+                    </p>
                     @endforelse
                 </div>
             </div>
@@ -51,7 +80,7 @@
             <div class="jd-column activities-column fade-in-up" style="animation-delay: 200ms">
                 <div class="jd-header activities-header">
                     <i class="fas fa-tasks"></i>
-                    <h3>Activity Jobs</h3>
+                    <h3 data-translate="jd_activities">Activity Jobs</h3>
                 </div>
                 <div class="jd-content">
                     @forelse($jobActivities ?? [] as $year => $activities)
@@ -64,7 +93,10 @@
                             <div class="activity-milestone">
                                 <div class="milestone-dot"></div>
                                 <div class="milestone-content">
-                                    <h4 class="jd-title">{{ $activity->title }}</h4>
+                                    <h4 class="jd-title">
+                                        <span class="lang-id" data-display="block">{{ $activity->title }}</span>
+                                        <span class="lang-en" style="display: none;" data-display="block">{{ $activity->title_en ?: $activity->title }}</span>
+                                    </h4>
                                     @php $illustrationPath = $activity->illustration_image_storage_path ?? null; @endphp
                                     @if(!empty($activity->illustration_image_data))
                                         <div class="activity-illustration-wrapper">
@@ -86,12 +118,18 @@
                                         </div>
                                     @else
                                         <div class="activity-illustration-wrapper" style="height:160px; display:flex; align-items:center; justify-content:center; border:1px dashed rgba(0,0,0,0.12); border-radius:8px;">
-                                            <span style="color:#9ca3af; font-size:0.9rem;">Ilustrasi belum tersedia</span>
+                                            <span class="lang-id" data-display="inline" style="color:#9ca3af; font-size:0.9rem;">Ilustrasi belum tersedia</span>
+                                            <span class="lang-en" data-display="inline" style="display:none; color:#9ca3af; font-size:0.9rem;">Illustration not available</span>
                                         </div>
                                     @endif
                                     @if($activity->items && count($activity->items) > 0)
-                                    <ul class="jd-items">
+                                    <ul class="jd-items lang-id" data-display="block">
                                         @foreach($activity->items as $item)
+                                        <li>{{ $item }}</li>
+                                        @endforeach
+                                    </ul>
+                                    <ul class="jd-items lang-en" style="display: none;" data-display="block">
+                                        @foreach(($activity->items_en ?: $activity->items) as $item)
                                         <li>{{ $item }}</li>
                                         @endforeach
                                     </ul>
@@ -102,7 +140,10 @@
                         </div>
                     </div>
                     @empty
-                    <p class="jd-empty">Belum ada activity job.</p>
+                    <p class="jd-empty">
+                        <span class="lang-id" data-display="inline">Belum ada activity job.</span>
+                        <span class="lang-en" style="display: none;" data-display="inline">No activity jobs yet.</span>
+                    </p>
                     @endforelse
                 </div>
             </div>

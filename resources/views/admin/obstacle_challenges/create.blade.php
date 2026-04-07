@@ -40,23 +40,39 @@
             </div>
             
             <div class="mb-6">
-                <label for="title" class="block text-sm font-medium text-gray-700 mb-2">Judul <span class="text-red-500">*</span></label>
+                <label for="title" class="block text-sm font-medium text-gray-700 mb-2">Judul (ID) <span class="text-red-500">*</span></label>
                 <input type="text" name="title" id="title" class="w-full rounded-lg border-gray-300 bg-white text-gray-900 focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 transition-shadow @error('title') border-red-500 @enderror" value="{{ old('title') }}" required>
                 @error('title')
                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                 @enderror
             </div>
-            
+
             <div class="mb-6">
-                <label for="description" class="block text-sm font-medium text-gray-700 mb-2">Deskripsi</label>
-                <textarea name="description" id="description" class="w-full rounded-lg border-gray-300 bg-white text-gray-900 focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 transition-shadow @error('description') border-red-500 @enderror" rows="3">{{ old('description') }}</textarea>
-                @error('description')
+                <label for="title_en" class="block text-sm font-medium text-gray-700 mb-2">Judul (EN)</label>
+                <input type="text" name="title_en" id="title_en" class="w-full rounded-lg border-gray-300 bg-white text-gray-900 focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 transition-shadow @error('title_en') border-red-500 @enderror" value="{{ old('title_en') }}" placeholder="English title (optional)">
+                @error('title_en')
                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                 @enderror
             </div>
             
             <div class="mb-6">
-                <label class="block text-sm font-medium text-gray-700 mb-2">Detail Items</label>
+                <label for="description" class="block text-sm font-medium text-gray-700 mb-2">Deskripsi (ID)</label>
+                <textarea name="description" id="description" class="w-full rounded-lg border-gray-300 bg-white text-gray-900 focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 transition-shadow @error('description') border-red-500 @enderror" rows="3">{{ old('description') }}</textarea>
+                @error('description')
+                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <div class="mb-6">
+                <label for="description_en" class="block text-sm font-medium text-gray-700 mb-2">Deskripsi (EN)</label>
+                <textarea name="description_en" id="description_en" class="w-full rounded-lg border-gray-300 bg-white text-gray-900 focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 transition-shadow @error('description_en') border-red-500 @enderror" rows="3" placeholder="English description (optional)">{{ old('description_en') }}</textarea>
+                @error('description_en')
+                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                @enderror
+            </div>
+            
+            <div class="mb-6">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Detail Items (ID)</label>
                 <div id="items-container" class="space-y-3 mb-3">
                     <div class="flex items-center gap-2 group">
                         <input type="text" name="items[]" class="flex-1 rounded-lg border-gray-300 bg-white text-gray-900 focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 transition-shadow" placeholder="Item detail...">
@@ -68,6 +84,22 @@
                 <button type="button" class="text-sm text-indigo-600 hover:text-indigo-800 font-medium flex items-center gap-1" onclick="addItem()">
                     <i class="fas fa-plus"></i>
                     <span>Tambah Item</span>
+                </button>
+            </div>
+
+            <div class="mb-6">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Detail Items (EN)</label>
+                <div id="items-en-container" class="space-y-3 mb-3">
+                    <div class="flex items-center gap-2 group">
+                        <input type="text" name="items_en[]" class="flex-1 rounded-lg border-gray-300 bg-white text-gray-900 focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 transition-shadow" placeholder="Item detail (English)...">
+                        <button type="button" class="text-red-500 hover:text-red-700 p-2 opacity-50 hover:opacity-100 transition-opacity" onclick="this.closest('.flex').remove()">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+                <button type="button" class="text-sm text-indigo-600 hover:text-indigo-800 font-medium flex items-center gap-1" onclick="addItemEn()">
+                    <i class="fas fa-plus"></i>
+                    <span>Tambah Item (EN)</span>
                 </button>
             </div>
             
@@ -96,6 +128,19 @@ function addItem() {
     div.className = 'flex items-center gap-2 group';
     div.innerHTML = `
         <input type="text" name="items[]" class="flex-1 rounded-lg border-gray-300 bg-white text-gray-900 focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 transition-shadow" placeholder="Item detail...">
+        <button type="button" class="text-red-500 hover:text-red-700 p-2 opacity-50 hover:opacity-100 transition-opacity" onclick="this.closest('.flex').remove()">
+            <i class="fas fa-times"></i>
+        </button>
+    `;
+    container.appendChild(div);
+}
+
+function addItemEn() {
+    const container = document.getElementById('items-en-container');
+    const div = document.createElement('div');
+    div.className = 'flex items-center gap-2 group';
+    div.innerHTML = `
+        <input type="text" name="items_en[]" class="flex-1 rounded-lg border-gray-300 bg-white text-gray-900 focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 transition-shadow" placeholder="Item detail (English)...">
         <button type="button" class="text-red-500 hover:text-red-700 p-2 opacity-50 hover:opacity-100 transition-opacity" onclick="this.closest('.flex').remove()">
             <i class="fas fa-times"></i>
         </button>

@@ -8,25 +8,37 @@
             <div class="oc-column obstacles-column fade-in-up">
                 <div class="oc-header obstacles-header">
                     <i class="fas fa-exclamation-triangle"></i>
-                    <h3>Obstacles</h3>
+                    <h3 data-translate="oc_obstacles">Obstacles</h3>
                 </div>
                 <div class="oc-content">
                     @forelse($obstacles ?? [] as $obstacle)
                     <div class="oc-card obstacle-card">
-                        <h4 class="oc-title">{{ $obstacle->title }}</h4>
+                        <h4 class="oc-title">
+                            <span class="lang-id" data-display="block">{{ $obstacle->title }}</span>
+                            <span class="lang-en" style="display: none;" data-display="block">{{ $obstacle->title_en ?: $obstacle->title }}</span>
+                        </h4>
                         @if($obstacle->description)
-                        <p class="oc-description">{{ $obstacle->description }}</p>
+                        <p class="oc-description lang-id" data-display="block">{{ $obstacle->description }}</p>
+                        <p class="oc-description lang-en" style="display: none;" data-display="block">{{ $obstacle->description_en ?: $obstacle->description }}</p>
                         @endif
                         @if($obstacle->items && count($obstacle->items) > 0)
-                        <ul class="oc-items">
+                        <ul class="oc-items lang-id" data-display="block">
                             @foreach($obstacle->items as $item)
+                            <li>{{ $item }}</li>
+                            @endforeach
+                        </ul>
+                        <ul class="oc-items lang-en" style="display: none;" data-display="block">
+                            @foreach(($obstacle->items_en ?: $obstacle->items) as $item)
                             <li>{{ $item }}</li>
                             @endforeach
                         </ul>
                         @endif
                     </div>
                     @empty
-                    <p class="oc-empty">Belum ada obstacle.</p>
+                    <p class="oc-empty">
+                        <span class="lang-id" data-display="inline">Belum ada obstacle.</span>
+                        <span class="lang-en" style="display: none;" data-display="inline">No obstacles yet.</span>
+                    </p>
                     @endforelse
                 </div>
             </div>
@@ -35,25 +47,37 @@
             <div class="oc-column challenges-column fade-in-up" style="animation-delay: 200ms">
                 <div class="oc-header challenges-header">
                     <i class="fas fa-bolt"></i>
-                    <h3>Challenges</h3>
+                    <h3 data-translate="oc_challenges">Challenges</h3>
                 </div>
                 <div class="oc-content">
                     @forelse($challenges ?? [] as $challenge)
                     <div class="oc-card challenge-card">
-                        <h4 class="oc-title">{{ $challenge->title }}</h4>
+                        <h4 class="oc-title">
+                            <span class="lang-id" data-display="block">{{ $challenge->title }}</span>
+                            <span class="lang-en" style="display: none;" data-display="block">{{ $challenge->title_en ?: $challenge->title }}</span>
+                        </h4>
                         @if($challenge->description)
-                        <p class="oc-description">{{ $challenge->description }}</p>
+                        <p class="oc-description lang-id" data-display="block">{{ $challenge->description }}</p>
+                        <p class="oc-description lang-en" style="display: none;" data-display="block">{{ $challenge->description_en ?: $challenge->description }}</p>
                         @endif
                         @if($challenge->items && count($challenge->items) > 0)
-                        <ul class="oc-items">
+                        <ul class="oc-items lang-id" data-display="block">
                             @foreach($challenge->items as $item)
+                            <li>{{ $item }}</li>
+                            @endforeach
+                        </ul>
+                        <ul class="oc-items lang-en" style="display: none;" data-display="block">
+                            @foreach(($challenge->items_en ?: $challenge->items) as $item)
                             <li>{{ $item }}</li>
                             @endforeach
                         </ul>
                         @endif
                     </div>
                     @empty
-                    <p class="oc-empty">Belum ada challenge.</p>
+                    <p class="oc-empty">
+                        <span class="lang-id" data-display="inline">Belum ada challenge.</span>
+                        <span class="lang-en" style="display: none;" data-display="inline">No challenges yet.</span>
+                    </p>
                     @endforelse
                 </div>
             </div>

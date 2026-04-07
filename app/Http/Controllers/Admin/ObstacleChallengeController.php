@@ -26,14 +26,19 @@ class ObstacleChallengeController extends Controller
         $validated = $request->validate([
             'type' => 'required|in:obstacle,challenge',
             'title' => 'required|string|max:255',
+            'title_en' => 'nullable|string|max:255',
             'description' => 'nullable|string',
+            'description_en' => 'nullable|string',
             'items' => 'nullable|array',
             'items.*' => 'nullable|string',
+            'items_en' => 'nullable|array',
+            'items_en.*' => 'nullable|string',
             'order' => 'nullable|integer',
             'is_active' => 'nullable|boolean',
         ]);
 
         $validated['items'] = array_filter($validated['items'] ?? []);
+        $validated['items_en'] = array_filter($validated['items_en'] ?? []);
         $validated['is_active'] = $request->has('is_active');
 
         ObstacleChallenge::create($validated);
@@ -52,14 +57,19 @@ class ObstacleChallengeController extends Controller
         $validated = $request->validate([
             'type' => 'required|in:obstacle,challenge',
             'title' => 'required|string|max:255',
+            'title_en' => 'nullable|string|max:255',
             'description' => 'nullable|string',
+            'description_en' => 'nullable|string',
             'items' => 'nullable|array',
             'items.*' => 'nullable|string',
+            'items_en' => 'nullable|array',
+            'items_en.*' => 'nullable|string',
             'order' => 'nullable|integer',
             'is_active' => 'nullable|boolean',
         ]);
 
         $validated['items'] = array_filter($validated['items'] ?? []);
+        $validated['items_en'] = array_filter($validated['items_en'] ?? []);
         $validated['is_active'] = $request->has('is_active');
 
         $obstacleChallenge->update($validated);

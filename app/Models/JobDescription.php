@@ -14,8 +14,11 @@ class JobDescription extends Model
         'year',
         'year_end',
         'title',
+        'title_en',
         'description',
+        'description_en',
         'items',
+        'items_en',
         'illustration_image',
         'illustration_image_data',
         'order',
@@ -24,6 +27,7 @@ class JobDescription extends Model
 
     protected $casts = [
         'items' => 'array',
+        'items_en' => 'array',
         'is_active' => 'boolean',
         'year' => 'integer',
         'year_end' => 'integer',

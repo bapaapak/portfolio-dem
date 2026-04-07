@@ -38,9 +38,13 @@ class JobDescriptionController extends Controller
             'year' => 'nullable|integer|min:2000|max:2099',
             'year_end' => 'nullable|integer|min:2000|max:2099',
             'title' => 'required|string|max:255',
+            'title_en' => 'nullable|string|max:255',
             'description' => 'nullable|string',
+            'description_en' => 'nullable|string',
             'items' => 'nullable|array',
             'items.*' => 'nullable|string',
+            'items_en' => 'nullable|array',
+            'items_en.*' => 'nullable|string',
             'order' => 'nullable|integer',
             'is_active' => 'nullable|boolean',
             'illustration_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:10240',
@@ -87,9 +91,13 @@ class JobDescriptionController extends Controller
             'year' => 'nullable|integer|min:2000|max:2099',
             'year_end' => 'nullable|integer|min:2000|max:2099',
             'title' => 'required|string|max:255',
+            'title_en' => 'nullable|string|max:255',
             'description' => 'nullable|string',
+            'description_en' => 'nullable|string',
             'items' => 'nullable|array',
             'items.*' => 'nullable|string',
+            'items_en' => 'nullable|array',
+            'items_en.*' => 'nullable|string',
             'order' => 'nullable|integer',
             'is_active' => 'nullable|boolean',
             'illustration_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:10240',
@@ -129,6 +137,7 @@ class JobDescriptionController extends Controller
     private function normalizePayload(array $validated, Request $request): array
     {
         $validated['items'] = array_filter($validated['items'] ?? []);
+        $validated['items_en'] = array_filter($validated['items_en'] ?? []);
         $validated['is_active'] = $request->has('is_active');
 
         if (($validated['type'] ?? null) === 'description') {
@@ -150,8 +159,11 @@ class JobDescriptionController extends Controller
             'year',
             'year_end',
             'title',
+            'title_en',
             'description',
+            'description_en',
             'items',
+            'items_en',
             'illustration_image',
             'illustration_image_data',
             'order',

@@ -12,14 +12,18 @@ class ObstacleChallenge extends Model
     protected $fillable = [
         'type',
         'title',
+        'title_en',
         'description',
+        'description_en',
         'items',
+        'items_en',
         'order',
         'is_active',
     ];
 
     protected $casts = [
         'items' => 'array',
+        'items_en' => 'array',
         'is_active' => 'boolean',
     ];
 

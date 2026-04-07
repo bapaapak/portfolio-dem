@@ -63,23 +63,39 @@
             </div>
             
             <div class="form-group">
-                <label for="title">Judul <span class="text-red-500">*</span></label>
+                <label for="title">Judul (ID) <span class="text-red-500">*</span></label>
                 <input type="text" name="title" id="title" class="form-control @error('title') border-red-500 @enderror" value="{{ old('title') }}" required>
                 @error('title')
                 <div class="text-sm text-red-500 mt-1">{{ $message }}</div>
                 @enderror
             </div>
-            
+
             <div class="form-group">
-                <label for="description">Deskripsi</label>
-                <textarea name="description" id="description" class="form-control @error('description') border-red-500 @enderror" rows="3">{{ old('description') }}</textarea>
-                @error('description')
+                <label for="title_en">Judul (EN)</label>
+                <input type="text" name="title_en" id="title_en" class="form-control @error('title_en') border-red-500 @enderror" value="{{ old('title_en') }}" placeholder="English title (optional)">
+                @error('title_en')
                 <div class="text-sm text-red-500 mt-1">{{ $message }}</div>
                 @enderror
             </div>
             
             <div class="form-group">
-                <label>Detail Items</label>
+                <label for="description">Deskripsi (ID)</label>
+                <textarea name="description" id="description" class="form-control @error('description') border-red-500 @enderror" rows="3">{{ old('description') }}</textarea>
+                @error('description')
+                <div class="text-sm text-red-500 mt-1">{{ $message }}</div>
+                @enderror
+            </div>
+
+            <div class="form-group">
+                <label for="description_en">Deskripsi (EN)</label>
+                <textarea name="description_en" id="description_en" class="form-control @error('description_en') border-red-500 @enderror" rows="3" placeholder="English description (optional)">{{ old('description_en') }}</textarea>
+                @error('description_en')
+                <div class="text-sm text-red-500 mt-1">{{ $message }}</div>
+                @enderror
+            </div>
+            
+            <div class="form-group">
+                <label>Detail Items (ID)</label>
                 <div id="items-container" class="space-y-2 mb-3">
                     <div class="flex gap-2">
                         <input type="text" name="items[]" class="form-control" placeholder="Item detail...">
@@ -90,6 +106,21 @@
                 </div>
                 <button type="button" class="btn btn-outline" onclick="addItem()">
                     <i class="fas fa-plus"></i> Tambah Item Detail
+                </button>
+            </div>
+
+            <div class="form-group">
+                <label>Detail Items (EN)</label>
+                <div id="items-en-container" class="space-y-2 mb-3">
+                    <div class="flex gap-2">
+                        <input type="text" name="items_en[]" class="form-control" placeholder="Item detail (English)...">
+                        <button type="button" class="btn btn-danger remove-item" onclick="this.closest('.flex').remove()">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-outline" onclick="addItemEn()">
+                    <i class="fas fa-plus"></i> Tambah Item Detail (EN)
                 </button>
             </div>
             
@@ -139,6 +170,19 @@ function addItem() {
     div.className = 'flex gap-2';
     div.innerHTML = `
         <input type="text" name="items[]" class="form-control" placeholder="Item detail...">
+        <button type="button" class="btn btn-danger remove-item" onclick="this.closest('.flex').remove()">
+            <i class="fas fa-times"></i>
+        </button>
+    `;
+    container.appendChild(div);
+}
+
+function addItemEn() {
+    const container = document.getElementById('items-en-container');
+    const div = document.createElement('div');
+    div.className = 'flex gap-2';
+    div.innerHTML = `
+        <input type="text" name="items_en[]" class="form-control" placeholder="Item detail (English)...">
         <button type="button" class="btn btn-danger remove-item" onclick="this.closest('.flex').remove()">
             <i class="fas fa-times"></i>
         </button>
