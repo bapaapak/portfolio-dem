@@ -14,6 +14,7 @@ class Experience extends Model
         'title_en',
         'company',
         'logo',
+        'logo_data',
         'company_en',
         'type',
         'location',

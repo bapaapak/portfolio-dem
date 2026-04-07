@@ -29,7 +29,15 @@
                         </div>
                         <div class="exp-card">
                             @php $experienceLogoPath = $experience->logo_storage_path; @endphp
-                            @if($experienceLogoPath && \Illuminate\Support\Facades\Storage::disk('public')->exists($experienceLogoPath))
+                            @if(!empty($experience->logo_data))
+                                <img
+                                    src="/dbimg/experience/logo_data/{{ $experience->id }}"
+                                    alt="{{ $experience->company }} logo"
+                                    class="exp-card-logo"
+                                    loading="lazy"
+                                    decoding="async"
+                                >
+                            @elseif($experienceLogoPath && \Illuminate\Support\Facades\Storage::disk('public')->exists($experienceLogoPath))
                                 <img
                                     src="{{ $experience->logo_url }}"
                                     alt="{{ $experience->company }} logo"
@@ -159,7 +167,15 @@
                         </div>
                         <div class="exp-card">
                             @php $experienceLogoPath = $experience->logo_storage_path; @endphp
-                            @if($experienceLogoPath && \Illuminate\Support\Facades\Storage::disk('public')->exists($experienceLogoPath))
+                            @if(!empty($experience->logo_data))
+                                <img
+                                    src="/dbimg/experience/logo_data/{{ $experience->id }}"
+                                    alt="{{ $experience->company }} logo"
+                                    class="exp-card-logo"
+                                    loading="lazy"
+                                    decoding="async"
+                                >
+                            @elseif($experienceLogoPath && \Illuminate\Support\Facades\Storage::disk('public')->exists($experienceLogoPath))
                                 <img
                                     src="{{ $experience->logo_url }}"
                                     alt="{{ $experience->company }} logo"

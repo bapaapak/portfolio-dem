@@ -16,7 +16,16 @@
                         <div class="committee-card">
                             <div class="committee-image">
                                 @php $committeeImagePath = $activity->image_storage_path; @endphp
-                                @if($committeeImagePath && \Illuminate\Support\Facades\Storage::disk('public')->exists($committeeImagePath))
+                                @if(!empty($activity->image_data))
+                                    <img
+                                        src="/dbimg/committee/image_data/{{ $activity->id }}"
+                                        alt="{{ $activity->title }}"
+                                        class="committee-lightbox-trigger"
+                                        loading="lazy"
+                                        decoding="async"
+                                        onclick="openCommitteeLightbox(this)"
+                                    >
+                                @elseif($committeeImagePath && \Illuminate\Support\Facades\Storage::disk('public')->exists($committeeImagePath))
                                     <img
                                         src="{{ $activity->image_url }}"
                                         alt="{{ $activity->title }}"

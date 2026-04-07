@@ -26,7 +26,15 @@
                         </div>
                         <div class="exp-card">
                             @php $educationLogoPath = $education->logo_storage_path; @endphp
-                            @if($educationLogoPath && \Illuminate\Support\Facades\Storage::disk('public')->exists($educationLogoPath))
+                            @if(!empty($education->logo_data))
+                                <img
+                                    src="/dbimg/education/logo_data/{{ $education->id }}"
+                                    alt="{{ $education->institution }} logo"
+                                    class="exp-card-logo"
+                                    loading="lazy"
+                                    decoding="async"
+                                >
+                            @elseif($educationLogoPath && \Illuminate\Support\Facades\Storage::disk('public')->exists($educationLogoPath))
                                 <img
                                     src="{{ $education->logo_url }}"
                                     alt="{{ $education->institution }} logo"
@@ -92,7 +100,15 @@
                         </div>
                         <div class="exp-card">
                             @php $educationLogoPath = $education->logo_storage_path; @endphp
-                            @if($educationLogoPath && \Illuminate\Support\Facades\Storage::disk('public')->exists($educationLogoPath))
+                            @if(!empty($education->logo_data))
+                                <img
+                                    src="/dbimg/education/logo_data/{{ $education->id }}"
+                                    alt="{{ $education->institution }} logo"
+                                    class="exp-card-logo"
+                                    loading="lazy"
+                                    decoding="async"
+                                >
+                            @elseif($educationLogoPath && \Illuminate\Support\Facades\Storage::disk('public')->exists($educationLogoPath))
                                 <img
                                     src="{{ $education->logo_url }}"
                                     alt="{{ $education->institution }} logo"

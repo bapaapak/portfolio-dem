@@ -49,6 +49,8 @@ class JobDescriptionController extends Controller
         $validated = $this->normalizePayload($validated, $request);
         if ($request->hasFile('illustration_image')) {
             $validated['illustration_image'] = $request->file('illustration_image')->store('job_descriptions', 'public');
+            $file = $request->file('illustration_image');
+            $validated['illustration_image_data'] = 'data:' . $file->getMimeType() . ';base64,' . base64_encode(file_get_contents($file->getRealPath()));
         } else {
             unset($validated['illustration_image']);
         }
@@ -94,6 +96,8 @@ class JobDescriptionController extends Controller
                 Storage::disk('public')->delete($jobDescription->illustration_image);
             }
             $validated['illustration_image'] = $request->file('illustration_image')->store('job_descriptions', 'public');
+            $file = $request->file('illustration_image');
+            $validated['illustration_image_data'] = 'data:' . $file->getMimeType() . ';base64,' . base64_encode(file_get_contents($file->getRealPath()));
         } else {
             unset($validated['illustration_image']);
         }
@@ -144,6 +148,7 @@ class JobDescriptionController extends Controller
             'description',
             'items',
             'illustration_image',
+            'illustration_image_data',
             'order',
             'is_active',
         ];

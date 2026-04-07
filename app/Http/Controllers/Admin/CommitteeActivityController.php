@@ -43,6 +43,8 @@ class CommitteeActivityController extends Controller
 
         if ($request->hasFile('image')) {
             $validated['image'] = $request->file('image')->store('committee', 'public');
+            $file = $request->file('image');
+            $validated['image_data'] = 'data:' . $file->getMimeType() . ';base64,' . base64_encode(file_get_contents($file->getRealPath()));
         }
 
         $validated['is_active'] = $request->has('is_active');
@@ -83,6 +85,8 @@ class CommitteeActivityController extends Controller
                 Storage::disk('public')->delete($committee_activity->image);
             }
             $validated['image'] = $request->file('image')->store('committee', 'public');
+            $file = $request->file('image');
+            $validated['image_data'] = 'data:' . $file->getMimeType() . ';base64,' . base64_encode(file_get_contents($file->getRealPath()));
         }
 
         $validated['is_active'] = $request->has('is_active');

@@ -66,7 +66,16 @@
                                 <div class="milestone-content">
                                     <h4 class="jd-title">{{ $activity->title }}</h4>
                                     @php $illustrationPath = $activity->illustration_image_storage_path ?? null; @endphp
-                                    @if($illustrationPath && \Illuminate\Support\Facades\Storage::disk('public')->exists($illustrationPath))
+                                    @if(!empty($activity->illustration_image_data))
+                                        <div class="activity-illustration-wrapper">
+                                            <img src="/dbimg/job_description/illustration_image_data/{{ $activity->id }}"
+                                                 alt="{{ $activity->title }}"
+                                                 class="activity-illustration-img lightbox-trigger"
+                                                 loading="lazy"
+                                                 decoding="async"
+                                                 onclick="openLightbox(this)">
+                                        </div>
+                                    @elseif($illustrationPath && \Illuminate\Support\Facades\Storage::disk('public')->exists($illustrationPath))
                                         <div class="activity-illustration-wrapper">
                                             <img src="{{ $activity->illustration_image_url }}"
                                                  alt="{{ $activity->title }}"

@@ -43,6 +43,10 @@ class CareerAspirationController extends Controller
                 Storage::disk('public')->delete($profile->aspiration_image);
             }
             $updateData['aspiration_image'] = $request->file('aspiration_image')->store('career_aspiration', 'public');
+            $file = $request->file('aspiration_image');
+            if (Schema::hasColumn('profiles', 'aspiration_image_data')) {
+                $updateData['aspiration_image_data'] = 'data:' . $file->getMimeType() . ';base64,' . base64_encode(file_get_contents($file->getRealPath()));
+            }
         }
 
         $profile->update($updateData);

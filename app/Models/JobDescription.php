@@ -17,6 +17,7 @@ class JobDescription extends Model
         'description',
         'items',
         'illustration_image',
+        'illustration_image_data',
         'order',
         'is_active',
     ];

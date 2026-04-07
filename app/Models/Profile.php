@@ -35,6 +35,7 @@ class Profile extends Model
         'career_aspiration_id',
         'career_milestones',
         'aspiration_image',
+        'aspiration_image_data',
         'section_order',
         'show_cv_button',
         'show_contact_button',

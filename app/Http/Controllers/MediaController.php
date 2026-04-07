@@ -74,6 +74,31 @@ class MediaController extends Controller
                     'fields' => ['thumbnail_data'],
                     'single' => false,
                 ],
+                'job_description' => [
+                    'class' => \App\Models\JobDescription::class,
+                    'fields' => ['illustration_image_data'],
+                    'single' => false,
+                ],
+                'experience' => [
+                    'class' => \App\Models\Experience::class,
+                    'fields' => ['logo_data'],
+                    'single' => false,
+                ],
+                'education' => [
+                    'class' => \App\Models\Education::class,
+                    'fields' => ['logo_data'],
+                    'single' => false,
+                ],
+                'committee' => [
+                    'class' => \App\Models\CommitteeActivity::class,
+                    'fields' => ['image_data'],
+                    'single' => false,
+                ],
+                'profile' => [
+                    'class' => \App\Models\Profile::class,
+                    'fields' => ['aspiration_image_data'],
+                    'single' => true,
+                ],
             ];
 
             if (!isset($allowed[$model])) {

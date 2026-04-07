@@ -25,7 +25,18 @@
                     </span>
                 </div>
                 @php $aspirationPath = $profile->aspiration_image_storage_path ?? null; @endphp
-                @if($aspirationPath && \Illuminate\Support\Facades\Storage::disk('public')->exists($aspirationPath))
+                @if(!empty($profile->aspiration_image_data))
+                <div style="margin-top: 20px;">
+                    <img src="/dbimg/profile/aspiration_image_data"
+                         alt="Ilustrasi Aspirasi"
+                         style="width:100%;border-radius:10px;cursor:zoom-in;transition:opacity 0.2s;"
+                         onclick="openAspirationLightbox(this)"
+                         onerror="this.style.display='none'"
+                         onmouseover="this.style.opacity='0.85'"
+                         onmouseout="this.style.opacity='1'"
+                         loading="lazy">
+                </div>
+                @elseif($aspirationPath && \Illuminate\Support\Facades\Storage::disk('public')->exists($aspirationPath))
                 <div style="margin-top: 20px;">
                     <img src="{{ $profile->aspiration_image_url }}"
                         data-fallback="{{ $profile->aspiration_image_fallback_url }}"
