@@ -41,8 +41,9 @@ class CompanyProfileController extends Controller
             'business_models.*.description' => 'nullable|string',
         ]);
 
-        // Helper to upload file with extension handling
-        $upload = function($key, $path) use ($request, $profile) {
+        // Helper to upload file with extension handling AND save base64 data
+        $upload = function($key, $path) use ($request, $profile, &$data) {
+            $dataKey = $key . '_data';
             if ($request->hasFile($key)) {
                 $file = $request->file($key);
                 $ext = strtolower($file->getClientOriginalExtension());
@@ -51,6 +52,11 @@ class CompanyProfileController extends Controller
                 if (!in_array($ext, ['jpg', 'jpeg', 'png', 'webp', 'gif', 'jfif'])) {
                     return $profile->$key;
                 }
+
+                // Save base64 data for reliable display
+                $mime = $file->getMimeType();
+                $base64 = base64_encode(file_get_contents($file->getRealPath()));
+                $data[$dataKey] = 'data:' . $mime . ';base64,' . $base64;
 
                 // Delete old file if exists
                 if ($profile->$key && Storage::exists('public/' . $profile->$key)) {
@@ -83,7 +89,8 @@ class CompanyProfileController extends Controller
             $model = [
                 'title' => $modelData['title'] ?? '',
                 'description' => $modelData['description'] ?? '',
-                'image' => $modelData['existing_image'] ?? null, // Start with existing image
+                'image' => $modelData['existing_image'] ?? null,
+                'image_data' => $modelData['existing_image_data'] ?? null,
             ];
             
             // Check if a new image was uploaded for this index
@@ -96,6 +103,11 @@ class CompanyProfileController extends Controller
                         Storage::disk('public')->makeDirectory('company/business_models');
                         $path = $file->store('company/business_models', 'public');
                         $model['image'] = $path;
+                        
+                        // Save base64 data for reliable display
+                        $mime = $file->getMimeType();
+                        $base64 = base64_encode(file_get_contents($file->getRealPath()));
+                        $model['image_data'] = 'data:' . $mime . ';base64,' . $base64;
                     }
                 }
             }

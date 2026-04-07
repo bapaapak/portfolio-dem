@@ -48,6 +48,7 @@ fi
 # Create necessary directories
 echo ">> Creating required directories..."
 mkdir -p storage/app/public/experiences/logos
+mkdir -p storage/app/public/company/misc storage/app/public/company/plants storage/app/public/company/directors storage/app/public/company/business_models
 mkdir -p storage/framework/views storage/framework/cache storage/framework/sessions storage/logs bootstrap/cache
 
 # Clear old cache

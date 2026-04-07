@@ -28,6 +28,7 @@ class CompanyProfile extends Model
         'director_image_data',
         'footer_text',
         'triputra_dna_image',
+        'triputra_dna_image_data',
     ];
 
     protected $casts = [

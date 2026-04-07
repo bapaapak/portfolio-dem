@@ -23,12 +23,16 @@
                 </div>
                 <div class="form-group">
                     <label>Company Logo</label>
-                     @if($profile->logo)
+                    @if($profile->logo_data || $profile->logo)
                         <div class="mb-2">
-                            <img src="{{ asset('storage/' . $profile->logo) }}" class="h-10 object-contain">
+                            @if($profile->logo_data)
+                                <img src="{{ $profile->logo_data }}" class="h-10 object-contain" alt="Company Logo">
+                            @elseif($profile->logo)
+                                <img src="{{ asset('storage/' . $profile->logo) }}" class="h-10 object-contain" alt="Company Logo" onerror="this.style.display='none'">
+                            @endif
                         </div>
                     @endif
-                    <input type="file" name="logo" class="form-control">
+                    <input type="file" name="logo" class="form-control" accept="image/*">
                 </div>
                 <div class="form-group">
                     <label>Slogan</label>
@@ -53,12 +57,16 @@
                     </div>
                     <div class="form-group">
                         <label>Image</label>
-                        @if($profile->plant_1_image)
+                        @if($profile->plant_1_image_data || $profile->plant_1_image)
                             <div class="mb-2">
-                                <img src="{{ asset('storage/' . $profile->plant_1_image) }}" class="h-20 rounded">
+                                @if($profile->plant_1_image_data)
+                                    <img src="{{ $profile->plant_1_image_data }}" class="h-20 rounded" alt="Plant 1">
+                                @elseif($profile->plant_1_image)
+                                    <img src="{{ asset('storage/' . $profile->plant_1_image) }}" class="h-20 rounded" alt="Plant 1" onerror="this.style.display='none'">
+                                @endif
                             </div>
                         @endif
-                        <input type="file" name="plant_1_image" class="form-control">
+                        <input type="file" name="plant_1_image" class="form-control" accept="image/*">
                     </div>
                 </div>
                 <div class="border p-4 rounded">
@@ -69,12 +77,16 @@
                     </div>
                     <div class="form-group">
                         <label>Image</label>
-                        @if($profile->plant_2_image)
+                        @if($profile->plant_2_image_data || $profile->plant_2_image)
                             <div class="mb-2">
-                                <img src="{{ asset('storage/' . $profile->plant_2_image) }}" class="h-20 rounded">
+                                @if($profile->plant_2_image_data)
+                                    <img src="{{ $profile->plant_2_image_data }}" class="h-20 rounded" alt="Plant 2">
+                                @elseif($profile->plant_2_image)
+                                    <img src="{{ asset('storage/' . $profile->plant_2_image) }}" class="h-20 rounded" alt="Plant 2" onerror="this.style.display='none'">
+                                @endif
                             </div>
                         @endif
-                        <input type="file" name="plant_2_image" class="form-control">
+                        <input type="file" name="plant_2_image" class="form-control" accept="image/*">
                     </div>
                 </div>
             </div>
@@ -118,11 +130,12 @@
                              <div class="form-group col-span-1 md:col-span-2">
                                 <label>Image</label>
                                 <div class="flex items-center gap-4">
-                                    <template x-if="item.image">
-                                        <img :src="'/storage/' + item.image" class="h-16 w-16 object-cover rounded border">
+                                    <template x-if="item.image_data || item.image">
+                                        <img :src="item.image_data ? item.image_data : (item.image && item.image.startsWith('data:') ? item.image : '/storage/' + item.image)" class="h-16 w-16 object-cover rounded border" alt="Business Model">
                                     </template>
-                                    <input type="file" :name="'business_models[' + index + '][image]'" class="form-control flex-1">
+                                    <input type="file" :name="'business_models[' + index + '][image]'" class="form-control flex-1" accept="image/*">
                                     <input type="hidden" :name="'business_models[' + index + '][existing_image]'" :value="item.image">
+                                    <input type="hidden" :name="'business_models[' + index + '][existing_image_data]'" :value="item.image_data">
                                 </div>
                             </div>
                         </div>
@@ -153,24 +166,32 @@
                     </div>
                     <div class="form-group">
                         <label>Photo</label>
-                        @if($profile->director_image)
+                        @if($profile->director_image_data || $profile->director_image)
                             <div class="mb-2">
-                                <img src="{{ asset('storage/' . $profile->director_image) }}" class="h-20 rounded">
+                                @if($profile->director_image_data)
+                                    <img src="{{ $profile->director_image_data }}" class="h-20 rounded" alt="Director">
+                                @elseif($profile->director_image)
+                                    <img src="{{ asset('storage/' . $profile->director_image) }}" class="h-20 rounded" alt="Director" onerror="this.style.display='none'">
+                                @endif
                             </div>
                         @endif
-                        <input type="file" name="director_image" class="form-control">
+                        <input type="file" name="director_image" class="form-control" accept="image/*">
                     </div>
                 </div>
                 <div class="border p-4 rounded">
                     <h4 class="font-medium mb-3">Triputra DNA</h4>
                     <div class="form-group">
                         <label>Image (Top Right)</label>
-                        @if($profile->triputra_dna_image)
+                        @if($profile->triputra_dna_image_data || $profile->triputra_dna_image)
                             <div class="mb-2">
-                                <img src="{{ asset('storage/' . $profile->triputra_dna_image) }}" class="h-20 rounded">
+                                @if($profile->triputra_dna_image_data)
+                                    <img src="{{ $profile->triputra_dna_image_data }}" class="h-20 rounded" alt="Triputra DNA">
+                                @elseif($profile->triputra_dna_image)
+                                    <img src="{{ asset('storage/' . $profile->triputra_dna_image) }}" class="h-20 rounded" alt="Triputra DNA" onerror="this.style.display='none'">
+                                @endif
                             </div>
                         @endif
-                        <input type="file" name="triputra_dna_image" class="form-control">
+                        <input type="file" name="triputra_dna_image" class="form-control" accept="image/*">
                     </div>
                 </div>
                 

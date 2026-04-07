@@ -9,6 +9,7 @@ set -e
 # 0. Create necessary directories
 echo "[0/7] Creating storage directories..."
 mkdir -p storage/app/public/experiences/logos
+mkdir -p storage/app/public/company/misc storage/app/public/company/plants storage/app/public/company/directors storage/app/public/company/business_models
 mkdir -p storage/logs
 chmod -R 775 storage bootstrap/cache
 
