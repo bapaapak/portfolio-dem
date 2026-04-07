@@ -16,7 +16,7 @@
                         <div class="committee-card">
                             <div class="committee-image">
                                 @php $committeeImagePath = $activity->image_storage_path; @endphp
-                                @if(!empty($activity->image_data))
+                                @if($activity->has_image_data ?? !empty($activity->image_data))
                                     <img
                                         src="/dbimg/committee/image_data/{{ $activity->id }}"
                                         alt="{{ $activity->title }}"

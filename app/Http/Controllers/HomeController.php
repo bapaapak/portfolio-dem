@@ -73,6 +73,7 @@ class HomeController extends Controller
                     'created_at',
                     'updated_at',
                 ])
+                ->selectRaw("(image_data IS NOT NULL AND image_data != '') as has_image_data")
                 ->orderBy('event_date', 'desc')
                 ->orderBy('order')
                 ->get()
