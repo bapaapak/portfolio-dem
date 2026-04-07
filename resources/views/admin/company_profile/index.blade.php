@@ -37,7 +37,7 @@
                 @if($profile->logo_data || $profile->logo)
                     <div class="mb-3 p-3 rounded" style="background: var(--bg-primary); display: inline-block;">
                         @if($profile->logo_data)
-                            <img src="{{ $profile->logo_data }}" style="height: 48px;" class="object-contain" alt="Company Logo">
+                            <img src="/dbimg/company/logo_data" style="height: 48px;" class="object-contain" alt="Company Logo">
                         @elseif($profile->logo)
                             <img src="/media/{{ $profile->logo }}" style="height: 48px;" class="object-contain" alt="Company Logo" onerror="this.parentElement.style.display='none'">
                         @endif
@@ -73,7 +73,7 @@
                         @if($profile->plant_1_image_data || $profile->plant_1_image)
                             <div class="mb-2">
                                 @if($profile->plant_1_image_data)
-                                    <img src="{{ $profile->plant_1_image_data }}" class="w-full h-32 object-cover rounded" alt="Plant 1">
+                                    <img src="/dbimg/company/plant_1_image_data" class="w-full h-32 object-cover rounded" alt="Plant 1">
                                 @elseif($profile->plant_1_image)
                                     <img src="/media/{{ $profile->plant_1_image }}" class="w-full h-32 object-cover rounded" alt="Plant 1" onerror="this.style.display='none'">
                                 @endif
@@ -97,7 +97,7 @@
                         @if($profile->plant_2_image_data || $profile->plant_2_image)
                             <div class="mb-2">
                                 @if($profile->plant_2_image_data)
-                                    <img src="{{ $profile->plant_2_image_data }}" class="w-full h-32 object-cover rounded" alt="Plant 2">
+                                    <img src="/dbimg/company/plant_2_image_data" class="w-full h-32 object-cover rounded" alt="Plant 2">
                                 @elseif($profile->plant_2_image)
                                     <img src="/media/{{ $profile->plant_2_image }}" class="w-full h-32 object-cover rounded" alt="Plant 2" onerror="this.style.display='none'">
                                 @endif
@@ -196,7 +196,7 @@
                 @if($profile->director_image_data || $profile->director_image)
                     <div class="mb-2">
                         @if($profile->director_image_data)
-                            <img src="{{ $profile->director_image_data }}" class="h-24 w-24 object-cover rounded-full" style="border: 2px solid var(--border-color);" alt="Director">
+                            <img src="/dbimg/company/director_image_data" class="h-24 w-24 object-cover rounded-full" style="border: 2px solid var(--border-color);" alt="Director">
                         @elseif($profile->director_image)
                             <img src="/media/{{ $profile->director_image }}" class="h-24 w-24 object-cover rounded-full" style="border: 2px solid var(--border-color);" alt="Director" onerror="this.style.display='none'">
                         @endif
@@ -216,7 +216,7 @@
                 @if($profile->triputra_dna_image_data || $profile->triputra_dna_image)
                     <div class="mb-2">
                         @if($profile->triputra_dna_image_data)
-                            <img src="{{ $profile->triputra_dna_image_data }}" class="h-20 rounded" alt="Triputra DNA">
+                            <img src="/dbimg/company/triputra_dna_image_data" class="h-20 rounded" alt="Triputra DNA">
                         @elseif($profile->triputra_dna_image)
                             <img src="/media/{{ $profile->triputra_dna_image }}" class="h-20 rounded" alt="Triputra DNA" onerror="this.style.display='none'">
                         @endif
