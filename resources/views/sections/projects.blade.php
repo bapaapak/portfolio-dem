@@ -16,7 +16,7 @@
                 <a href="{{ route('projects.show', $project->slug) }}" class="project-card" data-category="{{ $project->category->slug ?? 'uncategorized' }}" target="_blank" rel="noopener noreferrer" target="_blank" rel="noopener noreferrer">
                     <div class="project-thumbnail">
                         @if($project->thumbnail_data ?? null)
-                            <img src="{{ $project->thumbnail_data }}" alt="{{ $project->title }}">
+                            <img src="/dbimg/project/thumbnail_data/{{ $project->id }}" alt="{{ $project->title }}" loading="lazy">
                         @elseif($project->thumbnail && file_exists(public_path('storage/' . $project->thumbnail)))
                             <img src="{{ asset('storage/' . $project->thumbnail) }}" alt="{{ $project->title }}">
                         @else

@@ -45,4 +45,106 @@ class MediaController extends Controller
             return new Response('', 404);
         }
     }
+
+    /**
+     * Serve a base64-encoded image from the database as a real image response.
+     * URL: /dbimg/{model}/{field}/{id?}
+     * Examples:
+     *   /dbimg/company/logo_data
+     *   /dbimg/project/thumbnail_data/5
+     */
+    public function dbimg(Request $request, string $model, string $field, ?int $id = null)
+    {
+        try {
+            // Whitelist allowed models and fields
+            $allowed = [
+                'company' => [
+                    'class' => \App\Models\CompanyProfile::class,
+                    'fields' => ['logo_data', 'plant_1_image_data', 'plant_2_image_data', 'director_image_data', 'triputra_dna_image_data'],
+                    'single' => true,
+                ],
+                'company_bm' => [
+                    'class' => \App\Models\CompanyProfile::class,
+                    'fields' => ['image_data'],
+                    'single' => true,
+                    'json_array' => 'business_models',
+                ],
+                'project' => [
+                    'class' => \App\Models\Project::class,
+                    'fields' => ['thumbnail_data'],
+                    'single' => false,
+                ],
+            ];
+
+            if (!isset($allowed[$model])) {
+                return new Response('', 404);
+            }
+
+            $config = $allowed[$model];
+
+            if (!in_array($field, $config['fields'], true)) {
+                return new Response('', 404);
+            }
+
+            if ($config['single']) {
+                $record = $config['class']::first();
+            } else {
+                if ($id === null) {
+                    return new Response('', 404);
+                }
+                $record = $config['class']::find($id);
+            }
+
+            if (!$record) {
+                return new Response('', 404);
+            }
+
+            // Handle JSON array fields (e.g. business_models[index].image_data)
+            if (isset($config['json_array'])) {
+                $arrayField = $config['json_array'];
+                $items = $record->$arrayField;
+                if (!is_array($items) || $id === null || !isset($items[$id][$field])) {
+                    return new Response('', 404);
+                }
+                $data = $items[$id][$field];
+            } else {
+                if (empty($record->$field)) {
+                    return new Response('', 404);
+                }
+                $data = $record->$field;
+            }
+
+            // Parse "data:image/png;base64,xxxx"
+            if (!preg_match('/^data:image\/([a-zA-Z0-9+]+);base64,(.+)$/', $data, $matches)) {
+                return new Response('', 404);
+            }
+
+            $mimeSubtype = $matches[1];
+            $binary = base64_decode($matches[2], true);
+
+            if ($binary === false) {
+                return new Response('', 404);
+            }
+
+            $mimeMap = [
+                'png' => 'image/png',
+                'jpeg' => 'image/jpeg',
+                'jpg' => 'image/jpeg',
+                'gif' => 'image/gif',
+                'webp' => 'image/webp',
+                'svg+xml' => 'image/svg+xml',
+            ];
+
+            $contentType = $mimeMap[$mimeSubtype] ?? 'image/' . $mimeSubtype;
+
+            return new Response($binary, 200, [
+                'Content-Type' => $contentType,
+                'Content-Length' => strlen($binary),
+                'Cache-Control' => 'public, max-age=604800',
+                'ETag' => '"' . md5($data) . '"',
+            ]);
+        } catch (\Throwable $e) {
+            return new Response('', 404);
+        }
+    }
 }

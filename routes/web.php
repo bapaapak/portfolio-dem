@@ -26,6 +26,10 @@ Route::get('/media/{path}', [MediaController::class, 'show'])
     ->where('path', '.*')
     ->name('media.show');
 
+Route::get('/dbimg/{model}/{field}/{id?}', [MediaController::class, 'dbimg'])
+    ->where(['model' => '[a-z_]+', 'field' => '[a-z_0-9]+', 'id' => '[0-9]+'])
+    ->name('dbimg');
+
 Route::get('/contact', [ContactController::class, 'index'])->name('contact');
 Route::post('/contact', [ContactController::class, 'store'])->name('contact.store')->middleware('throttle:3,1');
 

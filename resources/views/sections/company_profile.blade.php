@@ -96,7 +96,7 @@
                                 <div
                                     style="border: 5px solid #9cc2e5; border-radius: 4px; overflow: hidden; max-height: 180px;">
                                     @if($companyProfile->plant_1_image_data ?? null)
-                                        <img src="{{ $companyProfile->plant_1_image_data }}"
+                                        <img src="/dbimg/company/plant_1_image_data"
                                             style="width: 100%; height: auto; object-fit: cover;">
                                     @elseif($companyProfile->plant_1_image)
                                         <img src="/media/{{ ltrim($companyProfile->plant_1_image, '/') }}"
@@ -120,7 +120,7 @@
                                 <div
                                     style="border: 5px solid #9cc2e5; border-radius: 4px; overflow: hidden; max-height: 180px;">
                                     @if($companyProfile->plant_2_image_data ?? null)
-                                        <img src="{{ $companyProfile->plant_2_image_data }}"
+                                        <img src="/dbimg/company/plant_2_image_data"
                                             style="width: 100%; height: auto; object-fit: cover;">
                                     @elseif($companyProfile->plant_2_image)
                                         <img src="/media/{{ ltrim($companyProfile->plant_2_image, '/') }}"
@@ -182,7 +182,7 @@
                         {{-- Header Section --}}
                         <div class="flex items-center gap-4 mb-4 cp-header-mobile">
                             @if($companyProfile->logo_data ?? null)
-                                <img src="{{ $companyProfile->logo_data }}"
+                                <img src="/dbimg/company/logo_data"
                                     style="height: 80px; width: auto; object-fit: contain;">
                             @elseif($companyProfile->logo)
                                 <img src="/media/{{ ltrim($companyProfile->logo, '/') }}"
@@ -242,13 +242,14 @@
                             </div>
 
                             <div class="cp-bm-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 20px;">
-                                @foreach($companyProfile->business_models as $model)
+                                @foreach($companyProfile->business_models as $bmIndex => $model)
                                     <div class="flex flex-col items-center">
                                         <div
                                             style="width: 70px; height: 70px; border-radius: 50%; border: 3px solid #0f244a; display: flex; align-items: center; justify-content: center; background: white; margin-bottom: 8px; overflow: hidden; padding: 2px;">
                                             @if(isset($model['image_data']) && $model['image_data'])
-                                                <img src="{{ $model['image_data'] }}"
-                                                    style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+                                                <img src="/dbimg/company_bm/image_data/{{ $bmIndex }}"
+                                                    style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;"
+                                                    loading="lazy">
                                             @elseif(isset($model['image']) && $model['image'])
                                                 <img src="/media/{{ ltrim($model['image'], '/') }}"
                                                     style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;"
@@ -286,7 +287,7 @@
                                         style="background: white; padding: 4px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); border: 1px solid #ddd; width: 100%;">
                                         <div style="width: 100%; bg-gray-100 overflow: hidden;">
                                             @if($companyProfile->director_image_data ?? null)
-                                                <img src="{{ $companyProfile->director_image_data }}"
+                                                <img src="/dbimg/company/director_image_data"
                                                     style="width: 100%; height: auto; object-fit: cover; object-position: top;">
                                             @elseif($companyProfile->director_image)
                                                 <img src="/media/{{ ltrim($companyProfile->director_image, '/') }}"
