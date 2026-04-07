@@ -19,12 +19,26 @@ echo "pre{background:#0f172a;padding:20px;border-radius:8px;overflow-x:auto;}";
 echo ".success{color:#4ade80;}.error{color:#f87171;}.warning{color:#fbbf24;}";
 echo "h1{color:#818cf8;}h2{color:#a5b4fc;border-bottom:1px solid #334155;padding-bottom:10px;}</style></head><body>";
 
-echo "<h1>🚀 Laravel cPanel Setup</h1>";
+echo "<h1>🚀 Laravel Setup</h1>";
 
 // Change to parent directory (from public to root)
 chdir('..');
+$basePath = getcwd();
 
-// STEP 0: Ensure .env exists
+// STEP 0: Fix git safe.directory and pull latest code
+echo "<h2>Git Pull</h2>";
+$gitCmds = [
+    "git config --global --add safe.directory {$basePath} 2>&1",
+    "cd {$basePath} && git fetch origin 2>&1",
+    "cd {$basePath} && git reset --hard origin/main 2>&1",
+    "cd {$basePath} && git clean -fd --exclude=.env --exclude=storage 2>&1",
+];
+foreach ($gitCmds as $cmd) {
+    $result = shell_exec($cmd);
+    echo "<pre>" . htmlspecialchars($cmd) . "\n" . htmlspecialchars($result ?: '(ok)') . "</pre>";
+}
+
+// STEP 1: Ensure .env exists
 echo "<h2>.env Check</h2>";
 if (!file_exists('.env')) {
     if (file_exists('.env.local')) {
@@ -65,7 +79,8 @@ foreach ($dirs as $dir) {
 }
 
 $commands = [
-    'Storage Link' => 'php artisan storage:link 2>&1',
+    'Storage Link' => 'php artisan storage:link --force 2>&1',
+    'Clear Cache' => 'php artisan optimize:clear 2>&1',
     'Config Cache' => 'php artisan config:cache 2>&1',
     'Route Cache' => 'php artisan route:cache 2>&1',
     'View Cache' => 'php artisan view:cache 2>&1',

@@ -43,6 +43,7 @@ if (!function_exists('exec') || in_array('exec', array_map('trim', explode(',', 
 
 // Deploy commands
 $commands = [
+    "git config --global --add safe.directory {$basePath} 2>&1",
     "cd {$basePath} && git fetch origin 2>&1",
     "cd {$basePath} && git reset --hard origin/main 2>&1",
     "cd {$basePath} && git clean -fd --exclude=.env --exclude=storage 2>&1",
