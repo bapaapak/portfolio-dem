@@ -13,6 +13,13 @@ git fetch origin
 git reset --hard origin/main
 git clean -fd --exclude=.env --exclude=storage
 
+# Ensure .env exists
+if [ ! -f .env ]; then
+    echo ">> WARNING: .env not found! Restoring from env.production..."
+    cp env.production .env
+    echo ">> IMPORTANT: Please update .env with correct database credentials!"
+fi
+
 # Install PHP dependencies
 echo ">> Installing Composer dependencies..."
 composer install --no-dev --optimize-autoloader --no-interaction --no-scripts

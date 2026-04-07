@@ -24,6 +24,43 @@ echo "<h1>🚀 Laravel cPanel Setup</h1>";
 // Change to parent directory (from public to root)
 chdir('..');
 
+// STEP 0: Ensure .env exists
+echo "<h2>.env Check</h2>";
+if (!file_exists('.env')) {
+    if (file_exists('env.production')) {
+        copy('env.production', '.env');
+        echo "<pre class='warning'>⚠️ .env was MISSING! Restored from env.production. Please update DB credentials if needed.</pre>";
+    } else {
+        echo "<pre class='error'>❌ .env NOT found and env.production also missing!</pre>";
+    }
+} else {
+    echo "<pre class='success'>✅ .env exists</pre>";
+}
+
+// STEP 0.5: Run migrations
+echo "<h2>Migrations</h2>";
+$output = shell_exec('php artisan migrate --force 2>&1');
+$class = (strpos($output, 'error') !== false || strpos($output, 'Error') !== false) ? 'error' : 'success';
+echo "<pre class='$class'>$output</pre>";
+
+// STEP 0.6: Create required directories
+echo "<h2>Storage Directories</h2>";
+$dirs = [
+    'storage/app/public/company/misc',
+    'storage/app/public/company/plants',
+    'storage/app/public/company/directors',
+    'storage/app/public/company/business_models',
+    'storage/app/public/experiences/logos',
+];
+foreach ($dirs as $dir) {
+    if (!is_dir($dir)) {
+        mkdir($dir, 0775, true);
+        echo "<pre class='warning'>Created: $dir</pre>";
+    } else {
+        echo "<pre class='success'>✅ $dir exists</pre>";
+    }
+}
+
 $commands = [
     'Storage Link' => 'php artisan storage:link 2>&1',
     'Config Cache' => 'php artisan config:cache 2>&1',
