@@ -118,9 +118,14 @@
                 <div class="form-grid">
                     <div class="form-group">
                         <label for="image">Gambar Aktivitas</label>
-                        @if($committee_activity->image)
+                        @if(!empty($committee_activity->image_data))
                             <div class="current-image">
-                                <img src="{{ '/media/' . ltrim($committee_activity->image, '/') }}" alt="{{ $committee_activity->title }}">
+                                <img src="/dbimg/committee/image_data/{{ $committee_activity->id }}" alt="{{ $committee_activity->title }}">
+                                <small>Gambar saat ini</small>
+                            </div>
+                        @elseif($committee_activity->image)
+                            <div class="current-image">
+                                <img src="{{ '/media/' . ltrim($committee_activity->image, '/') }}" alt="{{ $committee_activity->title }}" onerror="this.style.display='none'">
                                 <small>Gambar saat ini</small>
                             </div>
                         @endif

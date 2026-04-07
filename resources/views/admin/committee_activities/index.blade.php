@@ -34,8 +34,10 @@
                 @foreach($activities as $activity)
                 <tr>
                     <td>
-                        @if($activity->image)
-                            <img src="{{ '/media/' . ltrim($activity->image, '/') }}" alt="{{ $activity->title }}" class="table-image">
+                        @if(!empty($activity->image_data))
+                            <img src="/dbimg/committee/image_data/{{ $activity->id }}" alt="{{ $activity->title }}" class="table-image">
+                        @elseif($activity->image)
+                            <img src="{{ '/media/' . ltrim($activity->image, '/') }}" alt="{{ $activity->title }}" class="table-image" onerror="this.style.display='none'">
                         @else
                             <div class="table-image-placeholder">
                                 <i class="fas fa-image"></i>
