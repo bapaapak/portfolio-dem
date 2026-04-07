@@ -63,6 +63,11 @@ class JobDescriptionController extends Controller
             ->with('success', 'Item berhasil ditambahkan!');
     }
 
+    public function show(JobDescription $jobDescription)
+    {
+        return redirect()->route('admin.job-descriptions.edit', $jobDescription);
+    }
+
     public function edit(JobDescription $jobDescription)
     {
         return view('admin.job_descriptions.edit', compact('jobDescription'));
