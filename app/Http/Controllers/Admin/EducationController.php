@@ -43,7 +43,7 @@ class EducationController extends Controller
         if ($request->hasFile('logo')) {
             $validated['logo'] = $request->file('logo')->store('education/logos', 'public');
             $file = $request->file('logo');
-            $validated['logo_data'] = 'data:' . $file->getMimeType() . ';base64,' . base64_encode(file_get_contents($file->getRealPath()));
+            $validated['logo_data'] = \App\Helpers\ImageCompressor::compressToBase64($file);
         }
 
         Education::create($validated);
@@ -82,7 +82,7 @@ class EducationController extends Controller
             }
             $validated['logo'] = $request->file('logo')->store('education/logos', 'public');
             $file = $request->file('logo');
-            $validated['logo_data'] = 'data:' . $file->getMimeType() . ';base64,' . base64_encode(file_get_contents($file->getRealPath()));
+            $validated['logo_data'] = \App\Helpers\ImageCompressor::compressToBase64($file);
         }
 
         if ($request->has('remove_logo') && $request->remove_logo) {

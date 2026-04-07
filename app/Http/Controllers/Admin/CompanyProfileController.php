@@ -53,10 +53,8 @@ class CompanyProfileController extends Controller
                     return $profile->$key;
                 }
 
-                // Save base64 data for reliable display
-                $mime = $file->getMimeType();
-                $base64 = base64_encode(file_get_contents($file->getRealPath()));
-                $data[$dataKey] = 'data:' . $mime . ';base64,' . $base64;
+                // Save base64 data for reliable display (compressed)
+                $data[$dataKey] = \App\Helpers\ImageCompressor::compressToBase64($file);
 
                 // Delete old file if exists
                 if ($profile->$key && Storage::exists('public/' . $profile->$key)) {
@@ -104,10 +102,8 @@ class CompanyProfileController extends Controller
                         $path = $file->store('company/business_models', 'public');
                         $model['image'] = $path;
                         
-                        // Save base64 data for reliable display
-                        $mime = $file->getMimeType();
-                        $base64 = base64_encode(file_get_contents($file->getRealPath()));
-                        $model['image_data'] = 'data:' . $mime . ';base64,' . $base64;
+                        // Save compressed base64 data for reliable display
+                        $model['image_data'] = \App\Helpers\ImageCompressor::compressToBase64($file);
                     }
                 }
             }

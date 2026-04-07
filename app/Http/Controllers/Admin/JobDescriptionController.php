@@ -50,7 +50,7 @@ class JobDescriptionController extends Controller
         if ($request->hasFile('illustration_image')) {
             $validated['illustration_image'] = $request->file('illustration_image')->store('job_descriptions', 'public');
             $file = $request->file('illustration_image');
-            $validated['illustration_image_data'] = 'data:' . $file->getMimeType() . ';base64,' . base64_encode(file_get_contents($file->getRealPath()));
+            $validated['illustration_image_data'] = \App\Helpers\ImageCompressor::compressToBase64($file);
         } else {
             unset($validated['illustration_image']);
         }
@@ -102,7 +102,7 @@ class JobDescriptionController extends Controller
             }
             $validated['illustration_image'] = $request->file('illustration_image')->store('job_descriptions', 'public');
             $file = $request->file('illustration_image');
-            $validated['illustration_image_data'] = 'data:' . $file->getMimeType() . ';base64,' . base64_encode(file_get_contents($file->getRealPath()));
+            $validated['illustration_image_data'] = \App\Helpers\ImageCompressor::compressToBase64($file);
         } else {
             unset($validated['illustration_image']);
         }

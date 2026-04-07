@@ -162,11 +162,22 @@ class MediaController extends Controller
 
             $contentType = $mimeMap[$mimeSubtype] ?? 'image/' . $mimeSubtype;
 
+            $etag = '"' . md5($data) . '"';
+
+            // Return 304 Not Modified if browser already has this version
+            $ifNoneMatch = $request->header('If-None-Match');
+            if ($ifNoneMatch && $ifNoneMatch === $etag) {
+                return new Response('', 304, [
+                    'Cache-Control' => 'public, max-age=604800',
+                    'ETag' => $etag,
+                ]);
+            }
+
             return new Response($binary, 200, [
                 'Content-Type' => $contentType,
                 'Content-Length' => strlen($binary),
                 'Cache-Control' => 'public, max-age=604800',
-                'ETag' => '"' . md5($data) . '"',
+                'ETag' => $etag,
             ]);
         } catch (\Throwable $e) {
             return new Response('', 404);

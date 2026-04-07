@@ -97,9 +97,11 @@
                                     style="border: 5px solid #9cc2e5; border-radius: 4px; overflow: hidden; max-height: 180px;">
                                     @if($companyProfile->plant_1_image_data ?? null)
                                         <img src="/dbimg/company/plant_1_image_data"
+                                            loading="lazy"
                                             style="width: 100%; height: auto; object-fit: cover;">
                                     @elseif($companyProfile->plant_1_image)
                                         <img src="/media/{{ ltrim($companyProfile->plant_1_image, '/') }}"
+                                            loading="lazy"
                                             style="width: 100%; height: auto; object-fit: cover;"
                                             onerror="this.parentElement.innerHTML='<div class=\'w-full h-40 flex items-center justify-center text-gray-400 bg-gray-200\'><i class=\'fas fa-industry\'></i></div>'">
                                     @else
@@ -121,9 +123,11 @@
                                     style="border: 5px solid #9cc2e5; border-radius: 4px; overflow: hidden; max-height: 180px;">
                                     @if($companyProfile->plant_2_image_data ?? null)
                                         <img src="/dbimg/company/plant_2_image_data"
+                                            loading="lazy"
                                             style="width: 100%; height: auto; object-fit: cover;">
                                     @elseif($companyProfile->plant_2_image)
                                         <img src="/media/{{ ltrim($companyProfile->plant_2_image, '/') }}"
+                                            loading="lazy"
                                             style="width: 100%; height: auto; object-fit: cover;"
                                             onerror="this.parentElement.innerHTML='<div class=\'w-full h-40 flex items-center justify-center text-gray-400 bg-gray-200\'><i class=\'fas fa-industry\'></i></div>'">
                                     @else
@@ -183,9 +187,11 @@
                         <div class="flex items-center gap-4 mb-4 cp-header-mobile">
                             @if($companyProfile->logo_data ?? null)
                                 <img src="/dbimg/company/logo_data"
+                                    loading="lazy"
                                     style="height: 80px; width: auto; object-fit: contain;">
                             @elseif($companyProfile->logo)
                                 <img src="/media/{{ ltrim($companyProfile->logo, '/') }}"
+                                    loading="lazy"
                                     style="height: 80px; width: auto; object-fit: contain;"
                                     onerror="this.outerHTML='<i class=\'fas fa-bolt text-5xl text-[#0f244a]\'></i>'">
                             @else
@@ -288,9 +294,11 @@
                                         <div style="width: 100%; bg-gray-100 overflow: hidden;">
                                             @if($companyProfile->director_image_data ?? null)
                                                 <img src="/dbimg/company/director_image_data"
+                                                    loading="lazy"
                                                     style="width: 100%; height: auto; object-fit: cover; object-position: top;">
                                             @elseif($companyProfile->director_image)
                                                 <img src="/media/{{ ltrim($companyProfile->director_image, '/') }}"
+                                                    loading="lazy"
                                                     style="width: 100%; height: auto; object-fit: cover; object-position: top;"
                                                     onerror="this.outerHTML='<div class=\'w-full h-48 flex items-center justify-center text-gray-400\'><i class=\'fas fa-user-tie text-5xl\'></i></div>'">
                                             @else

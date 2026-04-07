@@ -44,7 +44,7 @@ class CommitteeActivityController extends Controller
         if ($request->hasFile('image')) {
             $validated['image'] = $request->file('image')->store('committee', 'public');
             $file = $request->file('image');
-            $validated['image_data'] = 'data:' . $file->getMimeType() . ';base64,' . base64_encode(file_get_contents($file->getRealPath()));
+            $validated['image_data'] = \App\Helpers\ImageCompressor::compressToBase64($file);
         }
 
         $validated['is_active'] = $request->has('is_active');
@@ -86,7 +86,7 @@ class CommitteeActivityController extends Controller
             }
             $validated['image'] = $request->file('image')->store('committee', 'public');
             $file = $request->file('image');
-            $validated['image_data'] = 'data:' . $file->getMimeType() . ';base64,' . base64_encode(file_get_contents($file->getRealPath()));
+            $validated['image_data'] = \App\Helpers\ImageCompressor::compressToBase64($file);
         }
 
         $validated['is_active'] = $request->has('is_active');

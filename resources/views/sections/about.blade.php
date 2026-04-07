@@ -7,7 +7,7 @@
             <!-- Image Column -->
             <div class="about-image-col">
                 <div class="about-avatar-box">
-                    <img src="{{ asset('images/profile-about.png') }}" alt="Profile" class="about-avatar">
+                    <img src="{{ asset('images/profile-about.png') }}" alt="Profile" class="about-avatar" loading="lazy">
                 </div>
             </div>
             
