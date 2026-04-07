@@ -27,11 +27,14 @@ chdir('..');
 // STEP 0: Ensure .env exists
 echo "<h2>.env Check</h2>";
 if (!file_exists('.env')) {
-    if (file_exists('env.production')) {
+    if (file_exists('.env.local')) {
+        copy('.env.local', '.env');
+        echo "<pre class='warning'>⚠️ .env was MISSING! Restored from .env.local</pre>";
+    } elseif (file_exists('env.production')) {
         copy('env.production', '.env');
-        echo "<pre class='warning'>⚠️ .env was MISSING! Restored from env.production. Please update DB credentials if needed.</pre>";
+        echo "<pre class='warning'>⚠️ .env was MISSING! Restored from env.production</pre>";
     } else {
-        echo "<pre class='error'>❌ .env NOT found and env.production also missing!</pre>";
+        echo "<pre class='error'>❌ .env NOT found and no source file available!</pre>";
     }
 } else {
     echo "<pre class='success'>✅ .env exists</pre>";
