@@ -21,7 +21,9 @@ return new class extends Migration
         });
 
         Schema::table('committee_activities', function (Blueprint $table) {
-            $table->longText('image_data')->nullable()->after('image');
+            if (!Schema::hasColumn('committee_activities', 'image_data')) {
+                $table->longText('image_data')->nullable()->after('image');
+            }
         });
 
         Schema::table('profiles', function (Blueprint $table) {
