@@ -138,11 +138,14 @@
 
             <div class="space-y-4 mt-4">
                 <template x-for="(item, index) in items" :key="index">
-                    <div class="p-4 rounded-lg relative" style="background: var(--bg-primary); border: 1px solid var(--border-color);">
-                        <button type="button" @click="items = items.filter((_, i) => i !== index)" class="absolute top-3 right-3 btn-icon btn-sm" style="color: var(--danger);" title="Remove">
-                            <i class="fas fa-trash-alt"></i>
-                        </button>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pr-8">
+                    <div class="p-4 rounded-lg" style="background: var(--bg-primary); border: 1px solid var(--border-color);">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="font-medium" x-text="item.title || 'Business Model #' + (index + 1)"></span>
+                            <button type="button" @click="items = items.filter((_, i) => i !== index)" class="btn btn-sm btn-danger" title="Remove">
+                                <i class="fas fa-trash-alt mr-1"></i> Remove
+                            </button>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div class="form-group">
                                 <label>Title</label>
                                 <input type="text" :name="'business_models[' + index + '][title]'" x-model="item.title" class="form-control" placeholder="e.g. Wiring Harness">
