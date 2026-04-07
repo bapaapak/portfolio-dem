@@ -24,15 +24,24 @@
             </div>
             <div class="form-group">
                 <label>Gambar Ilustrasi Aspirasi</label>
-                @if($profile->aspiration_image)
+                @if(($profile->aspiration_image_data ?? null) || $profile->aspiration_image)
                     <div style="margin-bottom:10px;">
-                        <img
-                            src="{{ $profile->aspiration_image_url }}"
-                            data-fallback="{{ $profile->aspiration_image_fallback_url }}"
-                            alt="Ilustrasi Aspirasi"
-                            style="max-width:100%;max-height:220px;border-radius:8px;border:1px solid #374151;"
-                            onerror="if (this.dataset.fallback && this.src !== this.dataset.fallback) { this.src = this.dataset.fallback; } else { this.style.display='none'; }"
-                        >
+                        @if(!empty($profile->aspiration_image_data))
+                            <img
+                                src="/dbimg/profile/aspiration_image_data"
+                                alt="Ilustrasi Aspirasi"
+                                style="max-width:100%;max-height:220px;border-radius:8px;border:1px solid #374151;"
+                                onerror="this.style.display='none'"
+                            >
+                        @elseif($profile->aspiration_image)
+                            <img
+                                src="{{ $profile->aspiration_image_url }}"
+                                data-fallback="{{ $profile->aspiration_image_fallback_url }}"
+                                alt="Ilustrasi Aspirasi"
+                                style="max-width:100%;max-height:220px;border-radius:8px;border:1px solid #374151;"
+                                onerror="if (this.dataset.fallback && this.src !== this.dataset.fallback) { this.src = this.dataset.fallback; } else { this.style.display='none'; }"
+                            >
+                        @endif
                         <small style="display:block;margin-top:4px;color:#9ca3af;">Upload gambar baru untuk menggantinya.</small>
                     </div>
                 @endif
