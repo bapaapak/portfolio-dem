@@ -83,7 +83,27 @@ try {
     $app = require $base . '/bootstrap/app.php';
     $kernel = $app->make(Illuminate\Contracts\Http\Kernel::class);
     echo "✅ Laravel booted OK<br>";
+    
+    // Try handling an actual request
+    echo "<h3>Request Handling Test:</h3>";
+    $request = Illuminate\Http\Request::create('/', 'GET');
+    $response = $kernel->handle($request);
+    echo "Response status: " . $response->getStatusCode() . "<br>";
+    if ($response->getStatusCode() >= 400) {
+        $content = $response->getContent();
+        // Try to extract error message
+        if (preg_match('/<title>(.*?)<\/title>/s', $content, $m)) {
+            echo "Title: " . htmlspecialchars($m[1]) . "<br>";
+        }
+        if (preg_match('/class="exception-message[^"]*"[^>]*>(.*?)<\//s', $content, $m)) {
+            echo "Error: " . htmlspecialchars(strip_tags($m[1])) . "<br>";
+        }
+        // Show first 2000 chars of body for debugging
+        echo "<details><summary>Response body (first 2000 chars)</summary><pre>" . htmlspecialchars(substr($content, 0, 2000)) . "</pre></details>";
+    }
+    $kernel->terminate($request, $response);
 } catch (Throwable $e) {
     echo "❌ Laravel Error: " . htmlspecialchars($e->getMessage()) . "<br>";
     echo "File: " . htmlspecialchars($e->getFile()) . ":" . $e->getLine() . "<br>";
+    echo "<details><summary>Trace</summary><pre>" . htmlspecialchars($e->getTraceAsString()) . "</pre></details>";
 }
