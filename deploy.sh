@@ -16,12 +16,12 @@ git clean -fd --exclude=.env --exclude=storage
 # Ensure .env exists
 if [ ! -f .env ]; then
     echo ">> WARNING: .env not found! Restoring..."
-    if [ -f .env.local ]; then
-        cp .env.local .env
-        echo ">> Restored from .env.local"
-    elif [ -f env.production ]; then
+    if [ -f env.production ]; then
         cp env.production .env
         echo ">> Restored from env.production"
+    elif [ -f .env.local ]; then
+        cp .env.local .env
+        echo ">> Restored from .env.local"
     else
         echo ">> ERROR: No .env source found!"
     fi

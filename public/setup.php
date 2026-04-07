@@ -55,12 +55,12 @@ shell_exec("chmod -R 775 {$basePath}/storage {$basePath}/bootstrap/cache 2>&1");
 // STEP 2: Ensure .env exists
 echo "<h2>.env Check</h2>";
 if (!file_exists('.env')) {
-    if (file_exists('.env.local')) {
-        copy('.env.local', '.env');
-        echo "<pre class='warning'>⚠️ .env was MISSING! Restored from .env.local</pre>";
-    } elseif (file_exists('env.production')) {
+    if (file_exists('env.production')) {
         copy('env.production', '.env');
         echo "<pre class='warning'>⚠️ .env was MISSING! Restored from env.production</pre>";
+    } elseif (file_exists('.env.local')) {
+        copy('.env.local', '.env');
+        echo "<pre class='warning'>⚠️ .env was MISSING! Restored from .env.local</pre>";
     } else {
         echo "<pre class='error'>❌ .env NOT found and no source file available!</pre>";
     }

@@ -24,20 +24,38 @@ echo shell_exec("cd {$b} && git reset --hard origin/main 2>&1") ?? '';
 echo shell_exec("cd {$b} && git clean -fd --exclude=.env --exclude=storage 2>&1") ?? '';
 echo "\n";
 
-// 4. Restore .env if missing
+// 4. Restore .env if missing or has wrong DB
 echo "[4] Check .env...\n";
+$needRestore = false;
 if (!file_exists('.env') || filesize('.env') === 0) {
-    if (file_exists('.env.local')) {
-        copy('.env.local', '.env');
-        echo "Restored from .env.local\n";
-    } elseif (file_exists('env.production')) {
-        copy('env.production', '.env');
+    $needRestore = true;
+    echo ".env missing\n";
+} else {
+    // Check if .env has correct DB_HOST for this environment
+    $envContent = file_get_contents('.env');
+    if (file_exists('env.production')) {
+        $prodContent = file_get_contents('env.production');
+        // Extract DB_HOST from production
+        preg_match('/DB_HOST=(.+)/', $prodContent, $prodMatch);
+        preg_match('/DB_HOST=(.+)/', $envContent, $envMatch);
+        if (isset($prodMatch[1]) && isset($envMatch[1]) && trim($prodMatch[1]) !== trim($envMatch[1])) {
+            $needRestore = true;
+            echo ".env has wrong DB_HOST: " . trim($envMatch[1]) . " (expected: " . trim($prodMatch[1]) . ")\n";
+        }
+    }
+}
+if ($needRestore) {
+    if (file_exists('env.production')) {
+        @copy('env.production', '.env');
         echo "Restored from env.production\n";
+    } elseif (file_exists('.env.local')) {
+        @copy('.env.local', '.env');
+        echo "Restored from .env.local\n";
     } else {
         echo "ERROR: No .env source!\n";
     }
 } else {
-    echo ".env exists (" . filesize('.env') . " bytes)\n";
+    echo ".env OK (" . filesize('.env') . " bytes)\n";
 }
 echo "\n";
 

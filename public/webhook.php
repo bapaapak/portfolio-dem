@@ -47,7 +47,7 @@ $commands = [
     "cd {$basePath} && git fetch origin 2>&1",
     "cd {$basePath} && git reset --hard origin/main 2>&1",
     "cd {$basePath} && git clean -fd --exclude=.env --exclude=storage 2>&1",
-    "cd {$basePath} && test -f .env || (test -f .env.local && cp .env.local .env) || (test -f env.production && cp env.production .env) 2>&1",
+    "cd {$basePath} && test -f .env || (test -f env.production && cp env.production .env) || (test -f .env.local && cp .env.local .env) 2>&1",
     "cd {$basePath} && composer install --no-dev --optimize-autoloader --no-interaction --no-scripts 2>&1",
     "cd {$basePath} && composer dump-autoload -o --no-scripts 2>&1",
     "cd {$basePath} && rm -f bootstrap/cache/*.php 2>&1",
