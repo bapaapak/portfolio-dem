@@ -10,11 +10,11 @@
             <style>
             /* ===== ORG CARD BASE ===== */
             .org-card {
-                background: linear-gradient(160deg, #eef2ff 0%, #e0e7ff 100%);
-                border: 1.5px solid rgba(99, 102, 241, 0.22);
+                background: linear-gradient(160deg, #e8f4fd 0%, #d4e8f7 100%);
+                border: 1.5px solid rgba(15, 36, 74, 0.22);
                 border-radius: 18px;
                 padding: 0;
-                box-shadow: 0 3px 12px rgba(99, 102, 241, 0.10);
+                box-shadow: 0 3px 12px rgba(15, 36, 74, 0.10);
                 transition: transform 0.25s ease, box-shadow 0.25s ease;
                 overflow: hidden;
                 position: relative;
@@ -22,13 +22,13 @@
             }
             .org-card:hover {
                 transform: translateY(-3px);
-                box-shadow: 0 10px 28px rgba(99, 102, 241, 0.18);
+                box-shadow: 0 10px 28px rgba(15, 36, 74, 0.18);
             }
 
             /* Top accent bar */
             .org-card-accent {
                 height: 4px;
-                background: linear-gradient(90deg, #6366f1 0%, #8b5cf6 50%, #a78bfa 100%);
+                background: linear-gradient(90deg, #0f244a 0%, #1e3a5f 50%, #4a7ba8 100%);
                 width: 100%;
             }
 
@@ -37,14 +37,14 @@
                 width: 54px;
                 height: 54px;
                 border-radius: 50%;
-                background: linear-gradient(135deg, #c7d2fe 0%, #a5b4fc 100%);
+                background: linear-gradient(135deg, #9cc2e5 0%, #78b0d4 100%);
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                color: #4338ca;
+                color: #0f244a;
                 font-size: 20px;
-                border: 2.5px solid rgba(99, 102, 241, 0.25);
-                box-shadow: 0 3px 10px rgba(99, 102, 241, 0.20);
+                border: 2.5px solid rgba(15, 36, 74, 0.25);
+                box-shadow: 0 3px 10px rgba(15, 36, 74, 0.20);
                 margin: 0 auto;
             }
             .org-avatar-wrapper {
@@ -52,8 +52,8 @@
                 height: 54px;
                 border-radius: 50%;
                 overflow: hidden;
-                border: 2.5px solid rgba(99, 102, 241, 0.3);
-                box-shadow: 0 3px 10px rgba(99, 102, 241, 0.20);
+                border: 2.5px solid rgba(15, 36, 74, 0.3);
+                box-shadow: 0 3px 10px rgba(15, 36, 74, 0.20);
                 margin: 0 auto;
             }
 
@@ -61,7 +61,7 @@
             .org-member-name {
                 font-size: 11.5px;
                 font-weight: 800;
-                color: #1e1b4b;
+                color: #0f244a;
                 text-transform: uppercase;
                 letter-spacing: 0.3px;
                 line-height: 1.3;
@@ -75,9 +75,9 @@
                 font-weight: 700;
                 text-transform: uppercase;
                 letter-spacing: 0.4px;
-                color: #78350f;
-                background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-                border: 1px solid rgba(234, 179, 8, 0.35);
+                color: #1e3a5f;
+                background: linear-gradient(135deg, #d4e8f7 0%, #9cc2e5 100%);
+                border: 1px solid rgba(15, 36, 74, 0.25);
                 padding: 4px 10px;
                 border-radius: 20px;
                 max-width: 160px;
@@ -135,24 +135,24 @@
             .tree li::before, .tree li::after {
                 content: '';
                 position: absolute; top: 0; right: 50%;
-                border-top: 2px solid #a5b4fc;
+                border-top: 2px solid #9cc2e5;
                 width: 50%; height: 20px;
                 z-index: 1;
             }
             .tree li::after {
                 right: auto; left: 50%;
-                border-left: 2px solid #a5b4fc;
+                border-left: 2px solid #9cc2e5;
             }
             .tree li:only-child::after, .tree li:only-child::before { display: none; }
             .tree li:only-child { padding-top: 0; }
             .tree li:first-child::before, .tree li:last-child::after { border: 0 none; }
             .tree li:last-child::before {
-                border-right: 2px solid #a5b4fc;
+                border-right: 2px solid #9cc2e5;
                 border-radius: 0 5px 0 0;
             }
             .tree li:first-child::after {
                 border-radius: 5px 0 0 0;
-                border-left: 2px solid #a5b4fc;
+                border-left: 2px solid #9cc2e5;
             }
             .org-chart-container > ul > li::before,
             .org-chart-container > ul > li::after { display: none !important; }
@@ -160,7 +160,7 @@
             .tree ul ul::before {
                 content: '';
                 position: absolute; top: 0; left: 50%;
-                border-left: 2px solid #a5b4fc;
+                border-left: 2px solid #9cc2e5;
                 width: 0; height: 20px;
                 z-index: 1;
             }
@@ -211,19 +211,19 @@
 
             @php
                 $levelColors = [
-                    'board_of_director' => 'bg-gradient-to-r from-indigo-600 to-purple-600',
-                    'division' => 'bg-gradient-to-r from-blue-500 to-indigo-500',
-                    'department' => 'bg-gradient-to-r from-teal-500 to-blue-500',
-                    'section' => 'bg-gradient-to-r from-green-500 to-teal-500',
-                    'staff' => 'bg-gradient-to-r from-amber-500 to-orange-500',
+                    'board_of_director' => 'bg-gradient-to-r from-[#0f244a] to-[#1e3a5f]',
+                    'division' => 'bg-gradient-to-r from-[#1e3a5f] to-[#2d5a87]',
+                    'department' => 'bg-gradient-to-r from-[#2d5a87] to-[#4a7ba8]',
+                    'section' => 'bg-gradient-to-r from-[#4a7ba8] to-[#6a9bc0]',
+                    'staff' => 'bg-gradient-to-r from-[#6a9bc0] to-[#9cc2e5]',
                     'admin' => 'bg-gradient-to-r from-gray-500 to-gray-600',
                 ];
                 $levelBorderColors = [
-                    'board_of_director' => 'border-indigo-300 bg-indigo-50',
-                    'division' => 'border-blue-300 bg-blue-50',
-                    'department' => 'border-teal-300 bg-teal-50',
-                    'section' => 'border-green-300 bg-green-50',
-                    'staff' => 'border-amber-300 bg-amber-50',
+                    'board_of_director' => 'border-[#1e3a5f] bg-[#e8f4fd]',
+                    'division' => 'border-[#2d5a87] bg-[#e8f4fd]',
+                    'department' => 'border-[#4a7ba8] bg-[#e8f4fd]',
+                    'section' => 'border-[#6a9bc0] bg-[#e8f4fd]',
+                    'staff' => 'border-[#9cc2e5] bg-[#e8f4fd]',
                     'admin' => 'border-gray-400 bg-gray-100',
                 ];
             @endphp
