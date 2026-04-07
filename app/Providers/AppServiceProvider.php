@@ -19,6 +19,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        // Auto-create storage symlink if missing (Dokploy/Docker)
+        $storageLink = public_path('storage');
+        if (!file_exists($storageLink)) {
+            @symlink(storage_path('app/public'), $storageLink);
+        }
     }
 }

@@ -98,9 +98,10 @@
                                     @if($companyProfile->plant_1_image_data ?? null)
                                         <img src="{{ $companyProfile->plant_1_image_data }}"
                                             style="width: 100%; height: auto; object-fit: cover;">
-                                    @elseif($companyProfile->plant_1_image && file_exists(public_path('storage/' . $companyProfile->plant_1_image)))
-                                        <img src="{{ asset('storage/' . $companyProfile->plant_1_image) }}"
-                                            style="width: 100%; height: auto; object-fit: cover;">
+                                    @elseif($companyProfile->plant_1_image)
+                                        <img src="/media/{{ ltrim($companyProfile->plant_1_image, '/') }}"
+                                            style="width: 100%; height: auto; object-fit: cover;"
+                                            onerror="this.parentElement.innerHTML='<div class=\'w-full h-40 flex items-center justify-center text-gray-400 bg-gray-200\'><i class=\'fas fa-industry\'></i></div>'">
                                     @else
                                         <div class="w-full h-40 flex items-center justify-center text-gray-400 bg-gray-200"><i
                                                 class="fas fa-industry"></i></div>
@@ -121,9 +122,10 @@
                                     @if($companyProfile->plant_2_image_data ?? null)
                                         <img src="{{ $companyProfile->plant_2_image_data }}"
                                             style="width: 100%; height: auto; object-fit: cover;">
-                                    @elseif($companyProfile->plant_2_image && file_exists(public_path('storage/' . $companyProfile->plant_2_image)))
-                                        <img src="{{ asset('storage/' . $companyProfile->plant_2_image) }}"
-                                            style="width: 100%; height: auto; object-fit: cover;">
+                                    @elseif($companyProfile->plant_2_image)
+                                        <img src="/media/{{ ltrim($companyProfile->plant_2_image, '/') }}"
+                                            style="width: 100%; height: auto; object-fit: cover;"
+                                            onerror="this.parentElement.innerHTML='<div class=\'w-full h-40 flex items-center justify-center text-gray-400 bg-gray-200\'><i class=\'fas fa-industry\'></i></div>'">
                                     @else
                                         <div class="w-full h-40 flex items-center justify-center text-gray-400 bg-gray-200"><i
                                                 class="fas fa-industry"></i></div>
@@ -182,9 +184,10 @@
                             @if($companyProfile->logo_data ?? null)
                                 <img src="{{ $companyProfile->logo_data }}"
                                     style="height: 80px; width: auto; object-fit: contain;">
-                            @elseif($companyProfile->logo && file_exists(public_path('storage/' . $companyProfile->logo)))
-                                <img src="{{ asset('storage/' . $companyProfile->logo) }}"
-                                    style="height: 80px; width: auto; object-fit: contain;">
+                            @elseif($companyProfile->logo)
+                                <img src="/media/{{ ltrim($companyProfile->logo, '/') }}"
+                                    style="height: 80px; width: auto; object-fit: contain;"
+                                    onerror="this.outerHTML='<i class=\'fas fa-bolt text-5xl text-[#0f244a]\'></i>'">
                             @else
                                 <i class="fas fa-bolt text-5xl text-[#0f244a]"></i>
                             @endif
@@ -246,9 +249,10 @@
                                             @if(isset($model['image_data']) && $model['image_data'])
                                                 <img src="{{ $model['image_data'] }}"
                                                     style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
-                                            @elseif(isset($model['image']) && $model['image'] && file_exists(public_path('storage/' . $model['image'])))
-                                                <img src="{{ asset('storage/' . $model['image']) }}"
-                                                    style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+                                            @elseif(isset($model['image']) && $model['image'])
+                                                <img src="/media/{{ ltrim($model['image'], '/') }}"
+                                                    style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;"
+                                                    onerror="this.outerHTML='<i class=\'fas fa-cog text-3xl text-[#0f244a]\'></i>'">
                                             @else
                                                 <i class="fas fa-cog text-3xl text-[#0f244a]"></i>
                                             @endif
@@ -284,9 +288,10 @@
                                             @if($companyProfile->director_image_data ?? null)
                                                 <img src="{{ $companyProfile->director_image_data }}"
                                                     style="width: 100%; height: auto; object-fit: cover; object-position: top;">
-                                            @elseif($companyProfile->director_image && file_exists(public_path('storage/' . $companyProfile->director_image)))
-                                                <img src="{{ asset('storage/' . $companyProfile->director_image) }}"
-                                                    style="width: 100%; height: auto; object-fit: cover; object-position: top;">
+                                            @elseif($companyProfile->director_image)
+                                                <img src="/media/{{ ltrim($companyProfile->director_image, '/') }}"
+                                                    style="width: 100%; height: auto; object-fit: cover; object-position: top;"
+                                                    onerror="this.outerHTML='<div class=\'w-full h-48 flex items-center justify-center text-gray-400\'><i class=\'fas fa-user-tie text-5xl\'></i></div>'">
                                             @else
                                                 <div class="w-full h-48 flex items-center justify-center text-gray-400"><i
                                                         class="fas fa-user-tie text-5xl"></i></div>

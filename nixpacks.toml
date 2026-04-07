@@ -1,0 +1,9 @@
+[phases.setup]
+cmds = [
+    "mkdir -p storage/app/public/company/misc storage/app/public/company/plants storage/app/public/company/directors storage/app/public/company/business_models",
+    "mkdir -p storage/app/public/experiences/logos",
+    "mkdir -p storage/framework/views storage/framework/cache/data storage/framework/sessions",
+    "mkdir -p storage/logs bootstrap/cache",
+    "chmod -R 775 storage bootstrap/cache",
+    "ln -sf /app/storage/app/public /app/public/storage"
+]

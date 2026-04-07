@@ -70,6 +70,21 @@ class Profile extends Model
         return '/media/' . ltrim($path, '/');
     }
 
+    public function getAspirationImageStoragePathAttribute(): ?string
+    {
+        if (!$this->aspiration_image) {
+            return null;
+        }
+
+        $path = ltrim($this->aspiration_image, '/');
+
+        if (str_starts_with($path, 'storage/')) {
+            $path = substr($path, strlen('storage/'));
+        }
+
+        return ltrim($path, '/');
+    }
+
     public function getAspirationImageFallbackUrlAttribute(): ?string
     {
         if (!$this->aspiration_image) {
