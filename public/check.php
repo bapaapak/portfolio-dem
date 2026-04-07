@@ -107,3 +107,28 @@ try {
     echo "File: " . htmlspecialchars($e->getFile()) . ":" . $e->getLine() . "<br>";
     echo "<details><summary>Trace</summary><pre>" . htmlspecialchars($e->getTraceAsString()) . "</pre></details>";
 }
+
+// Storage file listing
+echo "<h3>Storage Files:</h3>";
+$storageBase = $base . '/storage/app/public';
+if (is_dir($storageBase)) {
+    $rii = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($storageBase));
+    $count = 0;
+    echo "<pre>";
+    foreach ($rii as $file) {
+        if ($file->isDir()) continue;
+        $relPath = str_replace($storageBase . '/', '', $file->getPathname());
+        echo $relPath . " (" . round($file->getSize()/1024, 1) . " KB)\n";
+        $count++;
+        if ($count > 100) { echo "... truncated\n"; break; }
+    }
+    echo "</pre>";
+    echo "Total files: $count<br>";
+} else {
+    echo "❌ storage/app/public does NOT exist<br>";
+    // Check what does exist
+    echo "Checking alternative paths:<br>";
+    foreach (['/app/storage', '/app/storage/app', '/app/storage/app/public', '/app/public/storage'] as $p) {
+        echo "$p: " . (is_dir($p) ? "✅ DIR" : (is_link($p) ? "🔗 LINK -> " . readlink($p) : "❌ NO")) . "<br>";
+    }
+}
