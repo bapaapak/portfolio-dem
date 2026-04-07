@@ -3,247 +3,213 @@
 @section('title', 'Edit Aktivitas Kepanitiaan')
 
 @section('content')
-<div class="content-header">
-    <div class="header-left">
-        <a href="{{ route('admin.committee-activities.index') }}" class="back-link">
-            <i class="fas fa-arrow-left"></i> Kembali
-        </a>
-        <h1>Edit Aktivitas</h1>
-        <p class="subtitle">Edit data aktivitas kepanitiaan</p>
+<div class="page-header">
+    <div class="page-header-row">
+        <div>
+            <h1><i class="fas fa-users" style="margin-right: 8px; color: var(--primary);"></i>Edit Aktivitas Kepanitiaan</h1>
+            <p>Perbarui data aktivitas kepanitiaan</p>
+        </div>
+        <div class="page-header-actions">
+            <a href="{{ route('admin.committee-activities.index') }}" class="btn btn-outline btn-sm">
+                <i class="fas fa-arrow-left"></i> Kembali
+            </a>
+        </div>
     </div>
 </div>
 
-<div class="card">
-    <div class="card-body">
-        <form action="{{ route('admin.committee-activities.update', $committee_activity) }}" method="POST" enctype="multipart/form-data">
-            @csrf
-            @method('PUT')
+@if($errors->any())
+<div class="alert alert-error" style="margin-bottom: 24px;">
+    <i class="fas fa-exclamation-circle"></i>
+    <div>
+        <strong>Terdapat kesalahan:</strong>
+        <ul style="margin: 4px 0 0 16px;">
+            @foreach($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+</div>
+@endif
 
-            <div class="form-section">
-                <h3 class="section-title">Informasi Dasar</h3>
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label for="title">Judul Aktivitas (ID) <span class="required">*</span></label>
-                        <input type="text" id="title" name="title" value="{{ old('title', $committee_activity->title) }}" required>
-                        @error('title')
-                            <span class="error-text">{{ $message }}</span>
-                        @enderror
-                    </div>
+<form action="{{ route('admin.committee-activities.update', $committee_activity) }}" method="POST" enctype="multipart/form-data">
+    @csrf
+    @method('PUT')
 
-                    <div class="form-group">
-                        <label for="title_en">Judul Aktivitas (EN)</label>
-                        <input type="text" id="title_en" name="title_en" value="{{ old('title_en', $committee_activity->title_en) }}">
-                        @error('title_en')
-                            <span class="error-text">{{ $message }}</span>
-                        @enderror
-                    </div>
+    {{-- Informasi Dasar --}}
+    <div class="form-card" style="margin-bottom: 24px;">
+        <div class="form-section">
+            <h3><i class="fas fa-info-circle" style="margin-right: 8px; color: var(--primary);"></i>Informasi Dasar</h3>
 
-                    <div class="form-group">
-                        <label for="role">Peran/Jabatan (ID) <span class="required">*</span></label>
-                        <input type="text" id="role" name="role" value="{{ old('role', $committee_activity->role) }}" required>
-                        @error('role')
-                            <span class="error-text">{{ $message }}</span>
-                        @enderror
-                    </div>
-
-                    <div class="form-group">
-                        <label for="role_en">Peran/Jabatan (EN)</label>
-                        <input type="text" id="role_en" name="role_en" value="{{ old('role_en', $committee_activity->role_en) }}">
-                        @error('role_en')
-                            <span class="error-text">{{ $message }}</span>
-                        @enderror
-                    </div>
-
-                    <div class="form-group">
-                        <label for="organization">Organisasi</label>
-                        <input type="text" id="organization" name="organization" value="{{ old('organization', $committee_activity->organization) }}">
-                        @error('organization')
-                            <span class="error-text">{{ $message }}</span>
-                        @enderror
-                    </div>
-
-                    <div class="form-group">
-                        <label for="location">Lokasi</label>
-                        <input type="text" id="location" name="location" value="{{ old('location', $committee_activity->location) }}">
-                        @error('location')
-                            <span class="error-text">{{ $message }}</span>
-                        @enderror
-                    </div>
-                </div>
-            </div>
-
-            <div class="form-section">
-                <h3 class="section-title">Tanggal Kegiatan</h3>
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label for="event_date">Tanggal Mulai</label>
-                        <input type="date" id="event_date" name="event_date" value="{{ old('event_date', $committee_activity->event_date?->format('Y-m-d')) }}" class="datepicker">
-                        @error('event_date')
-                            <span class="error-text">{{ $message }}</span>
-                        @enderror
-                    </div>
-
-                    <div class="form-group">
-                        <label for="end_date">Tanggal Selesai</label>
-                        <input type="date" id="end_date" name="end_date" value="{{ old('end_date', $committee_activity->end_date?->format('Y-m-d')) }}" class="datepicker">
-                        <small class="form-hint">Biarkan kosong jika hanya 1 hari</small>
-                        @error('end_date')
-                            <span class="error-text">{{ $message }}</span>
-                        @enderror
-                    </div>
-                </div>
-            </div>
-
-            <div class="form-section">
-                <h3 class="section-title">Deskripsi</h3>
+            <div class="form-row">
                 <div class="form-group">
-                    <label for="description">Deskripsi (ID)</label>
-                    <textarea id="description" name="description" rows="4">{{ old('description', $committee_activity->description) }}</textarea>
-                    @error('description')
-                        <span class="error-text">{{ $message }}</span>
+                    <label for="title">Judul Aktivitas (ID) <span style="color: #e53e3e;">*</span></label>
+                    <input type="text" id="title" name="title" class="form-control" value="{{ old('title', $committee_activity->title) }}" required placeholder="Contoh: Panitia HUT RI ke-79">
+                    @error('title')
+                        <small style="color: #e53e3e;">{{ $message }}</small>
                     @enderror
                 </div>
-
                 <div class="form-group">
-                    <label for="description_en">Deskripsi (EN)</label>
-                    <textarea id="description_en" name="description_en" rows="4">{{ old('description_en', $committee_activity->description_en) }}</textarea>
-                    @error('description_en')
-                        <span class="error-text">{{ $message }}</span>
+                    <label for="title_en">Judul Aktivitas (EN)</label>
+                    <input type="text" id="title_en" name="title_en" class="form-control" value="{{ old('title_en', $committee_activity->title_en) }}" placeholder="English title (optional)">
+                    @error('title_en')
+                        <small style="color: #e53e3e;">{{ $message }}</small>
                     @enderror
                 </div>
             </div>
 
-            <div class="form-section">
-                <h3 class="section-title">Gambar & Pengaturan</h3>
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label for="image">Gambar Aktivitas</label>
-                        @if(!empty($committee_activity->image_data))
-                            <div class="current-image">
-                                <img src="/dbimg/committee/image_data/{{ $committee_activity->id }}" alt="{{ $committee_activity->title }}">
-                                <small>Gambar saat ini</small>
-                            </div>
-                        @elseif($committee_activity->image)
-                            <div class="current-image">
-                                <img src="{{ '/media/' . ltrim($committee_activity->image, '/') }}" alt="{{ $committee_activity->title }}" onerror="this.style.display='none'">
-                                <small>Gambar saat ini</small>
-                            </div>
-                        @endif
-                        <input type="file" id="image" name="image" accept="image/*">
-                        <small class="form-hint">Ukuran max: 2MB. Biarkan kosong jika tidak ingin mengubah.</small>
-                        @error('image')
-                            <span class="error-text">{{ $message }}</span>
-                        @enderror
-                    </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="role">Peran / Jabatan (ID) <span style="color: #e53e3e;">*</span></label>
+                    <input type="text" id="role" name="role" class="form-control" value="{{ old('role', $committee_activity->role) }}" required placeholder="Contoh: Ketua Panitia">
+                    @error('role')
+                        <small style="color: #e53e3e;">{{ $message }}</small>
+                    @enderror
+                </div>
+                <div class="form-group">
+                    <label for="role_en">Peran / Jabatan (EN)</label>
+                    <input type="text" id="role_en" name="role_en" class="form-control" value="{{ old('role_en', $committee_activity->role_en) }}" placeholder="English role (optional)">
+                    @error('role_en')
+                        <small style="color: #e53e3e;">{{ $message }}</small>
+                    @enderror
+                </div>
+            </div>
 
-                    <div class="form-group">
-                        <label for="order">Urutan Tampil</label>
-                        <input type="number" id="order" name="order" value="{{ old('order', $committee_activity->order) }}" min="0">
-                        <small class="form-hint">Angka kecil ditampilkan lebih dulu</small>
-                        @error('order')
-                            <span class="error-text">{{ $message }}</span>
-                        @enderror
-                    </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="organization">Organisasi</label>
+                    <input type="text" id="organization" name="organization" class="form-control" value="{{ old('organization', $committee_activity->organization) }}" placeholder="Nama organisasi penyelenggara">
+                    @error('organization')
+                        <small style="color: #e53e3e;">{{ $message }}</small>
+                    @enderror
+                </div>
+                <div class="form-group">
+                    <label for="location">Lokasi</label>
+                    <input type="text" id="location" name="location" class="form-control" value="{{ old('location', $committee_activity->location) }}" placeholder="Lokasi kegiatan">
+                    @error('location')
+                        <small style="color: #e53e3e;">{{ $message }}</small>
+                    @enderror
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- Tanggal Kegiatan --}}
+    <div class="form-card" style="margin-bottom: 24px;">
+        <div class="form-section">
+            <h3><i class="fas fa-calendar-alt" style="margin-right: 8px; color: var(--primary);"></i>Tanggal Kegiatan</h3>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="event_date">Tanggal Mulai</label>
+                    <input type="date" id="event_date" name="event_date" class="form-control" value="{{ old('event_date', $committee_activity->event_date?->format('Y-m-d')) }}">
+                    @error('event_date')
+                        <small style="color: #e53e3e;">{{ $message }}</small>
+                    @enderror
+                </div>
+                <div class="form-group">
+                    <label for="end_date">Tanggal Selesai</label>
+                    <input type="date" id="end_date" name="end_date" class="form-control" value="{{ old('end_date', $committee_activity->end_date?->format('Y-m-d')) }}">
+                    <small class="form-help">Kosongkan jika hanya 1 hari</small>
+                    @error('end_date')
+                        <small style="color: #e53e3e;">{{ $message }}</small>
+                    @enderror
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- Deskripsi --}}
+    <div class="form-card" style="margin-bottom: 24px;">
+        <div class="form-section">
+            <h3><i class="fas fa-align-left" style="margin-right: 8px; color: var(--primary);"></i>Deskripsi</h3>
+
+            <div class="form-group">
+                <label for="description">Deskripsi (ID)</label>
+                <textarea id="description" name="description" class="form-control" rows="4" placeholder="Jelaskan kegiatan kepanitiaan...">{{ old('description', $committee_activity->description) }}</textarea>
+                @error('description')
+                    <small style="color: #e53e3e;">{{ $message }}</small>
+                @enderror
+            </div>
+
+            <div class="form-group">
+                <label for="description_en">Deskripsi (EN)</label>
+                <textarea id="description_en" name="description_en" class="form-control" rows="4" placeholder="Describe the committee activity...">{{ old('description_en', $committee_activity->description_en) }}</textarea>
+                @error('description_en')
+                    <small style="color: #e53e3e;">{{ $message }}</small>
+                @enderror
+            </div>
+        </div>
+    </div>
+
+    {{-- Gambar & Pengaturan --}}
+    <div class="form-card" style="margin-bottom: 24px;">
+        <div class="form-section">
+            <h3><i class="fas fa-image" style="margin-right: 8px; color: var(--primary);"></i>Gambar & Pengaturan</h3>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="image">Gambar Aktivitas</label>
+                    @if(!empty($committee_activity->image_data) || $committee_activity->image)
+                        <div style="margin-bottom: 12px; display: inline-block;">
+                            @if(!empty($committee_activity->image_data))
+                                <img src="/dbimg/committee/image_data/{{ $committee_activity->id }}"
+                                    alt="{{ $committee_activity->title }}"
+                                    style="width: 180px; height: 120px; object-fit: cover; border-radius: 10px; border: 2px solid var(--border-color); background: var(--bg-primary);">
+                            @else
+                                <img src="{{ '/media/' . ltrim($committee_activity->image, '/') }}"
+                                    alt="{{ $committee_activity->title }}"
+                                    style="width: 180px; height: 120px; object-fit: cover; border-radius: 10px; border: 2px solid var(--border-color); background: var(--bg-primary);"
+                                    onerror="this.style.display='none'">
+                            @endif
+                            <div style="margin-top: 6px;">
+                                <small style="color: var(--text-secondary);"><i class="fas fa-check-circle" style="color: #48bb78;"></i> Gambar saat ini</small>
+                            </div>
+                        </div>
+                    @else
+                        <div style="margin-bottom: 12px; width: 180px; height: 120px; border-radius: 10px; border: 2px dashed var(--border-color); display: flex; align-items: center; justify-content: center; background: var(--bg-primary);">
+                            <i class="fas fa-image" style="font-size: 32px; color: var(--text-secondary); opacity: 0.4;"></i>
+                        </div>
+                    @endif
+                    <input type="file" id="image" name="image" class="form-control" accept="image/*">
+                    <small class="form-help">Max 2MB (JPEG, PNG, WebP). Kosongkan jika tidak ingin mengubah.</small>
+                    @error('image')
+                        <small style="color: #e53e3e;">{{ $message }}</small>
+                    @enderror
                 </div>
 
                 <div class="form-group">
-                    <label class="checkbox-label">
-                        <input type="checkbox" name="is_active" value="1" {{ old('is_active', $committee_activity->is_active) ? 'checked' : '' }}>
-                        <span>Aktif</span>
-                    </label>
+                    <label for="order">Urutan Tampil</label>
+                    <input type="number" id="order" name="order" class="form-control" value="{{ old('order', $committee_activity->order) }}" min="0">
+                    <small class="form-help">Angka kecil tampil lebih dulu</small>
+                    @error('order')
+                        <small style="color: #e53e3e;">{{ $message }}</small>
+                    @enderror
+
+                    <div style="margin-top: 24px;">
+                        <label for="is_active" class="form-check" style="cursor: pointer;">
+                            <input type="checkbox" id="is_active" name="is_active" value="1" {{ old('is_active', $committee_activity->is_active) ? 'checked' : '' }}>
+                            <span>Aktif ditampilkan di website</span>
+                        </label>
+                    </div>
                 </div>
             </div>
-
-            <div class="form-actions">
-                <button type="submit" class="btn btn-primary">
-                    <i class="fas fa-save"></i> Update
-                </button>
-                <a href="{{ route('admin.committee-activities.index') }}" class="btn btn-secondary">Batal</a>
-            </div>
-        </form>
+        </div>
     </div>
-</div>
+
+    {{-- Actions --}}
+    <div class="form-card">
+        <div class="form-actions" style="border-top: none; padding-top: 0;">
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-save"></i> Update Aktivitas
+            </button>
+            <a href="{{ route('admin.committee-activities.index') }}" class="btn btn-outline">
+                <i class="fas fa-times"></i> Batal
+            </a>
+        </div>
+    </div>
+</form>
 
 @push('styles')
-<style>
-    .form-section {
-        margin-bottom: 30px;
-        padding-bottom: 20px;
-        border-bottom: 1px solid #e2e8f0;
-    }
-
-    .form-section:last-of-type {
-        border-bottom: none;
-    }
-
-    .section-title {
-        font-size: 16px;
-        font-weight: 600;
-        color: #2d3748;
-        margin-bottom: 16px;
-    }
-
-    .form-grid {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 20px;
-    }
-
-    @media (max-width: 768px) {
-        .form-grid {
-            grid-template-columns: 1fr;
-        }
-    }
-
-    .form-hint {
-        color: #718096;
-        font-size: 12px;
-        margin-top: 4px;
-        display: block;
-    }
-
-    .checkbox-label {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        cursor: pointer;
-    }
-
-    .checkbox-label input {
-        width: 18px;
-        height: 18px;
-    }
-
-    .required {
-        color: #e53e3e;
-    }
-
-    .error-text {
-        color: #e53e3e;
-        font-size: 12px;
-        margin-top: 4px;
-        display: block;
-    }
-
-    .current-image {
-        margin-bottom: 10px;
-    }
-
-    .current-image img {
-        width: 120px;
-        height: 80px;
-        border-radius: 8px;
-        object-fit: cover;
-        border: 2px solid #e2e8f0;
-    }
-
-    .current-image small {
-        display: block;
-        color: #718096;
-        font-size: 12px;
-        margin-top: 4px;
-    }
-</style>
 <script>
 async function compressCommitteeImage(file, maxBytes = 1200 * 1024) {
     if (!file || !file.type.startsWith('image/')) return file;
