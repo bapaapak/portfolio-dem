@@ -79,6 +79,9 @@ rm -rf storage/framework/cache/data/* 2>/dev/null || true
 
 # Now regenerate packages.php + services.php
 echo "   >> Discovering packages..."
+# CRITICAL: delete stale packages.php first - it may reference dev-only providers
+# (e.g. PailServiceProvider) that are absent after --no-dev install, causing 500.
+rm -f bootstrap/cache/packages.php
 php artisan package:discover --ansi
 if [ $? -ne 0 ]; then
     echo "WARNING: package:discover failed. This may cause issues."
