@@ -12,8 +12,9 @@ class ObstacleChallengeController extends Controller
     {
         $obstacles = ObstacleChallenge::obstacles()->ordered()->get();
         $challenges = ObstacleChallenge::challenges()->ordered()->get();
+        $totalActive = ObstacleChallenge::where('is_active', true)->count();
         
-        return view('admin.obstacle_challenges.index', compact('obstacles', 'challenges'));
+        return view('admin.obstacle_challenges.index', compact('obstacles', 'challenges', 'totalActive'));
     }
 
     public function create()
@@ -45,6 +46,11 @@ class ObstacleChallengeController extends Controller
 
         return redirect()->route('admin.obstacle-challenges.index')
             ->with('success', 'Item berhasil ditambahkan!');
+    }
+
+    public function show(ObstacleChallenge $obstacleChallenge)
+    {
+        return redirect()->route('admin.obstacle-challenges.edit', $obstacleChallenge);
     }
 
     public function edit(ObstacleChallenge $obstacleChallenge)
