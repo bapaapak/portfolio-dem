@@ -3,9 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Concerns\ClearsHomeCache;
 
 class Certification extends Model
 {
+    use ClearsHomeCache;
+
     protected $fillable = [
         'name',
         'name_en',

@@ -5,9 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use App\Models\Concerns\ClearsHomeCache;
 
 class OrganizationStructure extends Model
 {
+    use ClearsHomeCache;
+
     // 6 Level Organization Structure
     public const LEVELS = [
         'board_of_director' => 'Board Of Director',
