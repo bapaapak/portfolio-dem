@@ -14,9 +14,7 @@ class JobDescriptionController extends Controller
     public function index()
     {
         $descriptions = JobDescription::descriptions()->ordered()->get();
-        $activities = JobDescription::activities()
-            ->orderByRaw('COALESCE(year, 9999) ASC, COALESCE(month, 1) ASC, `order` ASC')
-            ->get();
+        $activities = JobDescription::activities()->ordered()->get();
         
         return view('admin.job_descriptions.index', compact('descriptions', 'activities'));
     }

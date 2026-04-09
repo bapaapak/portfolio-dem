@@ -185,17 +185,9 @@ class HomeController extends Controller
         );
 
         $jobActivities = $this->tryQuery(function () {
-            return \App\Models\JobDescription::activities()->active()
-                ->orderByRaw('COALESCE(year, 9999) ASC, COALESCE(month, 1) ASC, `order` ASC')
-                ->get()
+            return \App\Models\JobDescription::activities()->active()->ordered()->get()
                 ->groupBy(fn($a) => $a->year_label)
-                ->sortBy(function ($items, $key) {
-                    if ($key === 'Lainnya') return PHP_INT_MAX;
-                    $first = $items->first();
-                    $year = $first->year ?? 9999;
-                    $month = $first->month ?? 1;
-                    return $year * 100 + $month;
-                });
+                ->map(fn($items) => $items->sortBy('order')->values());
         }, collect());
 
         $businessFlows = $this->tryQuery(
