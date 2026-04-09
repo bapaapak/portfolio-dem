@@ -49,7 +49,12 @@ class AutomationStrategyController extends Controller
 
     public function edit(AutomationStrategy $automation_strategy)
     {
-        return view('admin.automation_strategies.edit', compact('automation_strategy'));
+        $strategyMap = AutomationStrategy::select('id', 'term_type', 'category')
+            ->get()
+            ->groupBy('term_type')
+            ->map(fn($items) => $items->keyBy('category')->map(fn($s) => $s->id));
+
+        return view('admin.automation_strategies.edit', compact('automation_strategy', 'strategyMap'));
     }
 
     public function update(Request $request, AutomationStrategy $automation_strategy)

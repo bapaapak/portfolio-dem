@@ -119,6 +119,23 @@
 
 @push('scripts')
 <script>
+var strategyMap = @json($strategyMap);
+var currentId = {{ $automation_strategy->id }};
+
+function navigateToStrategy() {
+    var term = document.getElementById('term_type').value;
+    var cat = document.getElementById('category').value;
+    if (strategyMap[term] && strategyMap[term][cat]) {
+        var targetId = strategyMap[term][cat];
+        if (targetId !== currentId) {
+            window.location.href = '/admin/automation-strategies/' + targetId + '/edit';
+        }
+    }
+}
+
+document.getElementById('term_type').addEventListener('change', navigateToStrategy);
+document.getElementById('category').addEventListener('change', navigateToStrategy);
+
 document.getElementById('add-item').addEventListener('click', function() {
     const container = document.getElementById('items-container');
     const div = document.createElement('div');
