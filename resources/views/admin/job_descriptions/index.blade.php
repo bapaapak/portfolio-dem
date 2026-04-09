@@ -15,28 +15,55 @@
     </div>
 </div>
 
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+<!-- Summary Cards -->
+<div class="jd-summary-row">
+    <div class="jd-summary-card jd-summary-desc">
+        <div class="jd-summary-icon"><i class="fas fa-file-alt"></i></div>
+        <div class="jd-summary-info">
+            <span class="jd-summary-count">{{ $descriptions->count() }}</span>
+            <span class="jd-summary-label">Job Descriptions</span>
+        </div>
+    </div>
+    <div class="jd-summary-card jd-summary-act">
+        <div class="jd-summary-icon"><i class="fas fa-tasks"></i></div>
+        <div class="jd-summary-info">
+            <span class="jd-summary-count">{{ $activities->count() }}</span>
+            <span class="jd-summary-label">Activity Jobs</span>
+        </div>
+    </div>
+    <div class="jd-summary-card jd-summary-active">
+        <div class="jd-summary-icon"><i class="fas fa-check-circle"></i></div>
+        <div class="jd-summary-info">
+            <span class="jd-summary-count">{{ $descriptions->where('is_active', true)->count() + $activities->where('is_active', true)->count() }}</span>
+            <span class="jd-summary-label">Aktif</span>
+        </div>
+    </div>
+</div>
+
+<div class="jd-admin-grid">
 
     <!-- Job Descriptions -->
     <div class="card">
-        <div class="card-header">
-            <h3 class="card-title"><i class="fas fa-file-alt mr-2" style="color:#3b82f6;"></i>Job Descriptions</h3>
+        <div class="card-header" style="display:flex;align-items:center;gap:10px;border-bottom:2px solid #3b82f6;">
+            <i class="fas fa-file-alt" style="color:#3b82f6;font-size:1.1rem;"></i>
+            <h3 class="card-title" style="margin:0;font-size:1rem;font-weight:700;">Job Descriptions</h3>
+            <span class="jd-count-badge jd-count-blue">{{ $descriptions->count() }}</span>
         </div>
         <div class="card-body" style="padding:0;">
             @if($descriptions->count() > 0)
             <table class="data-table">
                 <thead>
                     <tr>
-                        <th style="width:60px;">Order</th>
+                        <th style="width:55px;">Order</th>
                         <th>Judul</th>
-                        <th style="width:90px;">Status</th>
+                        <th style="width:80px;">Status</th>
                         <th style="width:90px;">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach($descriptions as $item)
                     <tr>
-                        <td>{{ $item->order }}</td>
+                        <td><span class="jd-order-num">{{ $item->order }}</span></td>
                         <td><strong>{{ $item->title }}</strong></td>
                         <td>
                             @if($item->is_active)
@@ -75,33 +102,43 @@
 
     <!-- Activity Jobs -->
     <div class="card">
-        <div class="card-header">
-            <h3 class="card-title"><i class="fas fa-tasks mr-2" style="color:#10b981;"></i>Activity Jobs</h3>
+        <div class="card-header" style="display:flex;align-items:center;gap:10px;border-bottom:2px solid #10b981;">
+            <i class="fas fa-tasks" style="color:#10b981;font-size:1.1rem;"></i>
+            <h3 class="card-title" style="margin:0;font-size:1rem;font-weight:700;">Activity Jobs</h3>
+            <span class="jd-count-badge jd-count-green">{{ $activities->count() }}</span>
         </div>
         <div class="card-body" style="padding:0;">
             @if($activities->count() > 0)
             <table class="data-table">
                 <thead>
                     <tr>
-                        <th style="width:70px;">Tahun</th>
-                        <th style="width:50px;">Order</th>
+                        <th style="width:60px;">Order</th>
                         <th>Judul</th>
-                        <th style="width:90px;">Status</th>
+                        <th style="width:140px;">Periode</th>
+                        <th style="width:90px;">Durasi</th>
+                        <th style="width:80px;">Status</th>
                         <th style="width:90px;">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach($activities as $item)
                     <tr>
+                        <td><span class="jd-order-num">{{ $item->order }}</span></td>
+                        <td><strong>{{ $item->title }}</strong></td>
                         <td>
                             @if($item->year)
-                                <span class="badge" style="background:rgba(16,185,129,0.15);color:#065f46;font-weight:700;">{{ $item->year_label }}</span>
+                                <span class="jd-period-badge">{{ $item->year_label }}</span>
                             @else
-                                <span style="color:#9ca3af;">—</span>
+                                <span style="color:#6b7280;">—</span>
                             @endif
                         </td>
-                        <td>{{ $item->order }}</td>
-                        <td><strong>{{ $item->title }}</strong></td>
+                        <td>
+                            @if($item->duration_label)
+                                <span class="jd-duration-text">{{ $item->duration_label }}</span>
+                            @else
+                                <span style="color:#6b7280;">—</span>
+                            @endif
+                        </td>
                         <td>
                             @if($item->is_active)
                                 <span class="badge badge-success">Aktif</span>
@@ -143,33 +180,74 @@
 <style>
     .inline { display: inline; }
     .mr-2 { margin-right: 0.5rem; }
-    .mb-4 { margin-bottom: 1rem; }
-    .alert {
-        padding: 12px 16px;
-        border-radius: 8px;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        font-size: 0.9rem;
+
+    /* Summary Row */
+    .jd-summary-row {
+        display: flex; gap: 16px; margin-bottom: 24px;
     }
-    .alert-success {
-        background: rgba(16, 185, 129, 0.12);
-        border: 1px solid rgba(16, 185, 129, 0.3);
-        color: #10b981;
+    .jd-summary-card {
+        flex: 1; display: flex; align-items: center; gap: 14px;
+        padding: 16px 20px; border-radius: 12px;
+        background: rgba(255,255,255,0.04);
+        border: 1px solid rgba(255,255,255,0.08);
     }
+    .jd-summary-icon {
+        width: 44px; height: 44px; border-radius: 10px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 1.2rem;
+    }
+    .jd-summary-desc .jd-summary-icon { background: rgba(59,130,246,0.15); color: #60a5fa; }
+    .jd-summary-act .jd-summary-icon { background: rgba(16,185,129,0.15); color: #34d399; }
+    .jd-summary-active .jd-summary-icon { background: rgba(250,204,21,0.15); color: #facc15; }
+    .jd-summary-info { display: flex; flex-direction: column; }
+    .jd-summary-count { font-size: 1.5rem; font-weight: 800; line-height: 1; }
+    .jd-summary-label { font-size: 0.78rem; color: #9ca3af; margin-top: 2px; }
+
+    /* Grid */
+    .jd-admin-grid {
+        display: grid; grid-template-columns: 1fr 1.4fr; gap: 24px;
+    }
+
+    /* Count badges */
+    .jd-count-badge {
+        font-size: 0.72rem; font-weight: 700; padding: 2px 8px;
+        border-radius: 999px; margin-left: auto;
+    }
+    .jd-count-blue { background: rgba(59,130,246,0.15); color: #60a5fa; }
+    .jd-count-green { background: rgba(16,185,129,0.15); color: #34d399; }
+
+    /* Order number */
+    .jd-order-num {
+        display: inline-flex; align-items: center; justify-content: center;
+        width: 28px; height: 28px; border-radius: 8px; font-weight: 700; font-size: 0.85rem;
+        background: rgba(255,255,255,0.06); color: #d1d5db;
+    }
+
+    /* Period badge */
+    .jd-period-badge {
+        display: inline-block; font-size: 0.75rem; font-weight: 600;
+        padding: 3px 10px; border-radius: 6px;
+        background: rgba(16,185,129,0.12); color: #34d399;
+        line-height: 1.4; white-space: nowrap;
+    }
+
+    /* Duration text */
+    .jd-duration-text {
+        font-size: 0.78rem; font-weight: 600; color: #a78bfa;
+    }
+
     .card-header {
-        padding: 16px 20px;
-        border-bottom: 1px solid rgba(255,255,255,0.08);
+        padding: 14px 20px;
     }
     .card-title {
         margin: 0;
         font-size: 1rem;
         font-weight: 600;
     }
+
     @media (max-width: 900px) {
-        .jd-admin-grid {
-            grid-template-columns: 1fr !important;
-        }
+        .jd-admin-grid { grid-template-columns: 1fr !important; }
+        .jd-summary-row { flex-direction: column; }
     }
 </style>
 @endpush
