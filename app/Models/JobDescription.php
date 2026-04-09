@@ -12,7 +12,9 @@ class JobDescription extends Model
     protected $fillable = [
         'type',
         'year',
+        'month',
         'year_end',
+        'month_end',
         'title',
         'title_en',
         'description',
@@ -30,7 +32,9 @@ class JobDescription extends Model
         'items_en' => 'array',
         'is_active' => 'boolean',
         'year' => 'integer',
+        'month' => 'integer',
         'year_end' => 'integer',
+        'month_end' => 'integer',
     ];
 
     public function getIllustrationImageUrlAttribute(): ?string
@@ -116,13 +120,53 @@ class JobDescription extends Model
         return ltrim($path, '/');
     }
 
+    private static array $monthNames = [
+        1 => 'Jan', 2 => 'Feb', 3 => 'Mar', 4 => 'Apr',
+        5 => 'Mei', 6 => 'Jun', 7 => 'Jul', 8 => 'Agu',
+        9 => 'Sep', 10 => 'Okt', 11 => 'Nov', 12 => 'Des',
+    ];
+
     public function getYearLabelAttribute(): string
     {
         if (!$this->year) return 'Lainnya';
+
+        $startLabel = ($this->month ? self::$monthNames[$this->month] . ' ' : '') . $this->year;
+
         if ($this->year_end) {
-            return $this->year . ' – ' . $this->year_end;
+            $endLabel = ($this->month_end ? self::$monthNames[$this->month_end] . ' ' : '') . $this->year_end;
+            return $startLabel . ' – ' . $endLabel;
         }
-        return $this->year . ' – Sekarang';
+
+        return $startLabel . ' – Sekarang';
+    }
+
+    public function getDurationLabelAttribute(): ?string
+    {
+        if (!$this->year) return null;
+
+        $startMonth = $this->month ?: 1;
+        $startYear = $this->year;
+
+        if ($this->year_end) {
+            $endMonth = $this->month_end ?: 12;
+            $endYear = $this->year_end;
+        } else {
+            // Sampai sekarang
+            $endMonth = (int) date('n');
+            $endYear = (int) date('Y');
+        }
+
+        $totalMonths = ($endYear - $startYear) * 12 + ($endMonth - $startMonth) + 1;
+        if ($totalMonths < 1) $totalMonths = 1;
+
+        $years = intdiv($totalMonths, 12);
+        $months = $totalMonths % 12;
+
+        $parts = [];
+        if ($years > 0) $parts[] = $years . ' Tahun';
+        if ($months > 0) $parts[] = $months . ' Bulan';
+
+        return implode(' ', $parts) ?: '1 Bulan';
     }
 
     // Scopes

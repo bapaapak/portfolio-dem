@@ -36,15 +36,29 @@
                 </div>
                 <div class="form-group" id="year-field" style="display: {{ old('type', $jobDescription->type) == 'activity' ? 'block' : 'none' }}">
                     <label for="year">Tahun Mulai</label>
-                    <input type="number" name="year" id="year" class="form-control @error('year') border-red-500 @enderror" value="{{ old('year', $jobDescription->year ?? date('Y')) }}" min="2000" max="2099">
+                    <div style="display:flex; gap:8px;">
+                        <select name="month" id="month" class="form-control" style="flex:1;">
+                            <option value="">Bulan</option>
+                            @for($m = 1; $m <= 12; $m++)
+                            <option value="{{ $m }}" {{ old('month', $jobDescription->month) == $m ? 'selected' : '' }}>{{ ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'][$m-1] }}</option>
+                            @endfor
+                        </select>
+                        <input type="number" name="year" id="year" class="form-control @error('year') border-red-500 @enderror" value="{{ old('year', $jobDescription->year ?? date('Y')) }}" min="2000" max="2099" style="flex:1;">
+                    </div>
                     @error('year')
                     <div class="text-sm text-red-500 mt-1">{{ $message }}</div>
                     @enderror
                 </div>
                 <div class="form-group" id="year-end-field" style="display: {{ old('type', $jobDescription->type) == 'activity' ? 'block' : 'none' }}">
                     <label for="year_end">Tahun Selesai</label>
-                    <div style="display:flex; align-items:center; gap:12px;">
-                        <input type="number" name="year_end" id="year_end" class="form-control @error('year_end') border-red-500 @enderror" value="{{ old('year_end', $jobDescription->year_end ?? '') }}" min="2000" max="2099" placeholder="Kosongkan jika masih berlangsung" style="flex:1;" {{ !$jobDescription->year_end && $jobDescription->year ? 'disabled' : '' }}>
+                    <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+                        <select name="month_end" id="month_end" class="form-control" style="flex:1; min-width:80px;" {{ !$jobDescription->year_end && $jobDescription->year ? 'disabled' : '' }}>
+                            <option value="">Bulan</option>
+                            @for($m = 1; $m <= 12; $m++)
+                            <option value="{{ $m }}" {{ old('month_end', $jobDescription->month_end) == $m ? 'selected' : '' }}>{{ ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'][$m-1] }}</option>
+                            @endfor
+                        </select>
+                        <input type="number" name="year_end" id="year_end" class="form-control @error('year_end') border-red-500 @enderror" value="{{ old('year_end', $jobDescription->year_end ?? '') }}" min="2000" max="2099" placeholder="Kosongkan jika masih berlangsung" style="flex:1; min-width:80px;" {{ !$jobDescription->year_end && $jobDescription->year ? 'disabled' : '' }}>
                         <label style="display:flex;align-items:center;gap:6px;cursor:pointer;white-space:nowrap;font-weight:500;">
                             <input type="checkbox" id="until_now" name="until_now" value="1" onchange="toggleUntilNow(this)" {{ !$jobDescription->year_end && $jobDescription->year ? 'checked' : '' }} style="width:16px;height:16px;">
                             Sampai Sekarang
@@ -204,8 +218,13 @@ function toggleYearField(type) {
 
 function toggleUntilNow(checkbox) {
     const yearEndInput = document.getElementById('year_end');
+    const monthEndInput = document.getElementById('month_end');
     yearEndInput.disabled = checkbox.checked;
-    if (checkbox.checked) yearEndInput.value = '';
+    monthEndInput.disabled = checkbox.checked;
+    if (checkbox.checked) {
+        yearEndInput.value = '';
+        monthEndInput.value = '';
+    }
 }
 
 function addItem() {

@@ -87,6 +87,13 @@
                     <div class="activity-year-group">
                         <div class="activity-year-label">
                             <span>{{ $year }}</span>
+                            @php
+                                $firstActivity = $activities->first();
+                                $duration = $firstActivity ? $firstActivity->duration_label : null;
+                            @endphp
+                            @if($duration)
+                                <span class="activity-duration-badge">{{ $duration }}</span>
+                            @endif
                         </div>
                         <div class="activity-timeline">
                             @foreach($activities as $activity)
@@ -255,6 +262,7 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    gap: 8px;
     background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
     color: white;
     font-size: 0.9rem;
@@ -264,6 +272,15 @@
     margin-bottom: 16px;
     box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
     letter-spacing: 0.04em;
+}
+
+.activity-duration-badge {
+    background: rgba(255, 255, 255, 0.25);
+    padding: 2px 10px;
+    border-radius: 999px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
 }
 
 .activity-timeline {

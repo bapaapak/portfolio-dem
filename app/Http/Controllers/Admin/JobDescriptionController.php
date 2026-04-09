@@ -36,7 +36,9 @@ class JobDescriptionController extends Controller
         $validated = $request->validate([
             'type' => 'required|in:description,activity',
             'year' => 'nullable|integer|min:2000|max:2099',
+            'month' => 'nullable|integer|min:1|max:12',
             'year_end' => 'nullable|integer|min:2000|max:2099',
+            'month_end' => 'nullable|integer|min:1|max:12',
             'title' => 'required|string|max:255',
             'title_en' => 'nullable|string|max:255',
             'description' => 'nullable|string',
@@ -89,7 +91,9 @@ class JobDescriptionController extends Controller
         $validated = $request->validate([
             'type' => 'required|in:description,activity',
             'year' => 'nullable|integer|min:2000|max:2099',
+            'month' => 'nullable|integer|min:1|max:12',
             'year_end' => 'nullable|integer|min:2000|max:2099',
+            'month_end' => 'nullable|integer|min:1|max:12',
             'title' => 'required|string|max:255',
             'title_en' => 'nullable|string|max:255',
             'description' => 'nullable|string',
@@ -142,11 +146,14 @@ class JobDescriptionController extends Controller
 
         if (($validated['type'] ?? null) === 'description') {
             $validated['year'] = null;
+            $validated['month'] = null;
             $validated['year_end'] = null;
+            $validated['month_end'] = null;
         }
 
         if ($request->boolean('until_now')) {
             $validated['year_end'] = null;
+            $validated['month_end'] = null;
         }
 
         return $validated;
@@ -157,7 +164,9 @@ class JobDescriptionController extends Controller
         $allowedColumns = [
             'type',
             'year',
+            'month',
             'year_end',
+            'month_end',
             'title',
             'title_en',
             'description',
