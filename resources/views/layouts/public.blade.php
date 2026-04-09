@@ -195,9 +195,6 @@
         <aside class="sidebar" id="sidebar">
             @php
                 $profile = \App\Models\Profile::first();
-                // Use visible_sections from DB, or default to all if null (though usually it has a default in controller)
-                // We fallback to a hardcoded list of keys if needed, but the user wants 'Section Management' sync.
-                // NOTE: attributes are accessible via Eloquent.
                 $visibleSections = $profile->visible_sections ?? [
                     'hero', 'stats', 'about', 'experience', 'education', 
                     'tech_stack', 'skills', 'certifications', 'committee_activities', 
@@ -205,91 +202,34 @@
                     'job_description', 'company_profile', 'organization_structure', 
                     'projects', 'contact'
                 ];
+                $sectionOrder = $profile->section_order ?? $visibleSections;
+
+                // Map section keys to nav icon config
+                $navConfig = [
+                    'hero' => ['icon' => 'fa-home', 'hash' => 'home', 'title' => 'Home', 'translate' => 'nav_home'],
+                    'education' => ['icon' => 'fa-graduation-cap', 'hash' => 'education', 'title' => 'Education', 'translate' => 'nav_education'],
+                    'experience' => ['icon' => 'fa-briefcase', 'hash' => 'experience', 'title' => 'Experience', 'translate' => 'nav_experience'],
+                    'job_description' => ['icon' => 'fa-clipboard-list', 'hash' => 'job-description', 'title' => 'Job Description', 'translate' => 'nav_job_description'],
+                    'committee_activities' => ['icon' => 'fa-calendar-check', 'hash' => 'committee-activities', 'title' => 'Committee Activities', 'translate' => 'nav_committee_activities'],
+                    'career_aspiration' => ['icon' => 'fa-rocket', 'hash' => 'career-aspiration', 'title' => 'Career Aspiration', 'translate' => 'nav_career_aspiration'],
+                    'automation_strategy' => ['icon' => 'fa-cogs', 'hash' => 'automation-strategy', 'title' => 'Automation Strategy', 'translate' => 'nav_automation_strategy'],
+                    'obstacle_challenge' => ['icon' => 'fa-exclamation-triangle', 'hash' => 'obstacle-challenge', 'title' => 'Obstacle & Challenge', 'translate' => 'nav_obstacle_challenge'],
+                    'business_process_flow' => ['icon' => 'fa-project-diagram', 'hash' => 'business-process-flow', 'title' => 'Business Process', 'translate' => 'nav_business_process'],
+                    'company_profile' => ['icon' => 'fa-building', 'hash' => 'company-profile', 'title' => 'Company Profile', 'translate' => 'nav_company_profile'],
+                    'organization_structure' => ['icon' => 'fa-sitemap', 'hash' => 'organization-structure', 'title' => 'Organization Structure', 'translate' => 'nav_organization_structure'],
+                    'projects' => ['icon' => 'fa-folder-open', 'hash' => 'projects', 'title' => 'Projects', 'translate' => 'nav_projects'],
+                    'contact' => ['icon' => 'fa-envelope', 'hash' => 'contact-social', 'title' => 'Contact', 'translate' => 'nav_contact'],
+                ];
             @endphp
             <nav class="sidebar-nav">
-                {{-- 1. Home --}}
-                @if(in_array('hero', $visibleSections))
-                <a href="{{ route('home') }}#home" class="nav-item {{ request()->routeIs('home') && !request()->hash ? 'active' : '' }}" title="Home" data-translate-title="nav_home">
-                    <i class="fas fa-home"></i>
-                </a>
-                @endif
-                
-                {{-- 2. Education --}}
-                @if(in_array('education', $visibleSections))
-                <a href="{{ route('home') }}#education" class="nav-item" title="Education" data-translate-title="nav_education">
-                    <i class="fas fa-graduation-cap"></i>
-                </a>
-                @endif
-
-                {{-- 3. Professional Experience --}}
-                @if(in_array('experience', $visibleSections))
-                <a href="{{ route('home') }}#experience" class="nav-item" title="Experience" data-translate-title="nav_experience">
-                    <i class="fas fa-briefcase"></i>
-                </a>
-                @endif
-
-                {{-- 4. Job Description --}}
-                @if(in_array('job_description', $visibleSections))
-                <a href="{{ route('home') }}#job-description" class="nav-item" title="Job Description" data-translate-title="nav_job_description">
-                    <i class="fas fa-clipboard-list"></i>
-                </a>
-                @endif
-
-                {{-- 5. Committee Activities --}}
-                @if(in_array('committee_activities', $visibleSections))
-                <a href="{{ route('home') }}#committee-activities" class="nav-item {{ request()->is('/#committee-activities') ? 'active' : '' }}" title="Committee Activities" data-translate-title="nav_committee_activities">
-                    <i class="fas fa-calendar-check"></i>
-                </a>
-                @endif
-
-                {{-- 6. Career Aspiration --}}
-                @if(in_array('career_aspiration', $visibleSections))
-                <a href="{{ route('home') }}#career-aspiration" class="nav-item {{ request()->is('/#career-aspiration') ? 'active' : '' }}" title="Career Aspiration" data-translate-title="nav_career_aspiration">
-                    <i class="fas fa-rocket"></i>
-                </a>
-                @endif
-
-                {{-- 7. Automation Strategy --}}
-                @if(in_array('automation_strategy', $visibleSections))
-                <a href="{{ route('home') }}#automation-strategy" class="nav-item" title="Automation Strategy" data-translate-title="nav_automation_strategy">
-                    <i class="fas fa-cogs"></i>
-                </a>
-                @endif
-
-                {{-- 8. Obstacle & Challenge --}}
-                @if(in_array('obstacle_challenge', $visibleSections))
-                <a href="{{ route('home') }}#obstacle-challenge" class="nav-item" title="Obstacle & Challenge" data-translate-title="nav_obstacle_challenge">
-                    <i class="fas fa-exclamation-triangle"></i>
-                </a>
-                @endif
-
-                {{-- 9. Company Profile --}}
-                @if(in_array('company_profile', $visibleSections))
-                <a href="{{ route('home') }}#company-profile" class="nav-item {{ request()->is('/#company-profile') ? 'active' : '' }}" title="Company Profile" data-translate-title="nav_company_profile">
-                    <i class="fas fa-building"></i>
-                </a>
-                @endif
-                
-                {{-- 10. Organization Structure --}}
-                @if(in_array('organization_structure', $visibleSections))
-                <a href="{{ route('home') }}#organization-structure" class="nav-item {{ request()->is('/#organization-structure') ? 'active' : '' }}" title="Organization Structure" data-translate-title="nav_organization_structure">
-                    <i class="fas fa-sitemap"></i>
-                </a>
-                @endif
-
-                {{-- 11. Featured Projects --}}
-                @if(in_array('projects', $visibleSections))
-                <a href="{{ route('home') }}#projects" class="nav-item {{ request()->is('/#projects') ? 'active' : '' }}" title="Projects" data-translate-title="nav_projects">
-                    <i class="fas fa-folder-open"></i>
-                </a>
-                @endif
-                
-                {{-- 17. Contact --}}
-                @if(in_array('contact', $visibleSections))
-                <a href="{{ route('home') }}#contact-social" class="nav-item {{ request()->is('/#contact-social') ? 'active' : '' }}" title="Contact" data-translate-title="nav_contact">
-                    <i class="fas fa-envelope"></i>
-                </a>
-                @endif
+                @foreach($sectionOrder as $sectionKey)
+                    @if(in_array($sectionKey, $visibleSections) && isset($navConfig[$sectionKey]))
+                        @php $nav = $navConfig[$sectionKey]; @endphp
+                        <a href="{{ route('home') }}#{{ $nav['hash'] }}" class="nav-item" title="{{ $nav['title'] }}" data-translate-title="{{ $nav['translate'] }}">
+                            <i class="fas {{ $nav['icon'] }}"></i>
+                        </a>
+                    @endif
+                @endforeach
             </nav>
         </aside>
 
