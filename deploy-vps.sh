@@ -42,7 +42,7 @@ php artisan key:generate
 
 # 4. Import database
 echo "[4/5] Import database..."
-mysql -u ssotoght_user10 -pzahrowani19 ssotoght_portfolio_db < ssotoght_portfolio_db.sql
+mysql -u ssotoght_user10 -pzahrowani19 ssotoght_portfolio_db < db_profile.sql
 
 # 5. Setup permissions dan cache
 echo "[5/5] Setup permissions..."

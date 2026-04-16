@@ -5,7 +5,7 @@ $dbPort = getenv('DB_PORT') ?: '3306';
 $dbName = getenv('DB_DATABASE');
 $dbUser = getenv('DB_USERNAME');
 $dbPass = getenv('DB_PASSWORD');
-$sqlFile = $argv[1] ?? __DIR__ . '/ssotoght_portfolio_db.sql';
+$sqlFile = $argv[1] ?? __DIR__ . '/db_profile.sql';
 
 if (!$dbHost || !$dbName || !$dbUser) {
     fwrite(STDERR, "Missing DB env vars.\n");
