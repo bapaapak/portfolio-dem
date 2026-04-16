@@ -3,39 +3,55 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\CompanyProfile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class CompanyProfileController extends Controller
 {
+    private function profile(): CompanyProfile
+    {
+        return CompanyProfile::firstOrCreate(
+            ['id' => 1],
+            [
+                'name' => 'PT DHARMA ELECTRINDO MFG.',
+                'slogan' => 'Exist To Contribute',
+                'business_model_title' => 'BISNIS MODEL DEM',
+                'employees_cikarang' => 0,
+                'employees_cirebon' => 0,
+                'footer_text' => 'Knowledge & Technology Transformation for Employee Engagement',
+            ]
+        );
+    }
+
     public function index()
     {
-        $profile = \App\Models\CompanyProfile::firstOrNew();
+        $profile = $this->profile();
         return view('admin.company_profile.index', compact('profile'));
     }
 
     public function update(Request $request)
     {
-        $profile = \App\Models\CompanyProfile::firstOrNew();
+        $profile = $this->profile();
 
         $data = $request->validate([
             'name' => 'nullable|string|max:255',
-            'logo' => 'nullable|image|max:2048',
+            'logo' => 'nullable|file|mimes:jpg,jpeg,png,webp,gif,jfif,svg|max:2048',
             'slogan' => 'nullable|string|max:255',
             'description' => 'nullable|string',
             'plant_1_name' => 'nullable|string|max:255',
-            'plant_1_image' => 'nullable|image|max:2048',
+            'plant_1_image' => 'nullable|file|mimes:jpg,jpeg,png,webp,gif,jfif,svg|max:2048',
             'plant_2_name' => 'nullable|string|max:255',
-            'plant_2_image' => 'nullable|image|max:2048',
+            'plant_2_image' => 'nullable|file|mimes:jpg,jpeg,png,webp,gif,jfif,svg|max:2048',
             'employees_cikarang' => 'nullable|integer',
             'employees_cirebon' => 'nullable|integer',
             'business_model_title' => 'nullable|string|max:255',
             'director_name' => 'nullable|string|max:255',
             'director_title' => 'nullable|string|max:255',
             'footer_text' => 'nullable|string|max:500',
-            'director_image' => 'nullable|image|max:2048',
-            'triputra_dna_image' => 'nullable|image|max:2048',
+            'director_image' => 'nullable|file|mimes:jpg,jpeg,png,webp,gif,jfif,svg|max:2048',
+            'triputra_dna_image' => 'nullable|file|mimes:jpg,jpeg,png,webp,gif,jfif,svg|max:2048',
             'business_models' => 'nullable|array',
             'business_models.*.title' => 'nullable|string',
             'business_models.*.description' => 'nullable|string',
@@ -124,11 +140,12 @@ class CompanyProfileController extends Controller
         $data['business_models'] = $businessModels;
         
         // Ensure non-nullable fields with defaults have values
-        $data['business_model_title'] = $data['business_model_title'] ?? 'BISNIS MODEL DEM';
-        $data['employees_cikarang'] = $data['employees_cikarang'] ?? 0;
-        $data['employees_cirebon'] = $data['employees_cirebon'] ?? 0;
-        $data['footer_text'] = $data['footer_text'] ?? 'Knowledge & Technology Transformation for Employee Engagement';
-        $data['name'] = $data['name'] ?? 'PT DHARMA ELECTRINDO MFG.';
+        $data['name'] = $data['name'] ?? $profile->name ?? 'PT DHARMA ELECTRINDO MFG.';
+        $data['slogan'] = $data['slogan'] ?? $profile->slogan ?? 'Exist To Contribute';
+        $data['business_model_title'] = $data['business_model_title'] ?? $profile->business_model_title ?? 'BISNIS MODEL DEM';
+        $data['employees_cikarang'] = $data['employees_cikarang'] ?? $profile->employees_cikarang ?? 0;
+        $data['employees_cirebon'] = $data['employees_cirebon'] ?? $profile->employees_cirebon ?? 0;
+        $data['footer_text'] = $data['footer_text'] ?? $profile->footer_text ?? 'Knowledge & Technology Transformation for Employee Engagement';
         
         // Save
         $profile->fill($data);
