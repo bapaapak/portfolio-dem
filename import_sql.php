@@ -24,6 +24,10 @@ $pdo = new PDO($dsn, $dbUser, $dbPass, [
     PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true,
 ]);
 
+$pdo->exec('SET FOREIGN_KEY_CHECKS=0');
+
+$importStarted = false;
+
 $handle = fopen($sqlFile, 'r');
 if (!$handle) {
     fwrite(STDERR, "Cannot open SQL file.\n");
@@ -47,6 +51,7 @@ while (($line = fgets($handle)) !== false) {
         $statement = '';
 
         if ($sql !== '') {
+            $importStarted = true;
             $pdo->exec($sql);
             $count++;
             if ($count % 100 === 0) {
@@ -57,10 +62,15 @@ while (($line = fgets($handle)) !== false) {
 }
 
 if (trim($statement) !== '') {
+    $importStarted = true;
     $pdo->exec($statement);
     $count++;
 }
 
 fclose($handle);
+
+if ($importStarted) {
+    $pdo->exec('SET FOREIGN_KEY_CHECKS=1');
+}
 
 echo "Done. Imported {$count} statements.\n";
