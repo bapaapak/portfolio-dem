@@ -20,7 +20,7 @@ class CompanyProfileController extends Controller
         $profile = \App\Models\CompanyProfile::firstOrNew();
 
         $data = $request->validate([
-            'name' => 'required|string|max:255',
+            'name' => 'nullable|string|max:255',
             'logo' => 'nullable|image|max:2048',
             'slogan' => 'nullable|string|max:255',
             'description' => 'nullable|string',
@@ -49,25 +49,35 @@ class CompanyProfileController extends Controller
                 $ext = strtolower($file->getClientOriginalExtension());
                 
                 // Validate it's an image
-                if (!in_array($ext, ['jpg', 'jpeg', 'png', 'webp', 'gif', 'jfif'])) {
+                if (!in_array($ext, ['jpg', 'jpeg', 'png', 'webp', 'gif', 'jfif', 'svg'])) {
                     return $profile->$key;
                 }
 
-                // Save base64 data for reliable display (compressed)
-                $data[$dataKey] = \App\Helpers\ImageCompressor::compressToBase64($file);
+                // Save base64 data for reliable display (compressed when possible)
+                try {
+                    $data[$dataKey] = \App\Helpers\ImageCompressor::compressToBase64($file);
+                } catch (\Throwable $e) {
+                    report($e);
+                }
 
                 // Delete old file if exists
                 if ($profile->$key && Storage::exists('public/' . $profile->$key)) {
                     Storage::delete('public/' . $profile->$key);
                 }
                 
-                // If jfif, convert extension to jpg
-                if ($ext === 'jfif') {
-                    $filename = Str::random(40) . '.jpg';
-                    return $file->storeAs($path, $filename, 'public');
+                try {
+                    // If jfif, convert extension to jpg
+                    if ($ext === 'jfif') {
+                        $filename = Str::random(40) . '.jpg';
+                        return $file->storeAs($path, $filename, 'public');
+                    }
+
+                    return $file->store($path, 'public');
+                } catch (\Throwable $e) {
+                    report($e);
+                    // Keep old path if file storage fails, but still preserve *_data as fallback display source.
+                    return $profile->$key;
                 }
-                
-                return $file->store($path, 'public');
             }
             return $profile->$key;
         };

@@ -14,6 +14,18 @@
     </div>
 @endif
 
+@if($errors->any())
+    <div class="alert-danger" style="margin-bottom: 1rem;">
+        <i class="fas fa-exclamation-triangle mr-2"></i>
+        <strong>Update failed:</strong>
+        <ul style="margin: 0.5rem 0 0 1.25rem;">
+            @foreach($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
+
 <form action="{{ route('admin.company-profile.update') }}" method="POST" enctype="multipart/form-data">
     @csrf
     @method('PUT')
