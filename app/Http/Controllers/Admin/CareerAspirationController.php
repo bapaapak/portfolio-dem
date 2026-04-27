@@ -33,6 +33,8 @@ class CareerAspirationController extends Controller
             return !empty($item['year']) || !empty($item['title']);
         });
 
+        $milestones = $this->sortMilestonesByYear(array_values($milestones));
+
         $updateData = [
             'career_aspiration' => $request->input('career_aspiration'),
             'career_milestones' => array_values($milestones),
@@ -53,5 +55,52 @@ class CareerAspirationController extends Controller
 
         return redirect()->route('admin.career-aspiration.index')
             ->with('success', 'Career Aspiration updated successfully!');
+    }
+
+    private function sortMilestonesByYear(array $milestones): array
+    {
+        $decorated = [];
+
+        foreach ($milestones as $index => $milestone) {
+            $yearText = (string) ($milestone['year'] ?? '');
+            $yearRange = $this->extractYearRange($yearText);
+
+            $decorated[] = [
+                'index' => $index,
+                'milestone' => $milestone,
+                'start' => $yearRange[0],
+                'end' => $yearRange[1],
+            ];
+        }
+
+        usort($decorated, function (array $a, array $b): int {
+            if ($a['start'] !== $b['start']) {
+                return $a['start'] <=> $b['start'];
+            }
+
+            if ($a['end'] !== $b['end']) {
+                return $a['end'] <=> $b['end'];
+            }
+
+            return $a['index'] <=> $b['index'];
+        });
+
+        return array_values(array_map(function (array $item): array {
+            return $item['milestone'];
+        }, $decorated));
+    }
+
+    private function extractYearRange(string $yearText): array
+    {
+        preg_match_all('/\b(?:19|20)\d{2}\b/', $yearText, $matches);
+
+        if (empty($matches[0])) {
+            return [PHP_INT_MAX, PHP_INT_MAX];
+        }
+
+        $years = array_map('intval', $matches[0]);
+        sort($years);
+
+        return [$years[0], $years[count($years) - 1]];
     }
 }
