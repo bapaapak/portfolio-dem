@@ -55,9 +55,14 @@
         <div class="form-section">
             <div class="flex justify-between items-center mb-4">
                 <h3 class="form-section-title mb-0">Milestones</h3>
-                <button type="button" class="btn btn-sm btn-outline" onclick="addMilestone()">
-                    <i class="fas fa-plus mr-1"></i> Tambah Milestone
-                </button>
+                <div class="flex gap-2">
+                    <button type="button" class="btn btn-sm btn-outline" onclick="sortMilestonesInDOM()">
+                        <i class="fas fa-sort-amount-down-alt mr-1"></i> Urutkan Tahun
+                    </button>
+                    <button type="button" class="btn btn-sm btn-outline" onclick="addMilestone()">
+                        <i class="fas fa-plus mr-1"></i> Tambah Milestone
+                    </button>
+                </div>
             </div>
             
             <div id="milestones-container" class="space-y-4">
@@ -120,6 +125,45 @@
 </div>
 
 <script>
+function parseMilestoneYearRange(yearText) {
+    const matches = String(yearText || '').match(/\b(?:19|20)\d{2}\b/g);
+
+    if (!matches || matches.length === 0) {
+        return [Number.MAX_SAFE_INTEGER, Number.MAX_SAFE_INTEGER];
+    }
+
+    const years = matches.map(Number).sort((a, b) => a - b);
+    return [years[0], years[years.length - 1]];
+}
+
+function sortMilestonesInDOM() {
+    const container = document.getElementById('milestones-container');
+
+    if (!container) {
+        return;
+    }
+
+    const items = Array.from(container.querySelectorAll('.milestone-item'));
+    items.sort((a, b) => {
+        const yearA = a.querySelector('input[name*="[year]"]')?.value || '';
+        const yearB = b.querySelector('input[name*="[year]"]')?.value || '';
+        const rangeA = parseMilestoneYearRange(yearA);
+        const rangeB = parseMilestoneYearRange(yearB);
+
+        if (rangeA[0] !== rangeB[0]) {
+            return rangeA[0] - rangeB[0];
+        }
+
+        if (rangeA[1] !== rangeB[1]) {
+            return rangeA[1] - rangeB[1];
+        }
+
+        return 0;
+    });
+
+    items.forEach((item) => container.appendChild(item));
+}
+
 function addMilestone() {
     const container = document.getElementById('milestones-container');
     const index = Date.now(); // Put unix timestamp to ensure unique index for array parsing if items deleted
@@ -147,5 +191,16 @@ function addMilestone() {
     `;
     container.appendChild(div);
 }
+
+document.addEventListener('DOMContentLoaded', function () {
+    sortMilestonesInDOM();
+
+    const form = document.querySelector('form[action="{{ route('admin.career-aspiration.update') }}"]');
+    if (form) {
+        form.addEventListener('submit', function () {
+            sortMilestonesInDOM();
+        });
+    }
+});
 </script>
 @endsection

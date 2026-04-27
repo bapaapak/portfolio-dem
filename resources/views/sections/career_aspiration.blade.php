@@ -1,4 +1,19 @@
 <!-- Career Aspiration Section -->
+@php
+    $careerMilestones = collect($profile->career_milestones ?? [])->sortBy(function ($milestone) {
+        $yearText = (string) ($milestone['year'] ?? '');
+        preg_match_all('/\b(?:19|20)\d{2}\b/', $yearText, $matches);
+
+        if (empty($matches[0])) {
+            return [PHP_INT_MAX, PHP_INT_MAX];
+        }
+
+        $years = array_map('intval', $matches[0]);
+        sort($years);
+
+        return [$years[0], $years[count($years) - 1]];
+    })->values();
+@endphp
 <section class="career-aspiration-section" id="career-aspiration" style="padding: 60px 0;">
     <div class="container">
         <h2 class="section-title-experience fade-in-title" style="margin-bottom: 40px;">
@@ -58,7 +73,7 @@
             <div class="milestones-timeline-box">
                 <h3 style="font-size: 24px; font-weight: 700; margin-bottom: 24px; color: var(--text-primary);">Milestones</h3>
                 <div class="milestones-list" style="position: relative; padding-left: 20px; border-left: 2px solid var(--accent-green);">
-                    @forelse($profile->career_milestones ?? [] as $milestone)
+                    @forelse($careerMilestones as $milestone)
                     <div class="milestone-item" style="position: relative; margin-bottom: 30px; padding-left: 20px;">
                         <div class="milestone-dot" style="position: absolute; left: -27px; top: 0; width: 12px; height: 12px; background: var(--accent-green); border-radius: 50%; border: 2px solid var(--bg-primary);"></div>
                         <span class="milestone-year" style="display: inline-block; background: rgba(95, 206, 206, 0.1); color: var(--accent-green); padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 700; margin-bottom: 8px;">{{ $milestone['year'] }}</span>
